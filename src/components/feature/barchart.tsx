@@ -3,6 +3,7 @@
 import React from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+import { Box } from "@mui/material";
 
 const BarChart: React.FC = () => {
   const options = {
@@ -37,7 +38,11 @@ const BarChart: React.FC = () => {
     ],
   };
 
-  return <HighchartsReact highcharts={Highcharts} options={options} />;
+  return (
+    <Box>
+      <HighchartsReact highcharts={Highcharts} options={options} />
+    </Box>
+  );
 };
 
 export default BarChart;
