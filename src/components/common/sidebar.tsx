@@ -11,8 +11,8 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { useState } from "react";
 
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import { IconButton, Stack } from "@mui/material";
+import { Divider, IconButton, Stack, Toolbar, Tooltip } from "@mui/material";
+import { MENUS } from "@/data/menu";
 
 export default function SideNavBar() {
   const [open, setOpen] = useState(false);
@@ -43,9 +43,22 @@ export default function SideNavBar() {
       {!open && (
         <Stack spacing={2}>
           <Box sx={{ color: "white", cursor: "pointer" }}>
-            <IconButton edge="start" color="inherit" aria-label="menu">
-              <DashboardIcon />
-            </IconButton>
+            {MENUS.map((menu) => (
+              <Box key={menu.name}>
+                <Tooltip title={menu.name} placement="right">
+                  <IconButton
+                    edge="start"
+                    color="inherit"
+                    aria-label="menu"
+                    href={menu.url}
+                    sx={{ mt: 2, mb: 2 }}
+                  >
+                    <menu.icon />
+                  </IconButton>
+                </Tooltip>
+                <Divider />
+              </Box>
+            ))}
           </Box>
         </Stack>
       )}

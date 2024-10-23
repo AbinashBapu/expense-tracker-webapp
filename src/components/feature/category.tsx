@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import FolderIcon from "@mui/icons-material/Folder";
-import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { CATEGORY_SUBCATEGORY_DATA } from "@/data/categorySubCategory";
 
