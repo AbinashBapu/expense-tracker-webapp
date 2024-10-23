@@ -12,9 +12,17 @@ import Link from "next/link";
 
 export default function Page() {
   return (
-    <Grid container spacing={2} sx={{ mt: 10 }}>
-      <Grid size={8}></Grid>
-      <Grid size={4}>
+    <Grid container spacing={2} sx={{ height: "100%" }}>
+      <Grid size={7} sx={{ backgroundColor: "#1876D1" }}></Grid>
+      <Grid
+        size={5}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Card>
           <CardContent>
             <Grid container spacing={2} sx={{ mb: 1 }}>

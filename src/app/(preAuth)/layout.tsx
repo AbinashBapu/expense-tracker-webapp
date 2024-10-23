@@ -4,7 +4,7 @@ export default function PreAuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section>
+    <section style={{ height: "100%" }}>
       {/* Include shared UI here e.g. a header or sidebar */}
       <nav></nav>
 
