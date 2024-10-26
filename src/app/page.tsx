@@ -3,6 +3,9 @@ import { Fragment } from "react";
 
 import Grid from "@mui/material/Grid2";
 import { Box, Button, Typography } from "@mui/material";
+import landingPageStyle from "@/styles/components/landing-page.module.css";
+import landingPageImg from "@/assets/images/landing-bg.png";
+import Image from "next/image";
 
 export default function page() {
   return (
@@ -18,7 +21,12 @@ export default function page() {
           }}
         >
           <Typography variant="h2">Manage your</Typography>
-          <Typography variant="h2">Personal Finances</Typography>
+          <Typography variant="h2">
+            Personal{" "}
+            <span style={{ color: "#1876d2", fontWeight: "600" }}>
+              finances
+            </span>
+          </Typography>
           <Typography variant="subtitle1">
             Track, Save, and Grow Your Finances with Ease
           </Typography>
@@ -41,7 +49,13 @@ export default function page() {
             </Box>
           </Box>
         </Grid>
-        <Grid size={7} sx={{ backgroundColor: "#1876D1" }}></Grid>
+        <Grid size={7}>
+          <Image
+            src={landingPageImg}
+            alt="Picture of the author"
+            style={{ height: "100%", width: "100%" }}
+          />
+        </Grid>
       </Grid>
     </Fragment>
   );
