@@ -20,6 +20,11 @@ export default function Page() {
       >
         <Card>
           <CardContent>
+            <Box sx={{ mt: 2, mb: 3 }}>
+              <Typography variant="h4" sx={{ textAlign: "center" }}>
+                Create new account
+              </Typography>
+            </Box>
             <SignUpForm />
             <Box sx={{ mt: 3 }}>
               <Typography variant="caption">

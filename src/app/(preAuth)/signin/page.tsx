@@ -18,8 +18,17 @@ export default function Page() {
           justifyContent: "center",
         }}
       >
-        <Card>
+        <Card sx={{ width: "100%" }}>
           <CardContent>
+            <Box sx={{ mt: 2, mb: 3 }}>
+              <Typography variant="h4" sx={{ textAlign: "center" }}>
+                Welcome Back
+              </Typography>
+              <Typography variant="h6" sx={{ textAlign: "center" }}>
+                Signin to your account
+              </Typography>
+            </Box>
+
             <LoginForm />
             <Box sx={{ textAlign: "center", mt: 3 }}>
               <Typography variant="caption">
