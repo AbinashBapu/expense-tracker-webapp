@@ -1,15 +1,9 @@
 "use client";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 
 import Grid from "@mui/material/Grid2";
 import Link from "next/link";
+import LoginForm from "@/components/feature/login/loginForm";
 
 export default function Page() {
   return (
@@ -26,30 +20,7 @@ export default function Page() {
       >
         <Card>
           <CardContent>
-            <TextField
-              sx={{ mb: 1 }}
-              id="standard-basic"
-              label="Email Id"
-              variant="standard"
-              fullWidth
-            />
-            <TextField
-              sx={{ mb: 1 }}
-              id="standard-basic"
-              label="Password"
-              variant="standard"
-              fullWidth
-            />
-
-            <Button
-              variant="outlined"
-              fullWidth
-              sx={{ mt: 2 }}
-              href="/dashboard"
-            >
-              Sign In
-            </Button>
-
+            <LoginForm />
             <Box sx={{ textAlign: "center", mt: 3 }}>
               <Typography variant="caption">
                 Don't have an account? <Link href={"/signup"}>Sign Up</Link>
