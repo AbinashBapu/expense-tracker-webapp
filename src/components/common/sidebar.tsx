@@ -9,28 +9,63 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
-import { useState } from "react";
 
-import { Divider, IconButton, Stack, Toolbar, Tooltip } from "@mui/material";
+import {
+  Avatar,
+  Divider,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { MENUS } from "@/data/menu";
+import { usePathname } from "next/navigation"; // import useRouter
 
-export default function SideNavBar() {
-  const [open, setOpen] = useState(false);
-
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
-  };
-
+export default function SideNavBar({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: any;
+}) {
+  const pathName = usePathname();
   const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+    <Box sx={{ width: 250 }} role="presentation" onClick={() => setOpen(false)}>
+      <Box
+        sx={{
+          backgroundColor: "#1876d2",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          pt: 2,
+          pb: 2,
+        }}
+      >
+        <Box>
+          <Avatar
+            alt="Abinash pradhan"
+            src="https://randomuser.me/api/portraits/men/1.jpg"
+            sx={{ height: 100, width: 100, mb: 1 }}
+          />
+        </Box>
+
+        <Typography variant="subtitle1" sx={{ color: "white" }}>
+          Abinash Pradhan
+        </Typography>
+        <Typography variant="caption" sx={{ color: "white" }}>
+          abinash.pradhan@gmail.com
+        </Typography>
+      </Box>
+      <Divider />
+
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
+        {MENUS.map((menu, index) => (
+          <ListItem key={menu.name + "__" + index} disablePadding>
+            <ListItemButton href={menu.url} selected={pathName === menu.url}>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <menu.icon />
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={menu.name} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -51,7 +86,11 @@ export default function SideNavBar() {
                     color="inherit"
                     aria-label="menu"
                     href={menu.url}
-                    sx={{ mt: 2, mb: 2 }}
+                    sx={{
+                      mt: 2,
+                      mb: 2,
+                      backgroundColor: pathName === menu.url ? "#07539d" : "",
+                    }}
                   >
                     <menu.icon />
                   </IconButton>
@@ -62,8 +101,7 @@ export default function SideNavBar() {
           </Box>
         </Stack>
       )}
-      {/* <Button onClick={toggleDrawer(true)}>Open drawer</Button> */}
-      <Drawer open={open} onClose={toggleDrawer(false)}>
+      <Drawer open={open} onClose={() => setOpen(false)}>
         {DrawerList}
       </Drawer>
     </React.Fragment>
