@@ -18,7 +18,7 @@ export default function Page() {
           justifyContent: "center",
         }}
       >
-        <Card sx={{ width: "100%" }}>
+        <Card sx={{ width: "90%" }}>
           <CardContent>
             <Box sx={{ mt: 2, mb: 3 }}>
               <Typography variant="h4" sx={{ textAlign: "center" }}>
@@ -32,7 +32,7 @@ export default function Page() {
             <LoginForm />
             <Box sx={{ textAlign: "center", mt: 3 }}>
               <Typography variant="caption">
-                Don't have an account? <Link href={"/signup"}>Sign Up</Link>
+                Don't have an account? <Link href={"/signup"}>SignUp</Link>
               </Typography>
             </Box>
           </CardContent>

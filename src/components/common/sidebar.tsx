@@ -89,7 +89,12 @@ export default function SideNavBar({
                     sx={{
                       mt: 2,
                       mb: 2,
-                      backgroundColor: pathName === menu.url ? "#07539d" : "",
+                      backgroundColor: pathName === menu.url ? "#1876d2" : "",
+                      boxShadow:
+                        pathName === menu.url
+                          ? "0px 5px 8px 0px rgba(0, 0, 0, 0.2),0px 4px 5px 0px rgba(0, 0, 0, 0.14),0px 1px 10px 0px rgba(0, 0, 0, 0.5)"
+                          : "",
+                      cursor: "pointer",
                     }}
                   >
                     <menu.icon />
