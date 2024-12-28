@@ -61,9 +61,21 @@ export default function SideNavBar({
       <List>
         {MENUS.map((menu, index) => (
           <ListItem key={menu.name + "__" + index} disablePadding>
-            <ListItemButton href={menu.url} selected={pathName === menu.url}>
+            <ListItemButton
+              href={menu.url}
+              sx={{
+                backgroundColor: pathName === menu.url ? "#1876d242" : "",
+                // color: pathName === menu.url ? "white" : "",
+              }}
+            >
               <ListItemIcon>
-                <menu.icon />
+                <menu.icon
+                  sx={
+                    {
+                      // color: pathName === menu.url ? "white" : "",
+                    }
+                  }
+                />
               </ListItemIcon>
               <ListItemText primary={menu.name} />
             </ListItemButton>

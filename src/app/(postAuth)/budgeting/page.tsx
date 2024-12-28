@@ -167,7 +167,7 @@ export default function BudgetPage() {
       </Box>
 
       <Grid container spacing={2} mt={1}>
-        {[1, 2, 3, 4, 5, 6, 7].map((item) => (
+        {[1, 56].map((item) => (
           <Fragment key={item}>
             <Grid size={3}>
               <Card sx={{ maxWidth: 345 }}>
