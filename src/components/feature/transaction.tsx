@@ -6,26 +6,33 @@ export default function TransactionsLists() {
   const rows: GridRowsProp = [
     {
       id: 1,
-      col1: "Income",
-      col2: "Salary",
-      col3: "Rs. 200",
-      col4: "20-Jan-2025 11:05 AM",
+      col1: "Salary",
+      col2: "Rs. 200.00",
+      col3: "Cr",
+      col4: "20-Jan-2025",
+      col5: "Me",
+      col6: "BIPROS",
     },
     {
       id: 2,
-      col1: "Expense",
-      col2: "Grocery",
-      col3: "Rs. 10",
-      col4: "20-Jan-2025 12:05 PM",
+      col1: "Grocery",
+      col2: "Rs. 10.00",
+      col3: "Dr",
+      col4: "20-Jan-2025",
+      col5: "Baba",
+      col6: "Me",
     },
   ];
 
   const columns: GridColDef[] = [
     { field: "col1", headerName: "Category", flex: 1 },
-    { field: "col2", headerName: "Sub Category", flex: 1 },
-    { field: "col3", headerName: "Amount", flex: 1 },
-    { field: "col4", headerName: "Date & Time", flex: 1 },
+    { field: "col2", headerName: "Amount", flex: 1 },
+    { field: "col3", headerName: "Transaction Type  ", flex: 1 },
+    { field: "col5", headerName: "Incurred For", flex: 1 },
+    { field: "col6", headerName: "Incurred By", flex: 1 },
+    { field: "col4", headerName: "Transaction Date", flex: 1 },
   ];
+
   return (
     <Card>
       <CardContent>

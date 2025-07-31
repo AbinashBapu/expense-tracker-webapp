@@ -1,7 +1,7 @@
 "use client";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Link from "next/link";
 import LoginForm from "@/components/feature/login/loginForm";
 

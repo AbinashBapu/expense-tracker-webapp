@@ -6,7 +6,7 @@ import SearchReportParams from "@/components/feature/searchReportBlock";
 import TransactionList from "@/components/feature/transactionListReport";
 import { Box, Button, Tooltip } from "@mui/material";
 
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 
 export default function reportPage() {
   return (

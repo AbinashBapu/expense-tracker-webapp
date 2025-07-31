@@ -7,7 +7,7 @@ import BarChart from "@/components/feature/barchart";
 import CategoryList from "@/components/feature/category";
 import TransactionsLists from "@/components/feature/transaction";
 import { Box, Card, CardContent, Divider, Typography } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 import SavingsIcon from "@mui/icons-material/Savings";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";

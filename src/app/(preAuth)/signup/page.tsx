@@ -2,7 +2,7 @@
 import SignUpForm from "@/components/feature/signup/signupForm";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Link from "next/link";
 
 export default function Page() {

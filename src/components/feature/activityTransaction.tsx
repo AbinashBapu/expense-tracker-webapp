@@ -6,28 +6,34 @@ export default function ActivityTransactions() {
   const rows: GridRowsProp = [
     {
       id: 1,
-      col1: "Income",
-      col2: "Salary",
-      col3: "Rs. 200",
-      col4: "20-Jan-2025 11:05 AM",
-      col5: "asdfaasdfasdf",
+      col1: "Salary",
+      col2: "Rs. 200.00",
+      col3: "Cr",
+      col4: "20-Jan-2025",
+      col5: "Me",
+      col6: "BIPROS",
+      col7: "Salary credited for month of January",
     },
     {
       id: 2,
-      col1: "Expense",
-      col2: "Grocery",
-      col3: "Rs. 10",
-      col4: "20-Jan-2025 12:05 PM",
-      col5: "Salary transfered to Toby culsohowSalary transfered to Toby culsohowSalary transfered to Toby culsohowSalary transfered to Toby culsohow",
+      col1: "Grocery",
+      col2: "Rs. 10.00",
+      col3: "Dr",
+      col4: "20-Jan-2025",
+      col5: "Baba",
+      col6: "Me",
+      col7: "Bought grocery from rasulgarah",
     },
   ];
 
   const columns: GridColDef[] = [
     { field: "col1", headerName: "Category", flex: 0.5 },
-    { field: "col2", headerName: "Sub Category", flex: 0.5 },
-    { field: "col3", headerName: "Amount", flex: 0.5 },
-    { field: "col4", headerName: "Date & Time", flex: 0.5 },
-    { field: "col5", headerName: "Description", flex: 1.5 },
+    { field: "col2", headerName: "Amount", flex: 0.5 },
+    { field: "col3", headerName: "Transaction Type  ", flex: 0.5 },
+    { field: "col5", headerName: "Incurred For", flex: 0.5 },
+    { field: "col6", headerName: "Incurred By", flex: 0.5 },
+    { field: "col4", headerName: "Transaction Date", flex: 0.5 },
+    { field: "col7", headerName: "Description", flex: 1.5 },
   ];
   return (
     <Card>

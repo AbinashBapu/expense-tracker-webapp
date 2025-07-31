@@ -13,6 +13,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import { useState } from "react";
 import {
   FormControl,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
@@ -32,7 +33,7 @@ export default function TemporaryDrawer() {
   const DrawerList = (
     <Box sx={{ width: 400, p: 2 }} role="presentation">
       <Typography variant="h6" sx={{ mb: 2 }}>
-        Log Activity
+        Log Transactions
       </Typography>
       <form>
         <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
@@ -71,6 +72,63 @@ export default function TemporaryDrawer() {
             <MenuItem value={20}>Twenty</MenuItem>
             <MenuItem value={30}>Thirty</MenuItem>
           </Select>
+        </FormControl>
+        <FormControl variant="standard" fullWidth sx={{ mb: 1 }}>
+          <InputLabel id="demo-simple-select-standard-label">
+            Incured By
+          </InputLabel>
+          <Select
+            fullWidth
+            labelId="demo-simple-select-standard-label"
+            id="demo-simple-select-standard"
+            label="Age"
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={10}>Ten</MenuItem>
+            <MenuItem value={20}>Twenty</MenuItem>
+            <MenuItem value={30}>Thirty</MenuItem>
+          </Select>
+          <FormHelperText>Who spents</FormHelperText>
+        </FormControl>
+        <FormControl variant="standard" fullWidth sx={{ mb: 1 }}>
+          <InputLabel id="demo-simple-select-standard-label">
+            Incurred for
+          </InputLabel>
+          <Select
+            fullWidth
+            labelId="demo-simple-select-standard-label"
+            id="demo-simple-select-standard"
+            label="Age"
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={10}>Ten</MenuItem>
+            <MenuItem value={20}>Twenty</MenuItem>
+            <MenuItem value={30}>Thirty</MenuItem>
+          </Select>
+
+          <FormHelperText>Who get benifits</FormHelperText>
+        </FormControl>
+        <FormControl variant="standard" fullWidth sx={{ mb: 1 }}>
+          <InputLabel id="demo-simple-select-standard-label">
+            Transaction type
+          </InputLabel>
+          <Select
+            fullWidth
+            labelId="demo-simple-select-standard-label"
+            id="demo-simple-select-standard"
+            label="Age"
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={"cr"}>Credit</MenuItem>
+            <MenuItem value={"dr"}>Debit</MenuItem>
+          </Select>
+          <FormHelperText>Who spents</FormHelperText>
         </FormControl>
 
         <TextField

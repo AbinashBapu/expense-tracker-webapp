@@ -21,7 +21,7 @@ import { Fragment, useState } from "react";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CategoryForm from "@/components/feature/categoryForm";
 

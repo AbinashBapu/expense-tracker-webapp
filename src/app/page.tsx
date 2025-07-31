@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Fragment } from "react";
 
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import { Box, Button, Typography } from "@mui/material";
 import landingPageStyle from "@/styles/components/landing-page.module.css";
 import landingPageImg from "@/assets/images/landing-bg.png";

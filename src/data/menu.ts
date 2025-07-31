@@ -14,7 +14,7 @@ export const MENUS = [
     url: "/dashboard",
   },
   {
-    name: "Log Activities",
+    name: "Log Transactions",
     icon: EditNoteSharpIcon,
     url: "/trackActivities",
   },
