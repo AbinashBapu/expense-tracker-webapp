@@ -36,3 +36,6 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 Enterprise react app: (https://chatgpt.com/c/670f5bee-5ed8-800c-826f-7bb0116b1969)
+
+admin page(https://themesbrand.com/velzon/html/master/index.html)
+Other Admin page: (https://preview.themeforest.net/item/velzon-aspnet-core-admin-dashboard-template/full_screen_preview/36077495)
