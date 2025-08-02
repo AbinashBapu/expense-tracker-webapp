@@ -32,7 +32,7 @@ export default function CategoryList() {
     setAnchorEl(null);
   };
   return (
-    <Card sx={{ maxHeight: "350px", overflowY: "auto" }}>
+    <Card sx={{ maxHeight: "532px", overflowY: "auto" }}>
       <CardContent>
         <Box
           sx={{

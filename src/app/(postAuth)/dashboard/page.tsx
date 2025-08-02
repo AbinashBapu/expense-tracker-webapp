@@ -13,86 +13,113 @@ import SavingsIcon from "@mui/icons-material/Savings";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import CreditScoreOutlinedIcon from "@mui/icons-material/CreditScoreOutlined";
 
-
-import CallMadeIcon from '@mui/icons-material/CallMade';
-import CallReceivedIcon from '@mui/icons-material/CallReceived';
-
+import DashboardStatCard from "@/components/feature/dashboard/dashboardCard";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 // https://dribbble.com/shots/7705222-Hubio-Financial-Wallet-Web-Application-Design
 export default function Page() {
   return (
-    <Grid container spacing={2} sx={{ mb: 3 }}>
-      <Grid size={6}>
-        <Typography variant="h6">Good Morning, Abinash Pradhan</Typography>
-        <Typography variant="subtitle1" sx={{ color: "#737171" }}>
-          Here is your current financial status
-        </Typography>
+    <Box>
+      <Grid container spacing={2} sx={{ mb: 3 }}>
+        <Grid size={6}>
+          <Typography variant="h6">Good Morning, Abinash Pradhan</Typography>
+          <Typography variant="subtitle1" sx={{ color: "#737171" }}>
+            Here is your current financial status
+          </Typography>
+        </Grid>
+        <Grid size={6}></Grid>
+        <Grid size={3}>
+          <DashboardStatCard
+            title="TOTAL EARNINGS"
+            amount={45000.0}
+            percentage={10.05}
+          />
+        </Grid>
+        <Grid size={3}>
+          <DashboardStatCard
+            title="TOTAL EXPENSES"
+            amount={45000.0}
+            percentage={10.05}
+          />
+        </Grid>
+        <Grid size={3}>
+          <DashboardStatCard
+            title="CURRENT MONTH EARNING"
+            amount={45000.0}
+            percentage={10.05}
+          />
+        </Grid>
+        <Grid size={3}>
+          <DashboardStatCard
+            title="CURRENT MONTH EXPENSE"
+            amount={45000.0}
+            percentage={10.05}
+          />
+        </Grid>
       </Grid>
-      <Grid size={6}></Grid>
 
-      <Grid size={3}>
-        <Card>
-          <CardContent style={{ "padding":"14px 14px" }}>
-            <Box sx={{ display:"flex",flexDirection: "row",justifyContent:"space-between", mb: 1  }}>
-              <Typography variant="body2">
-                TOTAL EARNINGS
-              </Typography>
-              <Typography variant="caption"> <CallMadeIcon sx={{fontSize:"11px"}}/> 10.05%</Typography>
+      <Grid container spacing={2} sx={{ mb: 3 }}>
+        <Grid size={8}>
+          <Box sx={{ mb: 1, display: "flex", justifyContent: "space-between" }}>
+            <Box>
+              <Typography variant="h6">Report</Typography>
             </Box>
-            <Typography variant="body1" sx={{ fontWeight: 600, color: "#909090" }}>
-              Rs. 45,000.00
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid size={3}>
-        <Card>
-          <CardContent style={{ "padding":"14px 14px" }}>
-            <Box sx={{ display:"flex",flexDirection: "row",justifyContent:"space-between", mb: 1  }}>
-              <Typography variant="body2">
-                TOTAL EXPENSES
-              </Typography>
-               <Typography variant="caption"> <CallReceivedIcon sx={{fontSize:"11px"}}/> 10.05%</Typography>
+            <Box sx={{ display: "flex" }}>
+              <Box sx={{ mr: 1 }}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker label="From Date" />
+                </LocalizationProvider>
+              </Box>
+              <Box>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker label="To Date" />
+                </LocalizationProvider>
+              </Box>
             </Box>
-            <Typography variant="body1" sx={{ fontWeight: 600, color: "#909090" }}>
-              Rs. 45,000.00
-            </Typography>
-            <Box></Box>
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid size={3}>
-        <Card >
-          <CardContent style={{ "padding":"14px 14px" }}>
-            <Box sx={{ display:"flex",flexDirection: "row",justifyContent:"space-between", mb: 1 }}>
-              <Typography variant="body2">
-                CURRENT MONTH EARNING
-              </Typography>
-              <Typography variant="caption"> <CallMadeIcon sx={{fontSize:"11px"}}/> 10.05%</Typography>
-            </Box>
+          </Box>
+          <Grid
+            container
+            spacing={2}
+            sx={{
+              backgroundColor: "#d5d5d5",
+            }}
+          >
+            <Grid
+              size={4}
+              sx={{
+                borderRight: "2px dotted #ffefef",
+                textAlign: "center",
+                padding: 2,
+              }}
+            >
+              <Typography>Rs: 10000.00</Typography>
+              <Typography variant="caption">Total Income</Typography>
+            </Grid>
+            <Grid
+              size={4}
+              sx={{
+                borderRight: "2px dotted #ffefef",
+                textAlign: "center",
+                padding: 2,
+              }}
+            >
+              <Typography>Rs: 10000.00</Typography>
+              <Typography variant="caption">Total Income</Typography>
+            </Grid>
+            <Grid size={4} sx={{ textAlign: "center", padding: 2 }}>
+              <Typography>Rs: 10000.00</Typography>
+              <Typography variant="caption">Total Income</Typography>
+            </Grid>
+          </Grid>
 
-            <Typography variant="body1" sx={{ fontWeight: 600, color: "#909090" }}>
-              Rs. 45,000.00
-            </Typography>
-          </CardContent>
-        </Card>
+          <BarChart />
+        </Grid>
+        <Grid size={4}>
+          <CategoryList />
+        </Grid>
       </Grid>
-      <Grid size={3}>
-        <Card>
-          <CardContent style={{ "padding":"14px 14px" }}>
-            <Box sx={{ display:"flex",flexDirection: "row",justifyContent:"space-between", mb: 1  }}>
-              <Typography variant="body2" >
-                CURRENT MONTH EXPENSE
-              </Typography>
-               <Typography variant="caption"> <CallReceivedIcon sx={{fontSize:"11px"}}/> 10.05%</Typography>
-            </Box>
-            <Typography variant="body1" sx={{ fontWeight: 600, color: "#909090" }}>
-              Rs. 45,000.00
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-    </Grid>
+    </Box>
   );
 }
 
