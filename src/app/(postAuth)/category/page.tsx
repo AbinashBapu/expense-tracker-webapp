@@ -5,8 +5,15 @@ import { StarBorder } from "@mui/icons-material";
 import {
   Box,
   Button,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Chip,
   Collapse,
   Divider,
+  Drawer,
   IconButton,
   List,
   ListItemButton,
@@ -24,155 +31,89 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import Grid from "@mui/material/Grid";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CategoryForm from "@/components/feature/categoryForm";
+import { useQuery } from "@tanstack/react-query";
+import { useCategory } from "@/hooks/useCategory";
+import { CategoryDto, SubCategoryDto } from "@/dto/ClassificationDto";
+
+import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
+import { TreeItem } from "@mui/x-tree-view/TreeItem";
 
 export default function page() {
-  const [categoryId, setCategoryId] = useState(-1);
-  const handleClick = (id: number) => {
-    setCategoryId(categoryId == id ? -1 : id);
-  };
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const options = ["Edit", "View Sub Category"];
+  const { fetchCategoryData } = useCategory();
 
-  const handleClickMore = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const {
+    data: categoryData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => fetchCategoryData(),
+  });
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error: {(error as Error).message}</p>;
 
   return (
-    <Fragment>
+    <>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-        <Button variant="contained" size="small">
+        <Button size="small" color="primary" variant="contained" sx={{ mr: 2 }}>
           Add Category
+        </Button>{" "}
+        <Button size="small" color="primary" variant="contained">
+          Add Sub Category
         </Button>
       </Box>
 
       <Grid container spacing={2}>
-        {CATEGORY_SUBCATEGORY_DATA.categories.map((category) => (
-          <Grid size={3} key={category.id}>
-            <Tooltip
-              title={`${category.name} has ${category.subcategories.length} sub categories.`}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  p: 1,
-                  backgroundColor: "#8080801c",
-                  borderRadius: 1,
-                }}
-              >
-                <Box sx={{ display: "flex" }}>
-                  <IconButton>
-                    <category.icon />
-                  </IconButton>
-                  <Typography sx={{ mt: 1 }}>
-                    {category.name} ({category.subcategories.length})
+        {categoryData.map((category: CategoryDto) => (
+          <Grid size={3} key={category.categoryId}>
+            <Card>
+              <CardActionArea>
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {category.label} ({category.type.typeName})
                   </Typography>
-                </Box>
-                <Box>
-                  <IconButton
-                    aria-label="more"
-                    id="long-button"
-                    aria-controls={open ? "long-menu" : undefined}
-                    aria-expanded={open ? "true" : undefined}
-                    aria-haspopup="true"
-                    onClick={handleClickMore}
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "text.secondary", mb: 2 }}
                   >
-                    <MoreVertIcon />
-                  </IconButton>
-                  <Menu
-                    id="long-menu"
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleClose}
-                    elevation={0}
-                  >
-                    {options.map((option) => (
-                      <MenuItem key={option} onClick={handleClose}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </Menu>
-                </Box>
-              </Box>
-            </Tooltip>
+                    {category.description}
+                  </Typography>
+
+                  {category.subCategoryInfos.map(
+                    (subCategory: SubCategoryDto) => (
+                      <Chip
+                        label={subCategory.label}
+                        key={subCategory.pkSubCategoryId}
+                        sx={{ mr: 1, mb: 1 }}
+                        variant="outlined"
+                      />
+                    )
+                  )}
+                </CardContent>
+              </CardActionArea>
+              <CardActions>
+                <Button size="small" color="primary">
+                  EDIT
+                </Button>
+                <Button size="small" color="primary">
+                  Sub Category
+                </Button>
+              </CardActions>
+            </Card>
           </Grid>
         ))}
       </Grid>
 
-      <Box sx={{ display: "flex", justifyContent: "space-between", mt: 6 }}>
-        <Box>
-          <Typography variant="h6">
-            Sub Categories{" "}
-            <span style={{ color: "green" }}>
-              ({CATEGORY_SUBCATEGORY_DATA.categories[12].name})
-            </span>
-          </Typography>
-        </Box>
-        <Box>
-          <Button variant="contained" size="small">
-            Add Sub Category
-          </Button>
-        </Box>
-      </Box>
-
-      <Box sx={{ mt: 2 }}></Box>
-
-      <Grid container spacing={2}>
-        {CATEGORY_SUBCATEGORY_DATA.categories[12].subcategories.map(
-          (subCategory) => (
-            <Grid size={3} key={subCategory.id}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  p: 1,
-                  backgroundColor: "#8080801c",
-                  borderRadius: 1,
-                }}
-              >
-                {" "}
-                <Box sx={{ display: "flex" }}>
-                  <IconButton>
-                    <subCategory.icon />
-                  </IconButton>
-                  <Typography sx={{ mt: 1 }}>{subCategory.name}</Typography>
-                </Box>
-                <Box>
-                  <IconButton
-                    aria-label="more"
-                    id="long-button"
-                    aria-controls={open ? "long-menu" : undefined}
-                    aria-expanded={open ? "true" : undefined}
-                    aria-haspopup="true"
-                    onClick={handleClickMore}
-                  >
-                    <MoreVertIcon />
-                  </IconButton>
-                  <Menu
-                    id="long-menu"
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleClose}
-                    elevation={0}
-                  >
-                    {options.map((option) => (
-                      <MenuItem key={option} onClick={handleClose}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </Menu>
-                </Box>
-              </Box>
-            </Grid>
-          )
-        )}
-      </Grid>
-
-      <CategoryForm />
-    </Fragment>
+      <Drawer
+        open={true}
+        onClose={() => {}}
+        sx={{ width: "50%" }}
+        anchor="right"
+      >
+        <h1>aasdfasdfasdfasdf</h1>
+        <CategoryForm />
+      </Drawer>
+    </>
   );
 }

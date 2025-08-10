@@ -1,4 +1,13 @@
-import { Box, TextField, Button, Drawer } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Button,
+  Drawer,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import { useState } from "react";
 
 export default function CategoryForm() {
@@ -9,24 +18,19 @@ export default function CategoryForm() {
   };
 
   return (
-    <Box>
-      <Drawer anchor={"right"} open={open} onClose={toggleDrawer(false)}>
-        <form>
-          <TextField id="name" label="Category" variant="standard" fullWidth />
-          <TextField
-            id="desc"
-            label="Description"
-            variant="standard"
-            fullWidth
-            multiline
-            rows={4}
-          />
-
-          <Button variant="outlined" fullWidth>
-            Save
-          </Button>
-        </form>
-      </Drawer>
-    </Box>
+    <form>
+      <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">Category</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          label="Category"
+        >
+          <MenuItem value={10}>Ten</MenuItem>
+          <MenuItem value={20}>Twenty</MenuItem>
+          <MenuItem value={30}>Thirty</MenuItem>
+        </Select>
+      </FormControl>
+    </form>
   );
 }

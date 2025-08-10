@@ -3,6 +3,9 @@ export const useFetch = () => {
     const response = await fetch(url, {
       ...config,
       method: "GET",
+      headers: {
+        Authorization: `Bearer asdfasdf.asdfasd.asdfasdf`,
+      },
     });
     return response.json();
   };
@@ -13,6 +16,7 @@ export const useFetch = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer asdfasdf.asdfasd.asdfasdf`,
       },
       body: JSON.stringify(data),
     });
@@ -25,6 +29,7 @@ export const useFetch = () => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer asdfasdf.asdfasd.asdfasdf`,
       },
       body: JSON.stringify(data),
     });
