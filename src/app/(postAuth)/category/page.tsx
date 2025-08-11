@@ -30,21 +30,33 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Grid from "@mui/material/Grid";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import CategoryForm from "@/components/feature/categoryForm";
+
 import { useQuery } from "@tanstack/react-query";
 import { useCategory } from "@/hooks/useCategory";
 import { CategoryDto, SubCategoryDto } from "@/dto/ClassificationDto";
 
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
+import CreateSubCategoryForm from "@/components/feature/category/subCategoryForm";
+import CreateCategoryForm from "@/components/feature/category/categoryForm";
 
 export default function page() {
-  const { fetchCategoryData } = useCategory();
+  const { fetchCategoryData, saveCategory } = useCategory();
+  const [openSubCategory, setOpenSubCategory] = useState(false);
+  const [openCategory, setOpenCategory] = useState(false);
+
+  const toggleSubCategoryDrawer = () => {
+    setOpenSubCategory(!openSubCategory);
+  };
+  const toggleCategoryDrawer = () => {
+    setOpenCategory(!openCategory);
+  };
 
   const {
     data: categoryData,
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["categories"],
     queryFn: () => fetchCategoryData(),
@@ -56,10 +68,21 @@ export default function page() {
   return (
     <>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-        <Button size="small" color="primary" variant="contained" sx={{ mr: 2 }}>
+        <Button
+          size="small"
+          color="primary"
+          variant="contained"
+          sx={{ mr: 2 }}
+          onClick={() => toggleCategoryDrawer()}
+        >
           Add Category
-        </Button>{" "}
-        <Button size="small" color="primary" variant="contained">
+        </Button>
+        <Button
+          size="small"
+          color="primary"
+          variant="contained"
+          onClick={() => toggleSubCategoryDrawer()}
+        >
           Add Sub Category
         </Button>
       </Box>
@@ -106,13 +129,33 @@ export default function page() {
       </Grid>
 
       <Drawer
-        open={true}
-        onClose={() => {}}
-        sx={{ width: "50%" }}
+        open={openSubCategory}
+        onClose={() => toggleSubCategoryDrawer()}
         anchor="right"
       >
-        <h1>aasdfasdfasdfasdf</h1>
-        <CategoryForm />
+        <Box sx={{ width: 400, p: 2 }} role="presentation">
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Add/Update Sub Category
+          </Typography>
+          <CreateSubCategoryForm />
+        </Box>
+      </Drawer>
+
+      <Drawer
+        open={openCategory}
+        onClose={() => toggleCategoryDrawer()}
+        anchor="right"
+      >
+        <Box sx={{ width: 400, p: 2 }} role="presentation">
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Add/Update Category
+          </Typography>
+          <CreateCategoryForm
+            closeCategory={toggleCategoryDrawer}
+            saveCategory={saveCategory}
+            fetchCategory={refetch}
+          />
+        </Box>
       </Drawer>
     </>
   );
