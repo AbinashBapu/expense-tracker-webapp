@@ -86,11 +86,11 @@ export default function Page() {
   };
 
   const handleToggleActive = (id: string) => {
-    setParties((prev) =>
-      prev.map((p) =>
-        p.transactionPartyId === id ? { ...p, active: !p.active } : p
-      )
-    );
+    // setParties((prev) =>
+    //   prev.map((p) =>
+    //     p.transactionPartyId === id ? { ...p, active: !p.active } : p
+    //   )
+    // );
   };
 
   const confirmDelete = (party: TransactionPartyInfo) => {
@@ -100,11 +100,11 @@ export default function Page() {
 
   const handleDeleteConfirmed = () => {
     if (partyToDelete) {
-      setParties((prev) =>
-        prev.filter(
-          (p) => p.transactionPartyId !== partyToDelete.transactionPartyId
-        )
-      );
+      // setParties((prev) =>
+      //   prev.filter(
+      //     (p) => p.transactionPartyId !== partyToDelete.transactionPartyId
+      //   )
+      // );
     }
     setDeleteDialogOpen(false);
     setPartyToDelete(null);
