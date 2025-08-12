@@ -6,6 +6,7 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import CalculateIcon from "@mui/icons-material/Calculate";
 import CreditScoreSharpIcon from "@mui/icons-material/CreditScoreSharp";
 import LogoutIcon from "@mui/icons-material/Logout";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 
 export const MENUS = [
   {
@@ -28,6 +29,11 @@ export const MENUS = [
     name: "Category",
     icon: CategoryIcon,
     url: "/category",
+  },
+  {
+    name: "Party",
+    icon: PersonAddAltIcon,
+    url: "/parties",
   },
   {
     name: "Budget Setup",
