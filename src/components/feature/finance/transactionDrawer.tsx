@@ -26,7 +26,7 @@ type TransactionFormValues = {
   incurredById: TransactionPartyInfo | null;
   incurredForIds: Array<TransactionPartyInfo>;
   transactionType: string;
-  amount: number;
+  amount: string | number;
   description: string;
 };
 
@@ -46,9 +46,9 @@ export default function TransactionForm({
       categoryId: "",
       subCategoryId: "",
       incurredById: null,
-      transactionType: "",
       incurredForIds: [],
-      amount: 0,
+      transactionType: "",
+      amount: "",
       description: "",
     },
     validate: transactionFormValidate,
@@ -76,209 +76,225 @@ export default function TransactionForm({
   };
 
   return (
-    <Box sx={{ width: 400, p: 2 }} role="presentation">
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Log Transactions
-      </Typography>
-      <form onSubmit={formik.handleSubmit}>
-        <FormControl
-          variant="standard"
+    <form onSubmit={formik.handleSubmit}>
+      <FormControl
+        variant="standard"
+        fullWidth
+        sx={{ mb: 2 }}
+        error={formik.touched.categoryId && Boolean(formik.errors.categoryId)}
+      >
+        <InputLabel id="demo-simple-select-standard-label">Category</InputLabel>
+        <Select
           fullWidth
-          sx={{ mb: 2 }}
-          error={formik.touched.categoryId && Boolean(formik.errors.categoryId)}
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          name="categoryId"
+          label="Category"
+          value={formik.values.categoryId}
+          onChange={(event) => handleCategoryChange}
+          onBlur={formik.handleBlur}
         >
-          <InputLabel id="demo-simple-select-standard-label">
-            Category
-          </InputLabel>
-          <Select
-            fullWidth
-            labelId="demo-simple-select-standard-label"
-            id="demo-simple-select-standard"
-            name="categoryId"
-            label="Category"
-            value={formik.values.categoryId}
-            onChange={handleCategoryChange}
-            onBlur={formik.handleBlur}
-          >
-            <MenuItem value="">
-              <em>None</em>
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+
+          {categories.map((category: CategoryDto) => (
+            <MenuItem key={category.categoryId} value={category.categoryId}>
+              {category.label}
             </MenuItem>
+          ))}
+        </Select>
+        <FormHelperText>
+          {formik.touched.categoryId && formik.errors.categoryId}
+        </FormHelperText>
+      </FormControl>
 
-            {categories.map((category: CategoryDto) => (
-              <MenuItem key={category.categoryId} value={category.categoryId}>
-                {category.label}
-              </MenuItem>
-            ))}
-          </Select>
-          <FormHelperText>
-            {formik.touched.categoryId && formik.errors.categoryId}
-          </FormHelperText>
-        </FormControl>
-
-        <FormControl
-          variant="standard"
+      <FormControl
+        variant="standard"
+        fullWidth
+        sx={{ mb: 1 }}
+        error={
+          formik.touched.subCategoryId && Boolean(formik.errors.subCategoryId)
+        }
+      >
+        <InputLabel id="subcategory-select-label">Subcategory</InputLabel>
+        <Select
           fullWidth
-          sx={{ mb: 1 }}
-          error={
-            formik.touched.subCategoryId && Boolean(formik.errors.subCategoryId)
-          }
+          labelId="subcategory-select-label"
+          id="subcategory-select"
+          name="subCategoryId"
+          value={formik.values.subCategoryId}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
         >
-          <InputLabel id="subcategory-select-label">Sub Category</InputLabel>
-          <Select
-            fullWidth
-            labelId="subcategory-select-label"
-            id="subcategory-select"
-            name="subCategoryId"
-            value={formik.values.subCategoryId}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          >
-            <MenuItem value="">
-              <em>None</em>
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          {subCategories.map((sub) => (
+            <MenuItem key={sub.pkSubCategoryId} value={sub.pkSubCategoryId}>
+              {sub.label}
             </MenuItem>
-            {subCategories.map((sub) => (
-              <MenuItem key={sub.pkSubCategoryId} value={sub.pkSubCategoryId}>
-                {sub.label}
-              </MenuItem>
-            ))}
-          </Select>
-          <FormHelperText>
-            {formik.touched.subCategoryId && formik.errors.subCategoryId}
-          </FormHelperText>
-        </FormControl>
+          ))}
+        </Select>
+        <FormHelperText>
+          {formik.touched.subCategoryId && formik.errors.subCategoryId}
+        </FormHelperText>
+      </FormControl>
 
-        <FormControl
-          variant="standard"
-          fullWidth
-          sx={{ mb: 1 }}
-          error={
-            formik.touched.incurredById && Boolean(formik.errors.incurredById)
+      <FormControl variant="standard" fullWidth sx={{ mb: 1 }}>
+        <Autocomplete
+          id="incurred-for-autocomplete"
+          size="small"
+          options={parties}
+          getOptionLabel={(option) => option.name}
+          value={formik.values.incurredById}
+          onChange={(_, value: TransactionPartyInfo | null) => {
+            formik.setFieldValue("incurredById", value);
+          }}
+          onBlur={() => formik.setFieldTouched("incurredById", true)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="standard"
+              label="Incurred By"
+              placeholder="Select party who spents"
+              error={
+                formik.touched.incurredById &&
+                Boolean(formik.errors.incurredById)
+              }
+              helperText={
+                formik.touched.incurredById &&
+                typeof formik.errors.incurredById === "string"
+                  ? formik.errors.incurredById
+                  : ""
+              }
+            />
+          )}
+        />
+      </FormControl>
+
+      <FormControl
+        variant="standard"
+        fullWidth
+        sx={{ mb: 1 }}
+        error={
+          formik.touched.incurredForIds && Boolean(formik.errors.incurredForIds)
+        }
+      >
+        <Autocomplete
+          multiple
+          id="incurred-for-autocomplete"
+          size="small"
+          options={parties}
+          getOptionLabel={(option) => option.name}
+          value={formik.values.incurredForIds}
+          onChange={(_, value: Array<TransactionPartyInfo>) =>
+            formik.setFieldValue("incurredForIds", value)
           }
+          onBlur={() => formik.setFieldTouched("incurredForIds", true)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="standard"
+              label="Incurred For"
+              placeholder="Select parties for whom you spent"
+              error={
+                formik.touched.incurredForIds &&
+                Boolean(formik.errors.incurredForIds)
+              }
+              helperText={
+                formik.touched.incurredForIds &&
+                typeof formik.errors.incurredForIds == "string"
+                  ? formik.errors.incurredForIds
+                  : ""
+              }
+            />
+          )}
+        />
+      </FormControl>
+      
+      <FormControl
+        variant="standard"
+        fullWidth
+        sx={{ mb: 3 }}
+        error={
+          formik.touched.transactionType &&
+          Boolean(formik.errors.transactionType)
+        }
+      >
+        <InputLabel id="relation-label">Relation</InputLabel>
+        <Select
+          labelId="transaction-type-label"
+          name="transactionType"
+          value={formik.values.transactionType}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
         >
-          <Autocomplete
-            id="incurred-for-autocomplete"
-            size="small"
-            options={parties}
-            getOptionLabel={(option) => option.name}
-            value={formik.values.incurredById}
-            onChange={(_, value: TransactionPartyInfo | null) => {
-              formik.setFieldValue("incurredById", value);
-            }}
-            onBlur={() => formik.setFieldTouched("incurredById", true)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="standard"
-                label="Incurred By"
-                placeholder="Select Party"
-              />
-            )}
-          />
-          <FormHelperText>
-            {formik.touched.incurredById && formik.errors.incurredForIds}
-          </FormHelperText>
-        </FormControl>
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          <MenuItem value="Cr">Credit</MenuItem>
+          <MenuItem value="Dr">Debit</MenuItem>
+        </Select>
+        <FormHelperText>
+          {formik.touched.transactionType && formik.errors.transactionType}
+        </FormHelperText>
+      </FormControl>
 
-        <FormControl
-          variant="standard"
-          fullWidth
-          sx={{ mb: 1 }}
-          error={
-            formik.touched.incurredForIds &&
-            Boolean(formik.errors.incurredForIds)
-          }
-        >
-          <Autocomplete
-            multiple
-            id="incurred-for-autocomplete"
-            size="small"
-            options={parties}
-            getOptionLabel={(option) => option.name}
-            value={formik.values.incurredForIds}
-            onChange={(_, value: Array<TransactionPartyInfo>) =>
-              formik.setFieldValue("incurredForIds", value)
-            }
-            onBlur={() => formik.setFieldTouched("incurredForIds", true)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="standard"
-                label="Incurred For"
-                placeholder="Select parties for whom spents"
-              />
-            )}
-          />
-          <FormHelperText>
-            {formik.touched.incurredForIds && formik.errors.incurredForIds}
-          </FormHelperText>
-        </FormControl>
-
-        <FormControl variant="standard" fullWidth sx={{ mb: 1 }}>
-          <InputLabel id="demo-simple-select-standard-label">
-            Transaction type
-          </InputLabel>
-          <Select
-            fullWidth
-            labelId="demo-simple-select-standard-label"
-            id="demo-simple-select-standard"
-            label="Age"
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            <MenuItem value={"cr"}>Credit</MenuItem>
-            <MenuItem value={"dr"}>Debit</MenuItem>
-          </Select>
-          <FormHelperText>Who spents</FormHelperText>
-        </FormControl>
-
+      <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
         <TextField
-          sx={{ mt: 1 }}
-          id="standard-basic"
           label="Amount"
+          name="amount"
           variant="standard"
           type="number"
-          fullWidth
+          value={formik.values.amount}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.amount && Boolean(formik.errors.amount)}
+          helperText={formik.touched.amount && formik.errors.amount}
         />
-        <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
-          <TextField
-            label="Description"
-            name="description"
-            variant="standard"
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched.description && Boolean(formik.errors.description)
-            }
-            helperText={formik.touched.description && formik.errors.description}
-          />
-        </FormControl>
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
-          <Button
-            fullWidth
-            size="small"
-            variant="contained"
-            color="primary"
-            type="submit"
-            sx={{ mr: 1 }}
-          >
-            Save
-          </Button>
-          <Button
-            fullWidth
-            size="small"
-            variant="outlined"
-            color="secondary"
-            onClick={closeDrawer}
-            sx={{ ml: 1 }}
-          >
-            Cancel
-          </Button>
-        </Box>
-      </form>
-      <Divider />
-    </Box>
+      </FormControl>
+
+      <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
+        <TextField
+          label="Description"
+          name="description"
+          variant="standard"
+          multiline
+          minRows={3} 
+          value={formik.values.description}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={
+            formik.touched.description && Boolean(formik.errors.description)
+          }
+          helperText={formik.touched.description && formik.errors.description}
+        />
+      </FormControl>
+
+      <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+        <Button
+          fullWidth
+          size="small"
+          variant="contained"
+          color="primary"
+          type="submit"
+          sx={{ mr: 1 }}
+        >
+          Save
+        </Button>
+        <Button
+          fullWidth
+          size="small"
+          variant="outlined"
+          color="secondary"
+          onClick={() => closeDrawer()}
+          sx={{ ml: 1 }}
+        >
+          Cancel
+        </Button>
+      </Box>
+    </form>
   );
 }
 
@@ -286,7 +302,7 @@ const transactionFormValidate = (values: any) => {
   console.log("Category Form: ", values);
   const validateTransactionForm = z.object({
     categoryId: z.string().min(1, "Category is required"),
-    subCategoryId: z.string().min(1, "Sub is required"),
+    subCategoryId: z.string().min(1, "Subcategory is required"),
     incurredById: z.custom(
       (val) => {
         if (
@@ -306,7 +322,6 @@ const transactionFormValidate = (values: any) => {
         message: "Incurred by is required",
       }
     ),
-
     incurredForIds: z
       .array(
         z.object({
@@ -317,6 +332,12 @@ const transactionFormValidate = (values: any) => {
         })
       )
       .min(1, "Incurred for is required"),
+    transactionType: z.string().min(1, "Transaction is required"),
+    amount: z.union([
+      z.number().min(1, "Amount is required"),
+      z.string().min(1, "Amount is required"),
+    ]),
+    description: z.string().min(1, "Description is required"),
   });
   try {
     validateTransactionForm.parse(values);

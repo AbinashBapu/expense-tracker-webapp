@@ -1,6 +1,5 @@
-import { Box, Button, Card, CardContent, Typography } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid/DataGrid/DataGrid";
-import { GridRowsProp, GridColDef } from "@mui/x-data-grid";
+import { Card, CardContent, Typography } from "@mui/material";
+import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 
 export default function ActivityTransactions() {
   const rows: GridRowsProp = [
@@ -22,24 +21,33 @@ export default function ActivityTransactions() {
       col4: "20-Jan-2025",
       col5: "Baba",
       col6: "Me",
-      col7: "Bought grocery from rasulgarah",
+      col7: "Bought grocery from Rasulgarh",
     },
   ];
 
   const columns: GridColDef[] = [
-    { field: "col1", headerName: "Category", flex: 0.5 },
-    { field: "col2", headerName: "Amount", flex: 0.5 },
-    { field: "col3", headerName: "Transaction Type  ", flex: 0.5 },
-    { field: "col5", headerName: "Incurred For", flex: 0.5 },
-    { field: "col6", headerName: "Incurred By", flex: 0.5 },
-    { field: "col4", headerName: "Transaction Date", flex: 0.5 },
-    { field: "col7", headerName: "Description", flex: 1.5 },
+    { field: "col1", headerName: "Category", flex: 1 },
+    { field: "col2", headerName: "Amount", flex: 1 },
+    { field: "col3", headerName: "Type", flex: 0.5 },
+    { field: "col5", headerName: "Incurred For", flex: 1 },
+    { field: "col6", headerName: "Incurred By", flex: 1 },
+    { field: "col4", headerName: "Date", flex: 1 },
+    { field: "col7", headerName: "Description", flex: 2 },
   ];
+
   return (
-    <Card>
+    <Card variant="outlined" sx={{ mt: 2, p: 1 }}>
       <CardContent>
-        <div style={{ height: 260, width: "100%" }}>
-          <DataGrid rows={rows} columns={columns} />
+        <Typography variant="h6" gutterBottom>
+          Recent Transactions
+        </Typography>
+        <div style={{ height: 300, width: "100%" }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            disableRowSelectionOnClick
+            hideFooter
+          />
         </div>
       </CardContent>
     </Card>

@@ -1,7 +1,5 @@
 // https://dribbble.com/shots/5450312-Expenses-Mileage-Tracker-Dashboard-Design-V2/attachments/1180110?mode=media
 "use client";
-import { CATEGORY_SUBCATEGORY_DATA } from "@/data/categorySubCategory";
-import { StarBorder } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -9,48 +7,39 @@ import {
   CardActionArea,
   CardActions,
   CardContent,
-  CardMedia,
   Chip,
-  Collapse,
-  Divider,
   Drawer,
-  IconButton,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-  Tooltip,
   Typography,
 } from "@mui/material";
-import { Fragment, useState } from "react";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
+import {  useState } from "react";
 import Grid from "@mui/material/Grid";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-
 import { useQuery } from "@tanstack/react-query";
 import { useCategory } from "@/hooks/useCategory";
 import { CategoryDto, SubCategoryDto } from "@/dto/ClassificationDto";
-
-import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
-import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import CreateSubCategoryForm from "@/components/feature/category/subCategoryForm";
 import CreateCategoryForm from "@/components/feature/category/categoryForm";
 
 export default function page() {
-  const { fetchCategoryData, saveCategory } = useCategory();
+  const { fetchCategoryData, saveCategory, fetchTypes } = useCategory();
   const [openSubCategory, setOpenSubCategory] = useState(false);
   const [openCategory, setOpenCategory] = useState(false);
 
   const toggleSubCategoryDrawer = () => {
-    setOpenSubCategory(!openSubCategory);
+    setOpenSubCategory((prev) => !prev);
   };
   const toggleCategoryDrawer = () => {
-    setOpenCategory(!openCategory);
+    setOpenCategory((prev) => !prev);
   };
+
+  const {
+    data: types,
+    isLoading: isLoadingTypes,
+    error: typesError,
+    refetch: refetchTypes,
+  } = useQuery({
+    queryKey: ["types"],
+    queryFn: () => fetchTypes(),
+  });
 
   const {
     data: categoryData,
@@ -83,7 +72,7 @@ export default function page() {
           variant="contained"
           onClick={() => toggleSubCategoryDrawer()}
         >
-          Add Sub Category
+          Add Subcategory
         </Button>
       </Box>
 
@@ -135,9 +124,9 @@ export default function page() {
       >
         <Box sx={{ width: 400, p: 2 }} role="presentation">
           <Typography variant="h6" sx={{ mb: 2 }}>
-            Add/Update Sub Category
+            Add/Update Subcategory
           </Typography>
-          <CreateSubCategoryForm />
+          <CreateSubCategoryForm closeDrawer={toggleSubCategoryDrawer} categories={categoryData}/>
         </Box>
       </Drawer>
 
@@ -154,6 +143,7 @@ export default function page() {
             closeCategory={toggleCategoryDrawer}
             saveCategory={saveCategory}
             fetchCategory={refetch}
+            types={  types}
           />
         </Box>
       </Drawer>

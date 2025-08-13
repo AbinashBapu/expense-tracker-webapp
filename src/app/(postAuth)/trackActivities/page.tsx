@@ -9,6 +9,7 @@ import TransactionForm from "@/components/feature/finance/transactionDrawer";
 import { useFinance } from "@/hooks/useFinance";
 import { useCategory } from "@/hooks/useCategory";
 import { useQuery } from "@tanstack/react-query";
+import { Typography, Pagination } from "@mui/material";
 
 export default function FinancePage() {
   const [open, setOpen] = useState(false);
@@ -19,7 +20,6 @@ export default function FinancePage() {
     data: partiesData,
     isLoading: isLoadingParties,
     error: partiesError,
-    refetch: refetchParties,
   } = useQuery({
     queryKey: ["parties"],
     queryFn: () => fetchParties(),
@@ -29,7 +29,6 @@ export default function FinancePage() {
     data: categoryData,
     isLoading: isLoadingCategory,
     error: categoryError,
-    refetch: refetchCategory,
   } = useQuery({
     queryKey: ["categories"],
     queryFn: () => fetchCategoryData(),
@@ -44,15 +43,15 @@ export default function FinancePage() {
       </p>
     );
 
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
+  const toggleDrawer = () => {
+    setOpen((prev) => !prev);
   };
 
   return (
     <Box>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
         <Box>
-          <Button onClick={toggleDrawer(true)} variant="outlined">
+          <Button onClick={toggleDrawer} variant="outlined">
             Log Activity
           </Button>
         </Box>
@@ -60,14 +59,21 @@ export default function FinancePage() {
 
       <ActivityTransactions />
 
-      <Drawer open={open} onClose={toggleDrawer(false)} anchor="right">
-        <TransactionForm
-          parties={partiesData}
-          categories={categoryData}
-          closeDrawer={() => {
-            toggleDrawer(false);
-          }}
-        />
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+        <Pagination count={11} defaultPage={6} siblingCount={0} />
+      </Box>
+
+      <Drawer open={open} onClose={toggleDrawer} anchor="right">
+        <Box sx={{ width: 400, p: 2 }} role="presentation">
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Add Transaction
+          </Typography>
+          <TransactionForm
+            parties={partiesData}
+            categories={categoryData}
+            closeDrawer={toggleDrawer}
+          />
+        </Box>
       </Drawer>
     </Box>
   );

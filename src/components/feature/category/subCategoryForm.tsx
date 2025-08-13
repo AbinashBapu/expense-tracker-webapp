@@ -7,17 +7,19 @@ import Button from "@mui/material/Button";
 import {
   Box,
   FormControl,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { CategoryDto } from "@/dto/ClassificationDto";
 
 export const subCategoryFormValidate = (values: any) => {
   const validateSubCtegorySchema = z.object({
-    categoryName: z.string().min(1, "Category is required"),
-    subCategoryName: z.string().min(1, "Sub category name is required"),
+    categoryId: z.string().min(1, "Category is required"),
+    subCategoryName: z.string().min(1, "Subcategory name is required"),
     description: z.string().min(1, "Description is required"),
   });
 
@@ -31,18 +33,22 @@ export const subCategoryFormValidate = (values: any) => {
   }
 };
 
-const CreateSubCategoryForm = () => {
-  const [category, setCategory] = React.useState("");
-
-  const validationSchema = subCategoryFormValidate;
+const CreateSubCategoryForm = ({
+  closeDrawer,
+  categories,
+}: {
+  closeDrawer: any;
+  categories: Array<CategoryDto>;
+}) => {
+  
 
   const formik = useFormik({
     initialValues: {
-      categoryName: "",
+      categoryId: "",
       subCategoryName: "",
       description: "",
     },
-    validationSchema: validationSchema,
+    validate: subCategoryFormValidate,
     onSubmit: (values: any) => {
       alert(JSON.stringify(values, null, 2));
     },
@@ -50,29 +56,70 @@ const CreateSubCategoryForm = () => {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
-        <InputLabel id="category-name">Category</InputLabel>
+      <FormControl
+        variant="standard"
+        fullWidth
+        sx={{ mb: 2 }}
+        error={formik.touched.categoryId && Boolean(formik.errors.categoryId)}
+      >
+        <InputLabel id="demo-simple-select-standard-label">Category</InputLabel>
         <Select
-          labelId="category-name"
-          id="category-name-id"
-          label="Category Name"
+          fullWidth
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          name="categoryId"
+          label="Category"
+          value={formik.values.categoryId}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
         >
-          <MenuItem value={10}>Ten</MenuItem>
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+
+          {categories.map((category: CategoryDto) => (
+            <MenuItem key={category.categoryId} value={category.categoryId}>
+              {category.label}
+            </MenuItem>
+          ))}
         </Select>
+        <FormHelperText>
+          {formik.touched.categoryId && formik.errors.categoryId}
+        </FormHelperText>
       </FormControl>
+
       <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
         <TextField
-          label="Sub Category Name"
-          id="subcategory-name"
+          label="Subcategory Name"
+          name="subCategoryName"
           variant="standard"
+          value={formik.values.subCategoryName}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={
+            formik.touched.subCategoryName &&
+            Boolean(formik.errors.subCategoryName)
+          }
+          helperText={
+            formik.touched.subCategoryName && formik.errors.subCategoryName 
+          }
         />
       </FormControl>
 
       <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
         <TextField
           label="Description"
-          id="subcategory-description"
           variant="standard"
+          name="description"
+          rows={3}
+          multiline
+          value={formik.values.description}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={
+            formik.touched.description && Boolean(formik.errors.description)
+          }
+          helperText={formik.touched.description && formik.errors.description}
         />
       </FormControl>
 
@@ -92,10 +139,7 @@ const CreateSubCategoryForm = () => {
           size="small"
           variant="outlined"
           color="secondary"
-          onClick={() => {
-            // Handle cancel logic here
-            console.log("Cancelled");
-          }}
+          onClick={() => closeDrawer()}
         >
           Cancel
         </Button>

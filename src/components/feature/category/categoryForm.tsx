@@ -4,11 +4,29 @@ import { z } from "zod";
 
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { Box, FormControl } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
+import {  TypeDto } from "@/dto/ClassificationDto";
 
-const categoryFormValidate = (values: any) => {
+
+
+type CategoryFormValues = {  
+  typeId: string;
+  categoryName: string;
+  categoryDescription: string;
+};
+
+
+const categoryFormValidate = (values: CategoryFormValues) => {
   console.log("Category Form: ", values);
   const validateCategoryForm = z.object({
+    typeId: z.string().min(1, "Type is required"),
     categoryName: z.string().min(1, "Category is required"),
     categoryDescription: z.string().min(1, "Description is required"),
   });
@@ -26,13 +44,16 @@ const CreateCategoryForm = ({
   closeCategory,
   saveCategory,
   fetchCategory,
+  types,
 }: {
   closeCategory: any;
   saveCategory: any;
   fetchCategory: any;
+  types: TypeDto[];
 }) => {
   const formik = useFormik({
     initialValues: {
+      typeId: "",
       categoryName: "",
       categoryDescription: "",
     },
@@ -57,6 +78,38 @@ const CreateCategoryForm = ({
 
   return (
     <form onSubmit={formik.handleSubmit}>
+      <FormControl
+        variant="standard"
+        fullWidth
+        sx={{ mb: 2 }}
+        error={formik.touched.typeId && Boolean(formik.errors.typeId)}
+      >
+        <InputLabel id="demo-simple-select-standard-label">Type</InputLabel>
+        <Select
+          fullWidth
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          name="typeId"
+          label="Type"
+          value={formik.values.typeId}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+
+          {types.map((type: TypeDto) => (
+            <MenuItem key={type.typeId} value={type.typeId}>
+              {type.typeName}
+            </MenuItem>
+          ))}
+        </Select>
+        <FormHelperText>
+          {formik.touched.typeId && formik.errors.typeId}
+        </FormHelperText>
+      </FormControl>
+
       <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
         <TextField
           label="Category Name"
@@ -77,6 +130,8 @@ const CreateCategoryForm = ({
           label="Description"
           variant="standard"
           name="categoryDescription"
+          rows={3}
+          multiline
           value={formik.values.categoryDescription}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
