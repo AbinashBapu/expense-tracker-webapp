@@ -37,7 +37,12 @@ export default function FinancePage() {
 
   if (isLoadingParties || isLoadingCategory) return <p>Loading...</p>;
   if (partiesError || categoryError)
-    return <p>Error: {(partiesError as Error).message}</p>;
+    return (
+      <p>
+        Error: {(partiesError as Error)?.message}{" "}
+        {(categoryError as Error)?.message}
+      </p>
+    );
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -56,7 +61,13 @@ export default function FinancePage() {
       <ActivityTransactions />
 
       <Drawer open={open} onClose={toggleDrawer(false)} anchor="right">
-        <TransactionForm parties={partiesData} categories={categoryData} />
+        <TransactionForm
+          parties={partiesData}
+          categories={categoryData}
+          closeDrawer={() => {
+            toggleDrawer(false);
+          }}
+        />
       </Drawer>
     </Box>
   );

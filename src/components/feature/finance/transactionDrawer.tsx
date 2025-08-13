@@ -1,4 +1,4 @@
-import { CategoryDto } from "@/dto/ClassificationDto";
+import { CategoryDto, SubCategoryDto } from "@/dto/ClassificationDto";
 import { TransactionPartyInfo } from "@/dto/Party";
 import { useCategory } from "@/hooks/useCategory";
 import { useFinance } from "@/hooks/useFinance";
@@ -16,54 +16,77 @@ import {
   Divider,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
+import { useFormik } from "formik";
+import { useState } from "react";
+import z from "zod";
+
+type TransactionFormValues = {
+  categoryId: string;
+  subCategoryId: string;
+  incurredById: TransactionPartyInfo | null;
+  incurredForIds: Array<TransactionPartyInfo>;
+  transactionType: string;
+  amount: number;
+  description: string;
+};
 
 export default function TransactionForm({
+  closeDrawer,
   parties,
   categories,
 }: {
+  closeDrawer: any;
   parties: TransactionPartyInfo[];
   categories: CategoryDto[];
 }) {
-  const top100Films = [
-    { title: "City of God", year: 2002 },
-    { title: "Se7en", year: 1995 },
-    { title: "The Silence of the Lambs", year: 1991 },
-    { title: "It's a Wonderful Life", year: 1946 },
-    { title: "Life Is Beautiful", year: 1997 },
-    { title: "The Usual Suspects", year: 1995 },
-    { title: "Léon: The Professional", year: 1994 },
-    { title: "Spirited Away", year: 2001 },
-    { title: "Saving Private Ryan", year: 1998 },
-    { title: "Once Upon a Time in the West", year: 1968 },
-    { title: "American History X", year: 1998 },
-    { title: "Interstellar", year: 2014 },
-    { title: "Casablanca", year: 1942 },
-    { title: "City Lights", year: 1931 },
-    { title: "Psycho", year: 1960 },
-    { title: "The Green Mile", year: 1999 },
-    { title: "The Intouchables", year: 2011 },
-    { title: "Modern Times", year: 1936 },
-    { title: "Raiders of the Lost Ark", year: 1981 },
-    { title: "Rear Window", year: 1954 },
-    { title: "The Pianist", year: 2002 },
-    { title: "The Departed", year: 2006 },
-    { title: "Terminator 2: Judgment Day", year: 1991 },
-    { title: "Back to the Future", year: 1985 },
-    { title: "Whiplash", year: 2014 },
-    { title: "Gladiator", year: 2000 },
-    { title: "Memento", year: 2000 },
-    { title: "The Prestige", year: 2006 },
-    { title: "The Lion King", year: 1994 },
-    { title: "Apocalypse Now", year: 1979 },
-  ];
+  const [subCategories, setSubCategories] = useState<SubCategoryDto[]>([]);
+
+  const formik = useFormik<TransactionFormValues>({
+    initialValues: {
+      categoryId: "",
+      subCategoryId: "",
+      incurredById: null,
+      transactionType: "",
+      incurredForIds: [],
+      amount: 0,
+      description: "",
+    },
+    validate: transactionFormValidate,
+    onSubmit: (values: any) => {
+      console.log(values);
+    },
+  });
+
+  const handleCategoryChange = (
+    event: React.ChangeEvent<{ value: string; name: string }>
+  ) => {
+    const categoryId = event.target.value as string;
+
+    formik.setFieldValue("categoryId", categoryId);
+    formik.setFieldTouched("categoryId", true);
+
+    // Filter the selected category and get subcategories
+    const selectedCategory = categories.find(
+      (cat) => cat.categoryId === categoryId
+    );
+    setSubCategories(selectedCategory?.subCategoryInfos ?? []);
+
+    // Reset subcategory when category changes
+    formik.setFieldValue("subCategoryId", "");
+  };
 
   return (
     <Box sx={{ width: 400, p: 2 }} role="presentation">
       <Typography variant="h6" sx={{ mb: 2 }}>
         Log Transactions
       </Typography>
-      <form>
-        <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
+      <form onSubmit={formik.handleSubmit}>
+        <FormControl
+          variant="standard"
+          fullWidth
+          sx={{ mb: 2 }}
+          error={formik.touched.categoryId && Boolean(formik.errors.categoryId)}
+        >
           <InputLabel id="demo-simple-select-standard-label">
             Category
           </InputLabel>
@@ -71,74 +94,125 @@ export default function TransactionForm({
             fullWidth
             labelId="demo-simple-select-standard-label"
             id="demo-simple-select-standard"
-            label="Age"
+            name="categoryId"
+            label="Category"
+            value={formik.values.categoryId}
+            onChange={handleCategoryChange}
+            onBlur={formik.handleBlur}
           >
             <MenuItem value="">
               <em>None</em>
             </MenuItem>
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+
+            {categories.map((category: CategoryDto) => (
+              <MenuItem key={category.categoryId} value={category.categoryId}>
+                {category.label}
+              </MenuItem>
+            ))}
           </Select>
+          <FormHelperText>
+            {formik.touched.categoryId && formik.errors.categoryId}
+          </FormHelperText>
         </FormControl>
 
-        <FormControl variant="standard" fullWidth sx={{ mb: 1 }}>
-          <InputLabel id="demo-simple-select-standard-label">
-            Sub Category
-          </InputLabel>
+        <FormControl
+          variant="standard"
+          fullWidth
+          sx={{ mb: 1 }}
+          error={
+            formik.touched.subCategoryId && Boolean(formik.errors.subCategoryId)
+          }
+        >
+          <InputLabel id="subcategory-select-label">Sub Category</InputLabel>
           <Select
             fullWidth
-            labelId="demo-simple-select-standard-label"
-            id="demo-simple-select-standard"
-            label="Age"
+            labelId="subcategory-select-label"
+            id="subcategory-select"
+            name="subCategoryId"
+            value={formik.values.subCategoryId}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
           >
             <MenuItem value="">
               <em>None</em>
             </MenuItem>
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+            {subCategories.map((sub) => (
+              <MenuItem key={sub.pkSubCategoryId} value={sub.pkSubCategoryId}>
+                {sub.label}
+              </MenuItem>
+            ))}
           </Select>
+          <FormHelperText>
+            {formik.touched.subCategoryId && formik.errors.subCategoryId}
+          </FormHelperText>
         </FormControl>
 
-        <FormControl variant="standard" fullWidth sx={{ mb: 1 }}>
+        <FormControl
+          variant="standard"
+          fullWidth
+          sx={{ mb: 1 }}
+          error={
+            formik.touched.incurredById && Boolean(formik.errors.incurredById)
+          }
+        >
           <Autocomplete
-            multiple
-            id="size-small-standard-multi"
+            id="incurred-for-autocomplete"
             size="small"
-            options={top100Films}
-            getOptionLabel={(option) => option.title}
-            defaultValue={[top100Films[13]]}
+            options={parties}
+            getOptionLabel={(option) => option.name}
+            value={formik.values.incurredById}
+            onChange={(_, value: TransactionPartyInfo | null) => {
+              formik.setFieldValue("incurredById", value);
+            }}
+            onBlur={() => formik.setFieldTouched("incurredById", true)}
             renderInput={(params) => (
               <TextField
                 {...params}
                 variant="standard"
-                label="Incured By"
-                placeholder="Favorites"
+                label="Incurred By"
+                placeholder="Select Party"
               />
             )}
           />
-          <FormHelperText>Who spents</FormHelperText>
+          <FormHelperText>
+            {formik.touched.incurredById && formik.errors.incurredForIds}
+          </FormHelperText>
         </FormControl>
-        <FormControl variant="standard" fullWidth sx={{ mb: 1 }}>
+
+        <FormControl
+          variant="standard"
+          fullWidth
+          sx={{ mb: 1 }}
+          error={
+            formik.touched.incurredForIds &&
+            Boolean(formik.errors.incurredForIds)
+          }
+        >
           <Autocomplete
             multiple
-            id="size-small-standard-multi"
+            id="incurred-for-autocomplete"
             size="small"
-            options={top100Films}
-            getOptionLabel={(option) => option.title}
-            defaultValue={[top100Films[13]]}
+            options={parties}
+            getOptionLabel={(option) => option.name}
+            value={formik.values.incurredForIds}
+            onChange={(_, value: Array<TransactionPartyInfo>) =>
+              formik.setFieldValue("incurredForIds", value)
+            }
+            onBlur={() => formik.setFieldTouched("incurredForIds", true)}
             renderInput={(params) => (
               <TextField
                 {...params}
                 variant="standard"
-                label="Incured For"
-                placeholder="Favorites"
+                label="Incurred For"
+                placeholder="Select parties for whom spents"
               />
             )}
           />
-          <FormHelperText>Who get benifits</FormHelperText>
+          <FormHelperText>
+            {formik.touched.incurredForIds && formik.errors.incurredForIds}
+          </FormHelperText>
         </FormControl>
+
         <FormControl variant="standard" fullWidth sx={{ mb: 1 }}>
           <InputLabel id="demo-simple-select-standard-label">
             Transaction type
@@ -166,18 +240,40 @@ export default function TransactionForm({
           type="number"
           fullWidth
         />
-        <TextField
-          sx={{ mt: 1 }}
-          id="standard-basic"
-          label="Detail Description"
-          variant="standard"
-          multiline
-          rows={4}
-          fullWidth
-        />
-        <Box sx={{ mt: 3 }}>
-          <Button fullWidth variant="outlined">
-            Save/Update
+        <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
+          <TextField
+            label="Description"
+            name="description"
+            variant="standard"
+            value={formik.values.description}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.description && Boolean(formik.errors.description)
+            }
+            helperText={formik.touched.description && formik.errors.description}
+          />
+        </FormControl>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+          <Button
+            fullWidth
+            size="small"
+            variant="contained"
+            color="primary"
+            type="submit"
+            sx={{ mr: 1 }}
+          >
+            Save
+          </Button>
+          <Button
+            fullWidth
+            size="small"
+            variant="outlined"
+            color="secondary"
+            onClick={closeDrawer}
+            sx={{ ml: 1 }}
+          >
+            Cancel
           </Button>
         </Box>
       </form>
@@ -185,3 +281,49 @@ export default function TransactionForm({
     </Box>
   );
 }
+
+const transactionFormValidate = (values: any) => {
+  console.log("Category Form: ", values);
+  const validateTransactionForm = z.object({
+    categoryId: z.string().min(1, "Category is required"),
+    subCategoryId: z.string().min(1, "Sub is required"),
+    incurredById: z.custom(
+      (val) => {
+        if (
+          !val ||
+          typeof val !== "object" ||
+          !("transactionPartyId" in val) ||
+          !("name" in val) ||
+          !("relationType" in val) ||
+          typeof (val as any).transactionPartyId !== "string" ||
+          !(val as any).transactionPartyId.trim()
+        ) {
+          return false;
+        }
+        return true;
+      },
+      {
+        message: "Incurred by is required",
+      }
+    ),
+
+    incurredForIds: z
+      .array(
+        z.object({
+          transactionPartyId: z.string(),
+          name: z.string(),
+          relationType: z.string(),
+          active: z.boolean(),
+        })
+      )
+      .min(1, "Incurred for is required"),
+  });
+  try {
+    validateTransactionForm.parse(values);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.log("Error: " + JSON.stringify(error.formErrors.fieldErrors));
+      return error.formErrors.fieldErrors;
+    }
+  }
+};

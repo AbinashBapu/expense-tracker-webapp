@@ -25,4 +25,4 @@ interface SubCategoryDto {
   deleted: boolean;
 }
 
-export { CategoryDto, TypeDto, SubCategoryDto };
+export type { CategoryDto, TypeDto, SubCategoryDto };
