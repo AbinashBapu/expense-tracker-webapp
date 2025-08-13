@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import z from "zod";
 
 type TransactionFormValues = {
@@ -34,28 +34,43 @@ export default function TransactionForm({
   closeDrawer,
   parties,
   categories,
+  initialData,
 }: {
   closeDrawer: any;
   parties: TransactionPartyInfo[];
   categories: CategoryDto[];
+  initialData?: any;
 }) {
   const [subCategories, setSubCategories] = useState<SubCategoryDto[]>([]);
 
   const formik = useFormik<TransactionFormValues>({
     initialValues: {
-      categoryId: "",
-      subCategoryId: "",
-      incurredById: null,
-      incurredForIds: [],
-      transactionType: "",
-      amount: "",
-      description: "",
+      categoryId: initialData?.categoryId || "",
+      subCategoryId: initialData?.subCategoryId || "",
+      incurredById: parties.find((p) => p.name === initialData?.col6) || null,
+      incurredForIds: initialData
+        ? parties.filter((p) => initialData.col5?.split(",").includes(p.name))
+        : [],
+      transactionType: initialData?.col3 || "",
+      amount: initialData?.col2 || "",
+      description: initialData?.col7 || "",
     },
+    enableReinitialize: true, // <-- this is key
     validate: transactionFormValidate,
-    onSubmit: (values: any) => {
-      console.log(values);
+    onSubmit: (values) => {
+      console.log("Form submitted: ", values);
+      closeDrawer();
     },
   });
+
+  useEffect(() => {
+    if (formik.values.categoryId) {
+      const selectedCategory = categories.find(
+        (cat) => cat.categoryId === formik.values.categoryId
+      );
+      setSubCategories(selectedCategory?.subCategoryInfos ?? []);
+    }
+  }, [formik.values.categoryId, categories]);
 
   const handleCategoryChange = (
     event: React.ChangeEvent<{ value: string; name: string }>
@@ -212,7 +227,7 @@ export default function TransactionForm({
           )}
         />
       </FormControl>
-      
+
       <FormControl
         variant="standard"
         fullWidth
@@ -261,7 +276,7 @@ export default function TransactionForm({
           name="description"
           variant="standard"
           multiline
-          minRows={3} 
+          minRows={3}
           value={formik.values.description}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}

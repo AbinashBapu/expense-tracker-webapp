@@ -17,39 +17,55 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-export default function ActivityTransactions() {
+export default function ActivityTransactions({
+  onEdit,
+  onView,
+}: {
+  onEdit: (transaction: any) => void;
+  onView: (transaction: any) => void;
+}) {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const rows: GridRowsProp = [
     {
       id: 1,
+      categoryId: "cat1",
+      subCategoryId: "sub1",
       col1: "Salary",
-      col2: "Rs. 200.00",
+      col2: "200.00",
       col3: "Cr",
-      col4: "20-Jan-2025",
+      col4: "2025-01-20",
       col5: "Me",
       col6: "BIPROS",
-      col7: "Salary credited for month of January",
+      col7: "Salary credited for January",
     },
     {
       id: 2,
+      categoryId: "cat2",
+      subCategoryId: "sub2",
       col1: "Grocery",
-      col2: "Rs. 10.00",
+      col2: "10.00",
       col3: "Dr",
-      col4: "20-Jan-2025",
+      col4: "2025-01-20",
       col5: "Baba",
       col6: "Me",
       col7: "Bought grocery from Rasulgarh",
     },
   ];
 
-  const handleView = (id: number) => {
-    console.log("View transaction:", id);
+  const handleViewClick = (id: number) => {
+    const transaction = rows.find((row) => row.id === id);
+    if (transaction) {
+      onView(transaction);
+    }
   };
 
-  const handleEdit = (id: number) => {
-    console.log("Edit transaction:", id);
+  const handleEditClick = (id: number) => {
+    const transaction = rows.find((row) => row.id === id);
+    if (transaction) {
+      onEdit(transaction);
+    }
   };
 
   const handleDeleteClick = (id: number) => {
@@ -59,9 +75,9 @@ export default function ActivityTransactions() {
 
   const handleDeleteConfirm = () => {
     console.log("Deleting transaction:", selectedId);
+    // 🔹 Here you can call your delete API
     setOpenDeleteDialog(false);
     setSelectedId(null);
-    // 🔹 Here you would actually delete from API or state
   };
 
   const handleDeleteCancel = () => {
@@ -88,14 +104,14 @@ export default function ActivityTransactions() {
           <IconButton
             color="primary"
             size="small"
-            onClick={() => handleView(params.row.id)}
+            onClick={() => handleViewClick(params.row.id)}
           >
             <VisibilityIcon fontSize="small" />
           </IconButton>
           <IconButton
             color="secondary"
             size="small"
-            onClick={() => handleEdit(params.row.id)}
+            onClick={() => handleEditClick(params.row.id)}
           >
             <EditIcon fontSize="small" />
           </IconButton>
@@ -142,7 +158,11 @@ export default function ActivityTransactions() {
           <Button onClick={handleDeleteCancel} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleDeleteConfirm} color="error" variant="contained">
+          <Button
+            onClick={handleDeleteConfirm}
+            color="error"
+            variant="contained"
+          >
             Delete
           </Button>
         </DialogActions>
