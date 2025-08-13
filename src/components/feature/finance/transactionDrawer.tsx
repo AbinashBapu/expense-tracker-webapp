@@ -14,11 +14,17 @@ import {
   FormHelperText,
   Button,
   Divider,
+  SelectChangeEvent,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import z from "zod";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs/AdapterDayjs";
+import dayjs, { Dayjs } from "dayjs";
+import { useSnackbar } from "@/provider/SnackbarContext";
 
 type TransactionFormValues = {
   categoryId: string;
@@ -28,6 +34,7 @@ type TransactionFormValues = {
   transactionType: string;
   amount: string | number;
   description: string;
+  transactionDate: Dayjs | null;
 };
 
 export default function TransactionForm({
@@ -41,25 +48,52 @@ export default function TransactionForm({
   categories: CategoryDto[];
   initialData?: any;
 }) {
+  const { saveTransaction } = useFinance();
+  const { showSnackbar } = useSnackbar();
   const [subCategories, setSubCategories] = useState<SubCategoryDto[]>([]);
 
   const formik = useFormik<TransactionFormValues>({
     initialValues: {
       categoryId: initialData?.categoryId || "",
       subCategoryId: initialData?.subCategoryId || "",
-      incurredById: parties.find((p) => p.name === initialData?.col6) || null,
+      incurredById:
+        parties.find((p) => p.name === initialData?.incurredBy) || null,
       incurredForIds: initialData
-        ? parties.filter((p) => initialData.col5?.split(",").includes(p.name))
+        ? parties.filter((p) =>
+            initialData.incurredFor?.split(",").includes(p.name)
+          )
         : [],
-      transactionType: initialData?.col3 || "",
-      amount: initialData?.col2 || "",
-      description: initialData?.col7 || "",
+      transactionType: initialData?.transactionType || "",
+      amount: initialData?.amount || "",
+      description: initialData?.description || "",
+      transactionDate: initialData?.spentOn || null,
     },
     enableReinitialize: true, // <-- this is key
     validate: transactionFormValidate,
     onSubmit: (values) => {
       console.log("Form submitted: ", values);
-      closeDrawer();
+      // closeDrawer();
+
+      let payload = {
+        amount: values.amount,
+        categoryId: values.categoryId,
+        description: values.description,
+        incurredBy: values.incurredById?.transactionPartyId,
+        incurredFor: values.incurredForIds.map((p) => p.transactionPartyId),
+        spentOn: dayjs(values.transactionDate).toISOString(),
+        subCategoryId: values.subCategoryId,
+        type: values.transactionType,
+      };
+
+      saveTransaction(payload)
+        .then((response: any) => {
+          console.log("Transaction Saved: ", response);
+          showSnackbar("Transaction saved successfully", "success");
+          closeDrawer();
+        })
+        .catch((error: any) => {
+          console.log("Some error occureed");
+        });
     },
   });
 
@@ -72,9 +106,7 @@ export default function TransactionForm({
     }
   }, [formik.values.categoryId, categories]);
 
-  const handleCategoryChange = (
-    event: React.ChangeEvent<{ value: string; name: string }>
-  ) => {
+  const handleCategoryChange = (event: SelectChangeEvent<string | unknown>) => {
     const categoryId = event.target.value as string;
 
     formik.setFieldValue("categoryId", categoryId);
@@ -106,7 +138,7 @@ export default function TransactionForm({
           name="categoryId"
           label="Category"
           value={formik.values.categoryId}
-          onChange={(event) => handleCategoryChange}
+          onChange={handleCategoryChange}
           onBlur={formik.handleBlur}
         >
           <MenuItem value="">
@@ -237,7 +269,7 @@ export default function TransactionForm({
           Boolean(formik.errors.transactionType)
         }
       >
-        <InputLabel id="relation-label">Relation</InputLabel>
+        <InputLabel id="relation-label">Transaction Type</InputLabel>
         <Select
           labelId="transaction-type-label"
           name="transactionType"
@@ -268,6 +300,32 @@ export default function TransactionForm({
           error={formik.touched.amount && Boolean(formik.errors.amount)}
           helperText={formik.touched.amount && formik.errors.amount}
         />
+      </FormControl>
+
+      <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Transaction Date"
+            value={formik.values.transactionDate}
+            onChange={(value) => {
+              formik.setFieldValue("transactionDate", value);
+            }}
+            maxDate={dayjs()}
+            format="DD-MM-YYYY"
+            slotProps={{
+              textField: {
+                variant: "standard",
+                onBlur: () => formik.setFieldTouched("transactionDate", true),
+                error:
+                  formik.touched.transactionDate &&
+                  Boolean(formik.errors.transactionDate),
+                helperText:
+                  formik.touched.transactionDate &&
+                  formik.errors.transactionDate,
+              },
+            }}
+          />
+        </LocalizationProvider>
       </FormControl>
 
       <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
@@ -353,6 +411,10 @@ const transactionFormValidate = (values: any) => {
       z.string().min(1, "Amount is required"),
     ]),
     description: z.string().min(1, "Description is required"),
+
+    transactionDate: z.any().refine((val) => val != null && val !== "", {
+      message: "Transaction date is required",
+    }),
   });
   try {
     validateTransactionForm.parse(values);

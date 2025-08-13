@@ -15,10 +15,10 @@ const useCategory = () => {
     }
   };
 
-    const fetchTypes = async () => {
+  const fetchTypes = async () => {
     try {
       const categoryData = await get(
-        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_CLASSIFFICATION_SERVICE}/category`
+        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_CLASSIFFICATION_SERVICE}/type`
       );
       return categoryData.data;
     } catch (error) {
@@ -26,7 +26,6 @@ const useCategory = () => {
       return [];
     }
   };
-
 
   const saveCategory = async (data: any) => {
     try {
@@ -40,7 +39,7 @@ const useCategory = () => {
     }
   };
 
-  return { fetchCategoryData,fetchTypes,saveCategory };
+  return { fetchCategoryData, fetchTypes, saveCategory };
 };
 
 export { useCategory };

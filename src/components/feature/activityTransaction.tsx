@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -16,6 +16,20 @@ import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useFinance } from "@/hooks/useFinance";
+import { useQuery } from "@tanstack/react-query";
+import { DateUtils } from "@/utils/dateUtil";
+
+type TransactionRow = {
+  transactionId: string;
+  categoryName: string;
+  incurredBy: string;
+  incurredFor: string[];
+  amount: number;
+  spentOn: string;
+  description: string;
+  transactionType: string;
+};
 
 export default function ActivityTransactions({
   onEdit,
@@ -24,35 +38,45 @@ export default function ActivityTransactions({
   onEdit: (transaction: any) => void;
   onView: (transaction: any) => void;
 }) {
+  const { fetchTransactions } = useFinance();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [row, setRow] = useState<TransactionRow>({} as TransactionRow);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [page, setPage] = useState(0);
+  const size = 10;
+  const filters = {};
+  const {
+    data: transactionData,
+    isLoading: isTransactionDataLoading,
+    error: transactionError,
+    isFetching,
+  } = useQuery({
+    queryKey: ["transactions", { page, size, filters }],
+    queryFn: () =>
+      fetchTransactions({
+        page,
+        size,
+        sortBy: "spentOn",
+        direction: "desc",
+        filters,
+      }),
+  });
+  if (isTransactionDataLoading) return <p>Loading...</p>;
+  if (transactionError)
+    return <p>Error: {(transactionError as Error)?.message} </p>;
 
-  const rows: GridRowsProp = [
-    {
-      id: 1,
-      categoryId: "cat1",
-      subCategoryId: "sub1",
-      col1: "Salary",
-      col2: "200.00",
-      col3: "Cr",
-      col4: "2025-01-20",
-      col5: "Me",
-      col6: "BIPROS",
-      col7: "Salary credited for January",
-    },
-    {
-      id: 2,
-      categoryId: "cat2",
-      subCategoryId: "sub2",
-      col1: "Grocery",
-      col2: "10.00",
-      col3: "Dr",
-      col4: "2025-01-20",
-      col5: "Baba",
-      col6: "Me",
-      col7: "Bought grocery from Rasulgarh",
-    },
-  ];
+  const rows: GridRowsProp =
+    transactionData?.content.map((transaction: any) => ({
+      id: transaction.transactionId,
+      transactionId: transaction.transactionId,
+      categoryName: transaction.category.label,
+      incurredBy: transaction.incurredBy.name,
+      incurredFor: transaction.incurredFor.map((p: any) => p.name).join(", "),
+      amount: transaction.amount,
+      spentOn: DateUtils.parseISODateToDDMMYYYY(transaction.spentOn),
+      description: transaction.description,
+      transactionType: transaction.transactionType,
+    })) || [];
 
   const handleViewClick = (id: number) => {
     const transaction = rows.find((row) => row.id === id);
@@ -86,13 +110,14 @@ export default function ActivityTransactions({
   };
 
   const columns: GridColDef[] = [
-    { field: "col1", headerName: "Category", flex: 1 },
-    { field: "col2", headerName: "Amount", flex: 1 },
-    { field: "col3", headerName: "Type", flex: 0.5 },
-    { field: "col5", headerName: "Incurred For", flex: 1 },
-    { field: "col6", headerName: "Incurred By", flex: 1 },
-    { field: "col4", headerName: "Date", flex: 1 },
-    { field: "col7", headerName: "Description", flex: 2 },
+    { field: "transactionId", headerName: "ID", flex: 1 },
+    { field: "categoryName", headerName: "Category", flex: 1 },
+    { field: "amount", headerName: "Amount", flex: 1 },
+    { field: "transactionType", headerName: "Type", flex: 0.5 },
+    { field: "incurredFor", headerName: "Incurred For", flex: 1 },
+    { field: "incurredBy", headerName: "Incurred By", flex: 1 },
+    { field: "spentOn", headerName: "Date", flex: 1 },
+    { field: "description", headerName: "Description", flex: 2 },
     {
       field: "actions",
       headerName: "Actions",
@@ -134,7 +159,7 @@ export default function ActivityTransactions({
           <Typography variant="h6" gutterBottom>
             Recent Transactions
           </Typography>
-          <div style={{ height: 300, width: "100%" }}>
+          <div style={{ width: "100%" }}>
             <DataGrid
               rows={rows}
               columns={columns}
@@ -170,3 +195,11 @@ export default function ActivityTransactions({
     </>
   );
 }
+
+type FetchTransactionsParams = {
+  page?: number;
+  size?: number;
+  sortBy?: string;
+  direction?: "asc" | "desc";
+  filters?: Record<string, any>; // define a more specific type if needed
+};

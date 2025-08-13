@@ -79,7 +79,12 @@ export default function FinancePage() {
       <ActivityTransactions onEdit={handleEdit} onView={handleView} />
 
       <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-        <Pagination count={11} defaultPage={6} siblingCount={0} />
+        {/* <Pagination count={11} defaultPage={6} siblingCount={0} /> */}
+        <Pagination
+          count={categoryData.totalPages}
+          variant="outlined"
+          color="primary"
+        />
       </Box>
 
       <Drawer open={open} onClose={toggleDrawer} anchor="right">
