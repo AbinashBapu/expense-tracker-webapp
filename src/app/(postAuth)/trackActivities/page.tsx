@@ -18,7 +18,7 @@ export default function FinancePage() {
   const [transactions, setTransactions] = useState<any>([]);
   const { fetchParties } = useFinance();
   const { fetchCategoryData } = useCategory();
-  const transactionRef = useRef();
+  const transactionRef: any = useRef();
 
   const {
     data: partiesData,
@@ -79,8 +79,13 @@ export default function FinancePage() {
   return (
     <Box>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-        <Button onClick={handleAddNew} variant="outlined">
-          Log Activity
+        <Button
+          onClick={handleAddNew}
+          variant="contained"
+          color="primary"
+          size="small"
+        >
+          + Add New Transaction
         </Button>
       </Box>
 

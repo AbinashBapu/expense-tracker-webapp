@@ -12,19 +12,18 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import {  TypeDto } from "@/dto/ClassificationDto";
+import { TypeDto } from "@/dto/ClassificationDto";
+import { useSnackbar } from "@/provider/SnackbarContext";
 
-
-
-type CategoryFormValues = {  
+type CategoryFormValues = {
   typeId: string;
   categoryName: string;
   categoryDescription: string;
 };
 
-
 const categoryFormValidate = (values: CategoryFormValues) => {
   console.log("Category Form: ", values);
+
   const validateCategoryForm = z.object({
     typeId: z.string().min(1, "Type is required"),
     categoryName: z.string().min(1, "Category is required"),
@@ -51,6 +50,8 @@ const CreateCategoryForm = ({
   fetchCategory: any;
   types: TypeDto[];
 }) => {
+  const { showSnackbar } = useSnackbar();
+
   const formik = useFormik({
     initialValues: {
       typeId: "",
@@ -60,6 +61,7 @@ const CreateCategoryForm = ({
     validate: categoryFormValidate,
     onSubmit: (values: any) => {
       let payload = {
+        typeId: values.typeId,
         label: values.categoryName,
         description: values.categoryDescription,
       };
@@ -69,6 +71,7 @@ const CreateCategoryForm = ({
           console.log("Category Saved: ", response);
           closeCategory();
           fetchCategory();
+          showSnackbar("Category saved successfully", "success");
         })
         .catch((error: any) => {
           console.log("Some error occureed");

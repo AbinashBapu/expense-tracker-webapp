@@ -66,7 +66,6 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
         direction: "desc",
         filters,
       }),
-    keepPreviousData: true, // optional: keeps UI smooth during fetching
   });
 
   useImperativeHandle(ref, () => ({
@@ -164,9 +163,6 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
     <>
       <Card variant="outlined" sx={{ mt: 2, p: 1 }}>
         <CardContent>
-          <Typography variant="h6" gutterBottom>
-            Recent Transactions
-          </Typography>
           <div style={{ width: "100%" }}>
             <DataGrid
               rows={rows}
@@ -176,6 +172,11 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
               loading={isFetching}
             />
           </div>
+          <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
+            <Typography variant="body2" color="text.secondary">
+              Total Transactions: {transactionData?.totalElements ?? 0}
+            </Typography>
+          </Box>
         </CardContent>
       </Card>
 

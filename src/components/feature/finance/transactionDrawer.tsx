@@ -65,7 +65,7 @@ export default function TransactionForm({
             initialData.incurredFor?.split(",").includes(p.name)
           )
         : [],
-      transactionType: initialData?.transactionType || "Cr",
+      transactionType: initialData?.transactionType || "Dr",
       amount: initialData?.amount || "",
       description: initialData?.description || "",
       transactionDate: initialData?.spentOn || null,
