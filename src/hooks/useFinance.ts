@@ -1,7 +1,7 @@
 import { useFetch } from "@/hooks/useFetch";
 
 const useFinance = () => {
-  const { get, post, put, del } = useFetch();
+  const { get, post, put, del, postWithQueryParams } = useFetch();
 
   const fetchParties = async () => {
     try {
@@ -41,9 +41,15 @@ const useFinance = () => {
 
   const fetchTransactions = async (data: any, config?: RequestInit) => {
     try {
-      const response = await post(
+      const response = await postWithQueryParams(
         `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/transactions/search`,
-        data,
+        data.filters,
+        {
+          page: data.page,
+          size: data.size,
+          sortBy: data.sortBy,
+          direction: data.direction,
+        },
         config
       );
       return response.data;

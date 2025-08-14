@@ -15,6 +15,7 @@ export default function FinancePage() {
   const [open, setOpen] = useState(false);
   const [openViewDrawer, setOpenViewDrawer] = useState(false);
   const [editData, setEditData] = useState<any>(null); // store transaction for edit
+  const [transactions, setTransactions] = useState<any>([]);
   const { fetchParties } = useFinance();
   const { fetchCategoryData } = useCategory();
 
@@ -77,15 +78,6 @@ export default function FinancePage() {
       </Box>
 
       <ActivityTransactions onEdit={handleEdit} onView={handleView} />
-
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-        {/* <Pagination count={11} defaultPage={6} siblingCount={0} /> */}
-        <Pagination
-          count={categoryData.totalPages}
-          variant="outlined"
-          color="primary"
-        />
-      </Box>
 
       <Drawer open={open} onClose={toggleDrawer} anchor="right">
         <Box sx={{ width: 400, p: 2 }}>

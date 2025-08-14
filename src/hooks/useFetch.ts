@@ -23,6 +23,27 @@ export const useFetch = () => {
     return response.json();
   };
 
+  const postWithQueryParams = async (
+    url: string,
+    data: any,
+    queryParams: any,
+    config?: RequestInit
+  ) => {
+    const queryParamString = Object.keys(queryParams)
+      .map((key) => `${key}=${queryParams[key]}`)
+      .join("&");
+    const response = await fetch(`${url}?${queryParamString}`, {
+      ...config,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer asdfasdf.asdfasd.asdfasdf`,
+      },
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  };
+
   const put = async (url: string, data: any, config?: RequestInit) => {
     const response = await fetch(url, {
       ...config,
@@ -49,5 +70,6 @@ export const useFetch = () => {
     post,
     put,
     del,
+    postWithQueryParams,
   };
 };

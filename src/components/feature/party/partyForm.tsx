@@ -105,6 +105,7 @@ const PartyForm = ({
           <MenuItem value="ExtendedFamily">Extended Family</MenuItem>
           <MenuItem value="Relative">Relative</MenuItem>
           <MenuItem value="Friend">Friend</MenuItem>
+          <MenuItem value="Employer">Employer</MenuItem>
           <MenuItem value="Unspecified">Unspecified</MenuItem>
         </Select>
         <FormHelperText>

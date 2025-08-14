@@ -11,6 +11,8 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  Pagination,
+  Box,
 } from "@mui/material";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -39,19 +41,21 @@ export default function ActivityTransactions({
   onView: (transaction: any) => void;
 }) {
   const { fetchTransactions } = useFinance();
+
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [row, setRow] = useState<TransactionRow>({} as TransactionRow);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+
   const [page, setPage] = useState(0);
   const size = 10;
   const filters = {};
+
   const {
     data: transactionData,
     isLoading: isTransactionDataLoading,
     error: transactionError,
     isFetching,
   } = useQuery({
-    queryKey: ["transactions", { page, size, filters }],
+    queryKey: ["transactions", page],
     queryFn: () =>
       fetchTransactions({
         page,
@@ -60,10 +64,12 @@ export default function ActivityTransactions({
         direction: "desc",
         filters,
       }),
+    keepPreviousData: true, // optional: keeps UI smooth during fetching
   });
+
   if (isTransactionDataLoading) return <p>Loading...</p>;
   if (transactionError)
-    return <p>Error: {(transactionError as Error)?.message} </p>;
+    return <p>Error: {(transactionError as Error)?.message}</p>;
 
   const rows: GridRowsProp =
     transactionData?.content.map((transaction: any) => ({
@@ -80,16 +86,12 @@ export default function ActivityTransactions({
 
   const handleViewClick = (id: number) => {
     const transaction = rows.find((row) => row.id === id);
-    if (transaction) {
-      onView(transaction);
-    }
+    if (transaction) onView(transaction);
   };
 
   const handleEditClick = (id: number) => {
     const transaction = rows.find((row) => row.id === id);
-    if (transaction) {
-      onEdit(transaction);
-    }
+    if (transaction) onEdit(transaction);
   };
 
   const handleDeleteClick = (id: number) => {
@@ -99,7 +101,7 @@ export default function ActivityTransactions({
 
   const handleDeleteConfirm = () => {
     console.log("Deleting transaction:", selectedId);
-    // 🔹 Here you can call your delete API
+    // TODO: Call delete API
     setOpenDeleteDialog(false);
     setSelectedId(null);
   };
@@ -165,10 +167,27 @@ export default function ActivityTransactions({
               columns={columns}
               disableRowSelectionOnClick
               hideFooter
+              loading={isFetching}
             />
           </div>
         </CardContent>
       </Card>
+
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+        <Stack spacing={2}>
+          <Pagination
+            page={page + 1}
+            count={transactionData?.totalPages ?? 1}
+            onChange={(e, value) => {
+              setPage(value - 1);
+            }}
+            showFirstButton
+            showLastButton
+            color="primary"
+            variant="outlined"
+          />
+        </Stack>
+      </Box>
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={openDeleteDialog} onClose={handleDeleteCancel}>
@@ -195,11 +214,3 @@ export default function ActivityTransactions({
     </>
   );
 }
-
-type FetchTransactionsParams = {
-  page?: number;
-  size?: number;
-  sortBy?: string;
-  direction?: "asc" | "desc";
-  filters?: Record<string, any>; // define a more specific type if needed
-};

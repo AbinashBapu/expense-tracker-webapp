@@ -39,7 +39,19 @@ const useCategory = () => {
     }
   };
 
-  return { fetchCategoryData, fetchTypes, saveCategory };
+  const saveSubcategory = async (data: any) => {
+    try {
+      const response = await post(
+        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_CLASSIFFICATION_SERVICE}/subCategory`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching category data:", error);
+    }
+  };
+
+  return { fetchCategoryData, fetchTypes, saveCategory, saveSubcategory };
 };
 
 export { useCategory };
