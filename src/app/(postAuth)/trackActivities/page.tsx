@@ -2,7 +2,7 @@
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import ActivityTransactions from "@/components/feature/activityTransaction";
 import TransactionForm from "@/components/feature/finance/transactionDrawer";
@@ -18,6 +18,7 @@ export default function FinancePage() {
   const [transactions, setTransactions] = useState<any>([]);
   const { fetchParties } = useFinance();
   const { fetchCategoryData } = useCategory();
+  const transactionRef = useRef();
 
   const {
     data: partiesData,
@@ -69,6 +70,12 @@ export default function FinancePage() {
     toggleViewDrawer();
   };
 
+  const refetchTransactionData = () => {
+    if (transactionRef.current) {
+      transactionRef.current?.refetchTransactions();
+    }
+  };
+
   return (
     <Box>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
@@ -77,7 +84,11 @@ export default function FinancePage() {
         </Button>
       </Box>
 
-      <ActivityTransactions onEdit={handleEdit} onView={handleView} />
+      <ActivityTransactions
+        onEdit={handleEdit}
+        onView={handleView}
+        ref={transactionRef}
+      />
 
       <Drawer open={open} onClose={toggleDrawer} anchor="right">
         <Box sx={{ width: 400, p: 2 }}>
@@ -89,6 +100,7 @@ export default function FinancePage() {
             categories={categoryData}
             closeDrawer={toggleDrawer}
             initialData={editData}
+            refetch={refetchTransactionData}
           />
         </Box>
       </Drawer>

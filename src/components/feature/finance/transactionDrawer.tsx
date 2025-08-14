@@ -42,11 +42,13 @@ export default function TransactionForm({
   parties,
   categories,
   initialData,
+  refetch,
 }: {
   closeDrawer: any;
   parties: TransactionPartyInfo[];
   categories: CategoryDto[];
   initialData?: any;
+  refetch: any;
 }) {
   const { saveTransaction } = useFinance();
   const { showSnackbar } = useSnackbar();
@@ -63,7 +65,7 @@ export default function TransactionForm({
             initialData.incurredFor?.split(",").includes(p.name)
           )
         : [],
-      transactionType: initialData?.transactionType || "",
+      transactionType: initialData?.transactionType || "Cr",
       amount: initialData?.amount || "",
       description: initialData?.description || "",
       transactionDate: initialData?.spentOn || null,
@@ -90,6 +92,7 @@ export default function TransactionForm({
           console.log("Transaction Saved: ", response);
           showSnackbar("Transaction saved successfully", "success");
           closeDrawer();
+          refetch();
         })
         .catch((error: any) => {
           console.log("Some error occureed");

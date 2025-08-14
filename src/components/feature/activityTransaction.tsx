@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import {
   Card,
   CardContent,
@@ -32,14 +32,15 @@ type TransactionRow = {
   description: string;
   transactionType: string;
 };
-
-export default function ActivityTransactions({
-  onEdit,
-  onView,
-}: {
+type Props = {
   onEdit: (transaction: any) => void;
   onView: (transaction: any) => void;
-}) {
+};
+
+const ActivityTransactions = forwardRef(function ActivityTransactions(
+  { onEdit, onView }: Props,
+  ref
+) {
   const { fetchTransactions } = useFinance();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -53,6 +54,7 @@ export default function ActivityTransactions({
     data: transactionData,
     isLoading: isTransactionDataLoading,
     error: transactionError,
+    refetch,
     isFetching,
   } = useQuery({
     queryKey: ["transactions", page],
@@ -67,6 +69,10 @@ export default function ActivityTransactions({
     keepPreviousData: true, // optional: keeps UI smooth during fetching
   });
 
+  useImperativeHandle(ref, () => ({
+    refetchTransactions: refetch,
+  }));
+
   if (isTransactionDataLoading) return <p>Loading...</p>;
   if (transactionError)
     return <p>Error: {(transactionError as Error)?.message}</p>;
@@ -74,12 +80,12 @@ export default function ActivityTransactions({
   const rows: GridRowsProp =
     transactionData?.content.map((transaction: any) => ({
       id: transaction.transactionId,
-      transactionId: transaction.transactionId,
       categoryName: transaction.category.label,
+      subCategoryName: transaction.subCategory.label,
       incurredBy: transaction.incurredBy.name,
       incurredFor: transaction.incurredFor.map((p: any) => p.name).join(", "),
       amount: transaction.amount,
-      spentOn: DateUtils.parseISODateToDDMMYYYY(transaction.spentOn),
+      spentOn: DateUtils.parseUTCDateToDDMMYYYY(transaction.spentOn),
       description: transaction.description,
       transactionType: transaction.transactionType,
     })) || [];
@@ -112,8 +118,8 @@ export default function ActivityTransactions({
   };
 
   const columns: GridColDef[] = [
-    { field: "transactionId", headerName: "ID", flex: 1 },
     { field: "categoryName", headerName: "Category", flex: 1 },
+    { field: "subCategoryName", headerName: "Subcategory", flex: 1 },
     { field: "amount", headerName: "Amount", flex: 1 },
     { field: "transactionType", headerName: "Type", flex: 0.5 },
     { field: "incurredFor", headerName: "Incurred For", flex: 1 },
@@ -213,4 +219,5 @@ export default function ActivityTransactions({
       </Dialog>
     </>
   );
-}
+});
+export default ActivityTransactions;

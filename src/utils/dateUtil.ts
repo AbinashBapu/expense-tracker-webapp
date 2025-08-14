@@ -8,4 +8,32 @@ export class DateUtils {
     const formattedDate = `${day}-${month}-${year}`;
     return formattedDate;
   }
+
+  static parseUTCDateToDDMMYYYY(utcDate: string): string {
+    // Convert to Date object (UTC)
+    const date = new Date(utcDate);
+
+    // Convert to local components
+    const day = date.getDate().toString().padStart(2, "0");
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+
+    // Format as DD-MMM-YYYY
+    const formattedDate = `${day}-${month}-${year}`;
+    return formattedDate;
+  }
 }
