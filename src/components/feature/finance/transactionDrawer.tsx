@@ -314,7 +314,7 @@ export default function TransactionForm({
               formik.setFieldValue("transactionDate", value);
             }}
             maxDate={dayjs()}
-            format="DD-MM-YYYY"
+            format="DD-MM-YYYY HH:mm"
             slotProps={{
               textField: {
                 variant: "standard",
@@ -428,3 +428,5 @@ const transactionFormValidate = (values: any) => {
     }
   }
 };
+
+// https://www.highcharts.com/demo/highcharts/combo

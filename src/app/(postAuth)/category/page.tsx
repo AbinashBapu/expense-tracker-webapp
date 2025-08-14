@@ -9,9 +9,10 @@ import {
   CardContent,
   Chip,
   Drawer,
+  Tooltip,
   Typography,
 } from "@mui/material";
-import {  useState } from "react";
+import { useState } from "react";
 import Grid from "@mui/material/Grid";
 import { useQuery } from "@tanstack/react-query";
 import { useCategory } from "@/hooks/useCategory";
@@ -94,12 +95,16 @@ export default function page() {
 
                   {category.subCategoryInfos.map(
                     (subCategory: SubCategoryDto) => (
-                      <Chip
-                        label={subCategory.label}
+                      <Tooltip
+                        title={subCategory.description}
                         key={subCategory.pkSubCategoryId}
-                        sx={{ mr: 1, mb: 1 }}
-                        variant="outlined"
-                      />
+                      >
+                        <Chip
+                          label={subCategory.label}
+                          sx={{ mr: 1, mb: 1 }}
+                          variant="outlined"
+                        />
+                      </Tooltip>
                     )
                   )}
                 </CardContent>
@@ -126,7 +131,10 @@ export default function page() {
           <Typography variant="h6" sx={{ mb: 2 }}>
             Add/Update Subcategory
           </Typography>
-          <CreateSubCategoryForm closeDrawer={toggleSubCategoryDrawer} categories={categoryData}/>
+          <CreateSubCategoryForm
+            closeDrawer={toggleSubCategoryDrawer}
+            categories={categoryData}
+          />
         </Box>
       </Drawer>
 
@@ -143,7 +151,7 @@ export default function page() {
             closeCategory={toggleCategoryDrawer}
             saveCategory={saveCategory}
             fetchCategory={refetch}
-            types={  types}
+            types={types}
           />
         </Box>
       </Drawer>
