@@ -2,6 +2,7 @@ import { CategoryDto, SubCategoryDto } from "@/dto/ClassificationDto";
 import { TransactionPartyInfo } from "@/dto/Party";
 import { useCategory } from "@/hooks/useCategory";
 import { useFinance } from "@/hooks/useFinance";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {
   Box,
   Typography,
@@ -22,7 +23,6 @@ import { useEffect, useState } from "react";
 import z from "zod";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { useSnackbar } from "@/provider/SnackbarContext";
 

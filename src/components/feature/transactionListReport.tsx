@@ -16,6 +16,8 @@ import {
   Tooltip,
 } from "@mui/material";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import { TransactionDto } from "@/dto/Finance";
+import dayjs from "dayjs";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -45,7 +47,11 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   ],
 }));
 
-export default function TransactionList() {
+export default function TransactionList({
+  transactionData,
+}: {
+  transactionData: any;
+}) {
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
@@ -72,8 +78,8 @@ export default function TransactionList() {
 
       <Divider />
       <Box>
-        {[1, 2, 3, 3, 4, 5].map((item) => (
-          <Card elevation={0} key={item}>
+        {transactionData?.content.map((transaction: any) => (
+          <Card elevation={0} key={transaction.transactionId}>
             <CardHeader
               avatar={
                 <IconButton
@@ -89,7 +95,7 @@ export default function TransactionList() {
                     sx={{ color: "text.secondary" }}
                     variant="subtitle1"
                   >
-                    Income (Saary)
+                    {transaction.category.label}
                   </Typography>
                   <Box
                     sx={{ display: "flex", justifyContent: "space-between" }}
@@ -98,11 +104,11 @@ export default function TransactionList() {
                       <Typography
                         variant="subtitle2"
                         sx={{
-                          color: item % 2 == 0 ? "#b02a37" : "#0d6efd",
+                          color: "#0d6efd",
                           fontWeight: "bold",
                         }}
                       >
-                        Rs. 40,000.00
+                        Rs. {transaction.amount}
                       </Typography>
                     </Box>
                     <Box>
@@ -110,7 +116,7 @@ export default function TransactionList() {
                         sx={{ color: "text.secondary" }}
                         variant="subtitle2"
                       >
-                        05-Feb-1992
+                        {dayjs(transaction.spentOn).format("DD-MM-YYYY")}
                       </Typography>
                     </Box>
                   </Box>
@@ -118,7 +124,7 @@ export default function TransactionList() {
                     variant="caption"
                     sx={{ color: "text.secondary" }}
                   >
-                    - Salary credited from BIPROS to self
+                    - {transaction.description}
                   </Typography>
                 </Box>
               }

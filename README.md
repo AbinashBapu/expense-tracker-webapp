@@ -39,3 +39,7 @@ Enterprise react app: (https://chatgpt.com/c/670f5bee-5ed8-800c-826f-7bb0116b196
 
 admin page(https://themesbrand.com/velzon/html/master/index.html)
 Other Admin page: (https://preview.themeforest.net/item/velzon-aspnet-core-admin-dashboard-template/full_screen_preview/36077495)
+
+https://kanakku.dreamstechnologies.com/react/template/customer/customer-dashboard
+
+https://kanakku.dreamstechnologies.com/react/template/admin-dashboard
