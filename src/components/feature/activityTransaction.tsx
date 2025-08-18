@@ -21,6 +21,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useFinance } from "@/hooks/useFinance";
 import { useQuery } from "@tanstack/react-query";
 import { DateUtils } from "@/utils/dateUtil";
+import dayjs from "dayjs";
 
 type TransactionRow = {
   transactionId: string;
@@ -35,12 +36,15 @@ type TransactionRow = {
 type Props = {
   onEdit: (transaction: any) => void;
   onView: (transaction: any) => void;
+  selectedDate: string | null;
 };
 
 const ActivityTransactions = forwardRef(function ActivityTransactions(
-  { onEdit, onView }: Props,
+  { selectedDate, onEdit, onView }: Props,
   ref
 ) {
+  console.log("ActivityTransactions: ", selectedDate);
+
   const { fetchTransactions } = useFinance();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -48,7 +52,6 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
 
   const [page, setPage] = useState(0);
   const size = 10;
-  const filters = {};
 
   const {
     data: transactionData,
@@ -64,7 +67,11 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
         size,
         sortBy: "spentOn",
         direction: "desc",
-        filters,
+        filters: {
+          fromDate:
+            selectedDate == null ? null : dayjs(selectedDate).toISOString(),
+          toDate: null,
+        },
       }),
   });
 

@@ -2,23 +2,40 @@
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import ActivityTransactions from "@/components/feature/activityTransaction";
 import TransactionForm from "@/components/feature/finance/transactionDrawer";
 import { useFinance } from "@/hooks/useFinance";
 import { useCategory } from "@/hooks/useCategory";
 import { useQuery } from "@tanstack/react-query";
-import { Typography, Pagination } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import SearchIcon from "@mui/icons-material/Search";
+import ClearIcon from "@mui/icons-material/Clear";
+import AddIcon from "@mui/icons-material/Add";
+import { FinanceSearchBox } from "@/components/feature/finance/financeSearchBox";
 
 export default function FinancePage() {
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [fetch, setFetch] = useState(false);
   const [open, setOpen] = useState(false);
   const [openViewDrawer, setOpenViewDrawer] = useState(false);
-  const [editData, setEditData] = useState<any>(null); // store transaction for edit
-  const [transactions, setTransactions] = useState<any>([]);
+  const [editData, setEditData] = useState<any>(null);
+  const transactionRef: any = useRef();
   const { fetchParties } = useFinance();
   const { fetchCategoryData } = useCategory();
-  const transactionRef: any = useRef();
+
+  useEffect(() => {
+    console.log("UseEffect: ", selectedDate, fetch);
+
+    if (fetch) {
+      refetchTransactionData();
+      setFetch(false);
+    }
+  }, [selectedDate, fetch]);
 
   const {
     data: partiesData,
@@ -47,49 +64,73 @@ export default function FinancePage() {
       </p>
     );
 
-  const toggleDrawer = () => setOpen((prev) => !prev);
+  const handleAddNew = () => {
+    setEditData(null);
+    setOpen(true);
+  };
 
+  const handleSearch = (date: string | null) => {
+    setSelectedDate(date);
+    setFetch(true);
+    // refetchTransactionData();
+  };
+
+  const handleEdit = (transaction: any) => {
+    // setEditData(transaction);
+    // setOpen(true);
+  };
+
+  const handleView = (transaction: any) => {
+    // setEditData(transaction);
+    // toggleViewDrawer();
+  };
+  const refetchTransactionData = () => {
+    if (transactionRef.current) {
+      transactionRef.current?.refetchTransactions();
+    }
+  };
+  // const handleSearch = () => {
+  //   setFetch(true);
+  //   // refetchTransactionData();
+  // };
+
+  // const handleAddNew = () => {
+  // setEditData(null);
+  // setOpen(true);
+  // };
+
+  // const handleEdit = (transaction: any) => {
+  // setEditData(transaction);
+  // setOpen(true);
+  // };
+
+  // const handleView = (transaction: any) => {
+  // setEditData(transaction);
+  // toggleViewDrawer();
+  // };
+
+  const resetSearch = () => {
+    setSelectedDate(null);
+    setFetch(true);
+  };
+
+  const toggleDrawer = () => setOpen((prev) => !prev);
   const toggleViewDrawer = () =>
     setOpenViewDrawer((prev) => {
       console.log("Toggling view drawer", prev);
       return !prev;
     });
 
-  const handleAddNew = () => {
-    setEditData(null);
-    setOpen(true);
-  };
-
-  const handleEdit = (transaction: any) => {
-    setEditData(transaction);
-    setOpen(true);
-  };
-
-  const handleView = (transaction: any) => {
-    setEditData(transaction);
-    toggleViewDrawer();
-  };
-
-  const refetchTransactionData = () => {
-    if (transactionRef.current) {
-      transactionRef.current?.refetchTransactions();
-    }
-  };
-
   return (
     <Box>
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-        <Button
-          onClick={handleAddNew}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          + Add New Transaction
-        </Button>
-      </Box>
+      <FinanceSearchBox
+        onSearch={handleSearch}
+        onClear={resetSearch}
+        onAdd={handleAddNew}
+      />
 
       <ActivityTransactions
+        selectedDate={selectedDate}
         onEdit={handleEdit}
         onView={handleView}
         ref={transactionRef}
