@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Skeleton, Typography } from "@mui/material";
 import { FC } from "react";
 import Grid from "@mui/material/Grid";
 
@@ -10,30 +10,26 @@ import SavingsIcon from "@mui/icons-material/Savings";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import ReportStatsCard from "./reportStatsCard";
 interface ReportStatsProps {
+  isSummaryLoading: boolean;
   incomeAmount: number;
   expenseAmount: number;
   savingsAmount: number;
-  metadata: {
-    categories: number;
-    subcategories: number;
-    types: number;
-    parties: number;
-  };
 }
 
 const ReportStats: FC<ReportStatsProps> = ({
+  isSummaryLoading,
   incomeAmount,
   expenseAmount,
   savingsAmount,
-  metadata,
 }) => {
   console.log("ReportStats page reloaded");
 
   return (
     <Box sx={{ p: 2 }}>
       <Grid container spacing={2}>
-        <Grid size={3}>
+        <Grid size={4}>
           <ReportStatsCard
+            isSummaryLoading={isSummaryLoading}
             amount={incomeAmount}
             title={"Total Income"}
             cardStyle={{
@@ -47,8 +43,9 @@ const ReportStats: FC<ReportStatsProps> = ({
 
         {/* Total Expense */}
 
-        <Grid size={3}>
+        <Grid size={4}>
           <ReportStatsCard
+            isSummaryLoading={isSummaryLoading}
             amount={expenseAmount}
             title={"Total Expense"}
             cardStyle={{
@@ -62,8 +59,9 @@ const ReportStats: FC<ReportStatsProps> = ({
 
         {/* Total Saving */}
 
-        <Grid size={3}>
+        <Grid size={4}>
           <ReportStatsCard
+            isSummaryLoading={isSummaryLoading}
             amount={savingsAmount}
             title={" Total Saving"}
             cardStyle={{
@@ -73,50 +71,6 @@ const ReportStats: FC<ReportStatsProps> = ({
               p: 2,
             }}
           />
-        </Grid>
-
-        {/* Records Summary */}
-
-        <Grid size={3}>
-          <Card sx={{ bgcolor: "#f3e5f5", boxShadow: 2, borderRadius: 2 }}>
-            <CardContent>
-              <Box
-                sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}
-              >
-                <AssessmentIcon color="secondary" fontSize="large" />
-
-                <Typography variant="subtitle2" color="text.secondary">
-                  Records Summary
-                </Typography>
-              </Box>
-
-              <Box
-                sx={{
-                  display: "flex",
-
-                  justifyContent: "space-between",
-
-                  mb: 0.5,
-                }}
-              >
-                <Typography variant="body2">
-                  Categories: {metadata.categories}
-                </Typography>
-
-                <Typography variant="body2">
-                  Subcategories: {metadata.subcategories}
-                </Typography>
-              </Box>
-
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Typography variant="body2">Types: {metadata.types}</Typography>
-
-                <Typography variant="body2">
-                  Parties: {metadata.parties}
-                </Typography>
-              </Box>
-            </CardContent>
-          </Card>
         </Grid>
       </Grid>
     </Box>

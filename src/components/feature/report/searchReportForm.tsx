@@ -1,112 +1,177 @@
 import { FormControl, TextField, MenuItem, Box, Button } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { type } from "os";
-import category from "../category";
-import { useState } from "react";
-import { Dayjs } from "dayjs";
+import { useEffect, useState } from "react";
+import dayjs, { Dayjs } from "dayjs";
+import { ReportFilter } from "@/dto/SearchParamDto";
 
-export default function SearchReportForm() {
-  const [startDate, setStartDate] = useState<Dayjs | null>(null);
-  const [endDate, setEndDate] = useState<Dayjs | null>(null);
-  const [category, setCategory] = useState("");
-  const [subcategory, setSubcategory] = useState("");
-  const [type, setType] = useState("");
-  const [dateRangePreset, setDateRangePreset] = useState("");
+const DATE_RANGE_PRESETS = [
+  { value: "currentWeek", label: "Current Week" },
+  { value: "currentMonth", label: "Current Month" },
+  { value: "currentYear", label: "Current Year" },
+  { value: "last7days", label: "Last 7 Days" },
+  { value: "last30days", label: "Last 30 Days" },
+  { value: "customDate", label: "Custom Date" },
+];
 
-  console.log("SearchReportForm page reloaded");
+interface SearchReportFormProps {
+  closeDrawer: any;
+  onSearch: (filter: ReportFilter) => void;
+  filter: ReportFilter;
+}
+
+export default function SearchReportForm({
+  closeDrawer,
+  onSearch,
+  filter,
+}: SearchReportFormProps) {
+  const [duration, setDuration] = useState<any>(filter.duration);
+  const [startDate, setStartDate] = useState<Dayjs | null>(
+    filter.startDate ? dayjs(filter.startDate) : null
+  );
+  const [endDate, setEndDate] = useState<Dayjs | null>(
+    filter.endDate ? dayjs(filter.endDate) : null
+  );
+
+  // useEffect(() => {
+  //   setDuration(filter.duration);
+  //   switch (filter.duration) {
+  //     case "currentWeek":
+  //       setStartDate(dayjs().startOf("week"));
+  //       setEndDate(dayjs().endOf("week"));
+  //       break;
+  //     case "currentMonth":
+  //       setStartDate(dayjs().startOf("month"));
+  //       setEndDate(dayjs().endOf("month"));
+  //       break;
+  //     case "currentYear":
+  //       setStartDate(dayjs().startOf("year"));
+  //       setEndDate(dayjs().endOf("year"));
+  //       break;
+  //     case "last7days":
+  //       setStartDate(dayjs().subtract(7, "day"));
+  //       setEndDate(dayjs());
+  //       break;
+  //     case "last30days":
+  //       setStartDate(dayjs().subtract(30, "day"));
+  //       setEndDate(dayjs());
+  //       break;
+  //     case "customDate":
+  //       setStartDate(filter.startDate ? dayjs(filter.startDate) : null);
+  //       setEndDate(filter.endDate ? dayjs(filter.endDate) : null);
+  //       break;
+  //     default:
+  //       setStartDate(dayjs().startOf("week"));
+  //       setEndDate(dayjs().endOf("week"));
+  //       break;
+  //   }
+  // }, [filter]);
+
+  const handleReset = () => {
+    setDuration("");
+    setStartDate(null);
+    setEndDate(null);
+  };
+
+  const handleSearch = () => {
+    const newFilter: ReportFilter = {
+      duration,
+      startDate: startDate ? startDate?.toISOString() : null,
+      endDate: endDate ? endDate?.toISOString() : null,
+    };
+    onSearch(newFilter);
+    closeDrawer();
+  };
+
+  const handleOnChangeDuration = (value: any) => {
+    setDuration(value);
+    switch (value) {
+      case "currentWeek":
+        setStartDate(dayjs().startOf("week"));
+        setEndDate(dayjs().endOf("week"));
+        break;
+      case "currentMonth":
+        setStartDate(dayjs().startOf("month"));
+        setEndDate(dayjs().endOf("month"));
+        break;
+      case "currentYear":
+        setStartDate(dayjs().startOf("year"));
+        setEndDate(dayjs().endOf("year"));
+        break;
+      case "last7days":
+        setStartDate(dayjs().subtract(7, "day"));
+        setEndDate(dayjs());
+        break;
+      case "last30days":
+        setStartDate(dayjs().subtract(30, "day"));
+        setEndDate(dayjs());
+        break;
+      case "customDate":
+        setStartDate(startDate ? dayjs(startDate) : null);
+        setEndDate(endDate ? dayjs(endDate) : null);
+        break;
+      default:
+        setStartDate(dayjs().startOf("week"));
+        setEndDate(dayjs().endOf("week"));
+        break;
+    }
+  };
 
   return (
     <>
       <FormControl fullWidth sx={{ mb: 2 }}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            label="Transaction From"
-            value={startDate}
-            onChange={(newValue) => setStartDate(newValue)}
-            slotProps={{
-              textField: {
-                size: "small", // Makes the input smaller
-                fullWidth: true,
-              },
-            }}
-          />
-        </LocalizationProvider>
-      </FormControl>
-
-      <FormControl fullWidth sx={{ mb: 2 }}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            label="Transaction To"
-            value={endDate}
-            onChange={(newValue) => setEndDate(newValue)}
-            slotProps={{
-              textField: {
-                size: "small",
-                fullWidth: true,
-              },
-            }}
-          />
-        </LocalizationProvider>
-      </FormControl>
-
-      <FormControl fullWidth sx={{ mb: 3 }}>
         <TextField
           select
-          label="Date Range Preset"
-          value={dateRangePreset}
-          onChange={(e) => setDateRangePreset(e.target.value)}
+          label="Duration"
+          value={duration}
+          onChange={(e) => handleOnChangeDuration(e.target.value)}
           size="small"
         >
-          <MenuItem value="week">Current Week</MenuItem>
-          <MenuItem value="month">Current Month</MenuItem>
-          <MenuItem value="year">Current Year</MenuItem>
-          <MenuItem value="year">Custom Date</MenuItem>
-        </TextField>
-      </FormControl>
-      <FormControl fullWidth sx={{ mb: 2 }}>
-        <TextField
-          select
-          label="Type"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          size="small"
-        >
-          <MenuItem value="credit">Credit</MenuItem>
-          <MenuItem value="debit">Debit</MenuItem>
-          <MenuItem value="refund">Refund</MenuItem>
+          {DATE_RANGE_PRESETS.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
         </TextField>
       </FormControl>
 
-      <FormControl fullWidth sx={{ mb: 2 }}>
-        <TextField
-          select
-          label="Category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          size="small"
-        >
-          <MenuItem value="finance">Finance</MenuItem>
-          <MenuItem value="marketing">Marketing</MenuItem>
-          <MenuItem value="sales">Sales</MenuItem>
-        </TextField>
-      </FormControl>
+      {duration === "customDate" && (
+        <>
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Transaction From"
+                value={startDate}
+                onChange={(newValue) => setStartDate(newValue)}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    fullWidth: true,
+                  },
+                }}
+              />
+            </LocalizationProvider>
+          </FormControl>
 
-      <FormControl fullWidth sx={{ mb: 2 }}>
-        <TextField
-          select
-          label="Subcategory"
-          value={subcategory}
-          onChange={(e) => setSubcategory(e.target.value)}
-          size="small"
-        >
-          <MenuItem value="budget">Budget</MenuItem>
-          <MenuItem value="expenses">Expenses</MenuItem>
-          <MenuItem value="income">Income</MenuItem>
-        </TextField>
-      </FormControl>
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Transaction To"
+                value={endDate}
+                onChange={(newValue) => setEndDate(newValue)}
+                minDate={startDate}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    fullWidth: true,
+                  },
+                }}
+              />
+            </LocalizationProvider>
+          </FormControl>
+        </>
+      )}
 
-      {/* Sticky Bottom Buttons */}
       <Box
         sx={{
           display: "flex",
@@ -114,10 +179,10 @@ export default function SearchReportForm() {
           gap: 2,
         }}
       >
-        <Button variant="outlined" fullWidth>
+        <Button variant="outlined" fullWidth onClick={handleReset}>
           Reset
         </Button>
-        <Button variant="contained" fullWidth>
+        <Button variant="contained" fullWidth onClick={handleSearch}>
           Search
         </Button>
       </Box>

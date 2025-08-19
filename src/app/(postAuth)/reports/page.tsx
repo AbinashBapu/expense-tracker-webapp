@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
   Card,
   CardContent,
   Drawer,
+  duration,
   FormControl,
   IconButton,
   MenuItem,
@@ -30,25 +31,91 @@ import SavingsIcon from "@mui/icons-material/Savings";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import SearchReportForm from "@/components/feature/report/searchReportForm";
 import ReportStats from "@/components/feature/report/reportStats";
+import { ReportFilter } from "@/dto/SearchParamDto";
+import { useReport } from "@/hooks/useReport";
+import { useQuery } from "@tanstack/react-query";
+import TransactionStepper from "@/components/feature/report/transactionStepper";
+import { useFinance } from "@/hooks/useFinance";
 
 export default function ReportPage() {
+  const [page, setPage] = useState(0);
+  const [filter, setFilter] = useState<ReportFilter>(() => {
+    console.log("Setting default filter");
+    const endDate = dayjs();
+    const startDate = endDate.subtract(30, "day");
+
+    return {
+      duration: "last30days",
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+    };
+  });
+  const [applySearch, setApplySearch] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [value, setValue] = useState(100);
+  const { fetchFinanceSummary } = useReport();
+  const { fetchTransactions } = useFinance();
+  useEffect(() => {
+    if (applySearch) {
+      summaryRefetch();
+      transactionRefetch();
+      setApplySearch(false);
+    }
+  }, [applySearch]);
 
-  // static card data
-  // Dummy data — replace with your dynamic values
-  const totalIncome = 12000;
-  const totalExpense = 7500;
-  const totalSaving = totalIncome - totalExpense;
-
-  const metadata = {
-    categories: 5,
-    subcategories: 12,
-    types: 3,
-    parties: 8,
-  };
+  const size = 10;
 
   console.log("Report page reloaded");
+
+  const handleSearch = (filterParam: ReportFilter) => {
+    setFilter((prev: ReportFilter) => {
+      return {
+        duration: filterParam.duration,
+        startDate: filterParam.startDate,
+        endDate: filterParam.endDate,
+      };
+    });
+    setApplySearch(true);
+  };
+
+  const {
+    data: summaryData,
+    isLoading: isSummaryLoading,
+    error: summaryError,
+    refetch: summaryRefetch,
+    isFetching: isSummaryFetching,
+  } = useQuery({
+    queryKey: ["financeSummary", filter],
+    queryFn: () =>
+      fetchFinanceSummary({
+        fromDate: filter.startDate,
+        toDate: filter.endDate,
+      }),
+  });
+
+  const {
+    data: transactionData,
+    isLoading: isTransactionDataLoading,
+    error: transactionError,
+    refetch: transactionRefetch,
+    isFetching: isTransactionFetching,
+  } = useQuery({
+    queryKey: ["transactions", filter, page],
+    queryFn: () =>
+      fetchTransactions({
+        page,
+        size,
+        sortBy: "spentOn",
+        direction: "desc",
+        filters: {
+          fromDate: filter.startDate,
+          toDate: filter.endDate,
+        },
+      }),
+  });
+
+  const handleOnClickNextOrPrev = (pageNumber: number) => {
+    setPage(pageNumber);
+  };
 
   return (
     <>
@@ -63,12 +130,22 @@ export default function ReportPage() {
         </Button>
       </Box>
 
-      <ReportStats
-        incomeAmount={totalIncome}
-        expenseAmount={totalExpense}
-        savingsAmount={totalSaving}
-        metadata={metadata}
-      />
+      <Grid container spacing={2} sx={{ mt: 2 }}>
+        <Grid size={8}>
+          <ReportStats
+            isSummaryLoading={isSummaryLoading}
+            incomeAmount={summaryData?.income || 0}
+            expenseAmount={summaryData?.expense || 0}
+            savingsAmount={summaryData?.saving || 0}
+          />
+        </Grid>
+        <Grid size={4}>
+          <TransactionStepper
+            transactionData={transactionData}
+            onClickBtn={handleOnClickNextOrPrev}
+          />
+        </Grid>
+      </Grid>
 
       <Drawer
         anchor="right"
@@ -88,7 +165,11 @@ export default function ReportPage() {
             <Typography variant="h6" gutterBottom>
               Filters
             </Typography>
-            <SearchReportForm />
+            <SearchReportForm
+              closeDrawer={() => setDrawerOpen(false)}
+              onSearch={handleSearch}
+              filter={filter}
+            />
           </Box>
         </Box>
       </Drawer>
