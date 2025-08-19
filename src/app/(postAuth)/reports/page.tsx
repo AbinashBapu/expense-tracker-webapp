@@ -36,6 +36,7 @@ import { useReport } from "@/hooks/useReport";
 import { useQuery } from "@tanstack/react-query";
 import TransactionStepper from "@/components/feature/report/transactionStepper";
 import { useFinance } from "@/hooks/useFinance";
+import SplineChart from "@/components/feature/splineChart";
 
 export default function ReportPage() {
   const [page, setPage] = useState(0);
@@ -52,7 +53,8 @@ export default function ReportPage() {
   });
   const [applySearch, setApplySearch] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const { fetchFinanceSummary } = useReport();
+  const { fetchFinanceSummary, fetchFinanceSummaryForSplineChart } =
+    useReport();
   const { fetchTransactions } = useFinance();
   useEffect(() => {
     if (applySearch) {
@@ -93,6 +95,21 @@ export default function ReportPage() {
   });
 
   const {
+    data: summaaryDataForSplineChart,
+    isLoading: isSummaryLoadingForSplineChart,
+    error: summaryErrorForSplineChart,
+    refetch: summaryRefetchForSplineChart,
+    isFetching: isSummaryFetchingForSplineChart,
+  } = useQuery({
+    queryKey: ["financeSummarySplineChart", filter],
+    queryFn: () =>
+      fetchFinanceSummaryForSplineChart({
+        fromDate: filter.startDate,
+        toDate: filter.endDate,
+      }),
+  });
+
+  const {
     data: transactionData,
     isLoading: isTransactionDataLoading,
     error: transactionError,
@@ -116,6 +133,40 @@ export default function ReportPage() {
   const handleOnClickNextOrPrev = (pageNumber: number) => {
     setPage(pageNumber);
   };
+  let chartData: any = [];
+  let SplineChartComponent = null;
+  if (!isSummaryLoadingForSplineChart) {
+    chartData = [
+      {
+        name: "Income",
+        marker: {
+          symbol: "square",
+        },
+        data: [...summaaryDataForSplineChart.incomes],
+      },
+      {
+        name: "Expense",
+        marker: {
+          symbol: "Diamond",
+        },
+        data: [...summaaryDataForSplineChart.expense],
+      },
+      {
+        name: "Savigngs",
+        marker: {
+          symbol: "circle",
+        },
+        data: [...summaaryDataForSplineChart.saving],
+      },
+    ];
+    SplineChartComponent = (
+      <SplineChart
+        categories={summaaryDataForSplineChart?.categories || []}
+        chartData={chartData}
+        title="Income vs Expense vs Savings"
+      />
+    );
+  }
 
   return (
     <>
@@ -138,6 +189,7 @@ export default function ReportPage() {
             expenseAmount={summaryData?.expense || 0}
             savingsAmount={summaryData?.saving || 0}
           />
+          {SplineChartComponent}
         </Grid>
         <Grid size={4}>
           <TransactionStepper
