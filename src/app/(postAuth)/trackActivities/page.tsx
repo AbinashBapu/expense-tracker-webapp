@@ -17,12 +17,13 @@ import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import AddIcon from "@mui/icons-material/Add";
 import { FinanceSearchBox } from "@/components/feature/finance/financeSearchBox";
+import TransactionView from "@/components/feature/finance/transactionView";
 
 export default function FinancePage() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [fetch, setFetch] = useState(false);
   const [open, setOpen] = useState(false);
-  const [openViewDrawer, setOpenViewDrawer] = useState(false);
+  const [openViewDrawer, setOpenViewDrawer] = useState(true);
   const [editData, setEditData] = useState<any>(null);
   const transactionRef: any = useRef();
   const { fetchParties } = useFinance();
@@ -82,7 +83,7 @@ export default function FinancePage() {
 
   const handleView = (transaction: any) => {
     // setEditData(transaction);
-    // toggleViewDrawer();
+    toggleViewDrawer();
   };
   const refetchTransactionData = () => {
     if (transactionRef.current) {
@@ -156,6 +157,17 @@ export default function FinancePage() {
           <Typography variant="h6" sx={{ mb: 2 }}>
             View Transaction
           </Typography>
+          <TransactionView
+            transaction={{
+              category: "House Hold Expenses With XyZ and yzv",
+              subcategory: "Dining Out House Hold Expenses With XyZ and yzv",
+              transactionOn: "2025-08-20",
+              incurredFor: ["Alice", "Bob"],
+              incurredBy: "Charlie",
+              description: "Dinner at restaurant",
+              amount: -2500,
+            }}
+          />
         </Box>
       </Drawer>
     </Box>

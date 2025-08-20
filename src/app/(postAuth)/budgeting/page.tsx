@@ -24,9 +24,9 @@ import {
 import Grid from "@mui/material/Grid";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs/AdapterDayjs";
 import { red } from "@mui/material/colors";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;

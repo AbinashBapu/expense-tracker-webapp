@@ -9,10 +9,12 @@ export default function SplineChart({
   categories,
   chartData,
   title,
+  yaxisTitle
 }: {
   categories: string[];
   chartData: any[];
   title: string;
+  yaxisTitle: string;
 }) {
   const options = {
     chart: {
@@ -32,7 +34,7 @@ export default function SplineChart({
     },
     yAxis: {
       title: {
-        text: "Temperature",
+        text: yaxisTitle,
       },
       labels: {
         format: "{value}",

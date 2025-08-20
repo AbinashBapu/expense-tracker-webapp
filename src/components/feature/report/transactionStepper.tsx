@@ -53,7 +53,7 @@ export default function TransactionStepper({
     <Paper elevation={3}>
       <Paper
         square
-        elevation={0}
+        elevation={1}
         sx={{
           display: "flex",
           alignItems: "center",
@@ -62,11 +62,11 @@ export default function TransactionStepper({
           bgcolor: "background.default",
         }}
       >
-        <Typography>Transactions</Typography>
+        <Typography variant="h5">Transactions</Typography>
       </Paper>
       <Box
         sx={{
-          height: "600px",
+          height: "425px",
           width: "100%",
           p: 1,
           overflow: "auto",
@@ -176,7 +176,8 @@ export default function TransactionStepper({
         ))}
       </Box>
       <MobileStepper
-        variant="text"
+        elevation={6}
+        variant="progress"
         steps={maxSteps}
         position="static"
         activeStep={activeStep}

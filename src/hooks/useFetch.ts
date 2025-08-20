@@ -7,6 +7,10 @@ export const useFetch = () => {
         Authorization: `Bearer asdfasdf.asdfasd.asdfasdf`,
       },
     });
+    if (!response.ok) {
+      // Server responded but with an error (e.g., 404, 500)
+      return { error: `Request failed with status ${response.status}` };
+    }
     return response.json();
   };
 
@@ -20,6 +24,10 @@ export const useFetch = () => {
       },
       body: JSON.stringify(data),
     });
+    if (!response.ok) {
+      // Server responded but with an error (e.g., 404, 500)
+      return { error: `Request failed with status ${response.status}` };
+    }
     return response.json();
   };
 
@@ -41,6 +49,10 @@ export const useFetch = () => {
       },
       body: JSON.stringify(data),
     });
+    if (!response.ok) {
+      // Server responded but with an error (e.g., 404, 500)
+      return { error: `Request failed with status ${response.status}` };
+    }
     return response.json();
   };
 
@@ -54,6 +66,10 @@ export const useFetch = () => {
       },
       body: JSON.stringify(data),
     });
+    if (!response.ok) {
+      // Server responded but with an error (e.g., 404, 500)
+      return { error: `Request failed with status ${response.status}` };
+    }
     return response.json();
   };
 
@@ -62,6 +78,10 @@ export const useFetch = () => {
       ...config,
       method: "DELETE",
     });
+    if (!response.ok) {
+      // Server responded but with an error (e.g., 404, 500)
+      return { error: `Request failed with status ${response.status}` };
+    }
     return response.json();
   };
 

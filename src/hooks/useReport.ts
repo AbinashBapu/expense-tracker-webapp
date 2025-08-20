@@ -13,6 +13,7 @@ const useReport = () => {
       return response.data;
     } catch (error) {
       console.error("Error fetching summary data:", error);
+      return error;
     }
   };
 
@@ -25,6 +26,12 @@ const useReport = () => {
       return response.data;
     } catch (error) {
       console.error("Error fetching summary data:", error);
+      return {
+        "categories": [],
+        "incomes": [],
+        "expense":[],
+        "saving": [],
+      };
     }
   };
 

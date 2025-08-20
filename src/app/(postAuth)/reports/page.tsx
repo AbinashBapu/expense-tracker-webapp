@@ -12,6 +12,7 @@ import {
   IconButton,
   MenuItem,
   Paper,
+  SelectChangeEvent,
   TextField,
   Typography,
 } from "@mui/material";
@@ -37,6 +38,13 @@ import { useQuery } from "@tanstack/react-query";
 import TransactionStepper from "@/components/feature/report/transactionStepper";
 import { useFinance } from "@/hooks/useFinance";
 import SplineChart from "@/components/feature/splineChart";
+import DonutChart from "@/components/feature/donutChart";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import Chip from "@mui/material/Chip";
+import DonutChartv2 from "@/components/feature/donutChartV2";
+import ChartBasedOnCategory from "@/components/feature/report/transaactionSummaryBasedOnCat";
 
 export default function ReportPage() {
   const [page, setPage] = useState(0);
@@ -160,11 +168,14 @@ export default function ReportPage() {
       },
     ];
     SplineChartComponent = (
-      <SplineChart
-        categories={summaaryDataForSplineChart?.categories || []}
-        chartData={chartData}
-        title="Income vs Expense vs Savings"
-      />
+      <Paper elevation={3}>
+        <SplineChart
+          categories={summaaryDataForSplineChart?.categories || []}
+          chartData={chartData}
+          title="Income vs Expense vs Savings"
+          yaxisTitle="Amount (in ₹)"
+        />
+      </Paper>
     );
   }
 
@@ -196,6 +207,9 @@ export default function ReportPage() {
             transactionData={transactionData}
             onClickBtn={handleOnClickNextOrPrev}
           />
+        </Grid>
+        <Grid size={12}>
+          <ChartBasedOnCategory />
         </Grid>
       </Grid>
 
