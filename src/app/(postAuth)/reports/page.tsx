@@ -61,9 +61,13 @@ export default function ReportPage() {
   });
   const [applySearch, setApplySearch] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const { fetchFinanceSummary, fetchFinanceSummaryForSplineChart } =
-    useReport();
+  const {
+    fetchFinanceSummary,
+    fetchFinanceSummaryForSplineChart,
+    fetchFinanceSummaryForDonutChartBasedOnCategory,
+  } = useReport();
   const { fetchTransactions } = useFinance();
+
   useEffect(() => {
     if (applySearch) {
       summaryRefetch();
@@ -112,6 +116,21 @@ export default function ReportPage() {
     queryKey: ["financeSummarySplineChart", filter],
     queryFn: () =>
       fetchFinanceSummaryForSplineChart({
+        fromDate: filter.startDate,
+        toDate: filter.endDate,
+      }),
+  });
+
+  const {
+    data: summaaryDataForDonutChartBasedOnCategory,
+    isLoading: isSummaryLoadingForDonutChartBasedOnCategory,
+    error: summaryErrorForDonutChartBasedOnCategory,
+    refetch: summaryRefetchForDonutChartBasedOnCategory,
+    isFetching: isSummaryFetchingForDonutChartBasedOnCategory,
+  } = useQuery({
+    queryKey: ["fetchFinanceSummaryForDonutChartBasedOnCategory", filter],
+    queryFn: () =>
+      fetchFinanceSummaryForDonutChartBasedOnCategory({
         fromDate: filter.startDate,
         toDate: filter.endDate,
       }),
@@ -179,6 +198,9 @@ export default function ReportPage() {
     );
   }
 
+  console.log("Report page reloaded");
+  console.log(summaaryDataForDonutChartBasedOnCategory);
+
   return (
     <>
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -208,8 +230,16 @@ export default function ReportPage() {
             onClickBtn={handleOnClickNextOrPrev}
           />
         </Grid>
+
         <Grid size={12}>
-          <ChartBasedOnCategory />
+          <ChartBasedOnCategory
+            donutChartData={summaryData}
+            donutChartV2Data={summaaryDataForDonutChartBasedOnCategory}
+            isSummaryLoading={isSummaryLoading}
+            isSummaryLoadingForDonutChartBasedOnCategory={
+              isSummaryLoadingForDonutChartBasedOnCategory
+            }
+          />
         </Grid>
       </Grid>
 

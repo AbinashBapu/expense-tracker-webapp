@@ -6,51 +6,95 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import DonutChartv2 from "@/components/feature/donutChartV2";
 
-export default function ChartBasedOnCategory() {
-  const [personName, setPersonName] = React.useState<string[]>([]);
-  const names = [
-    "Oliver Hansen",
-    "Van Henry",
-    "April Tucker",
-    "Ralph Hubbard",
-    "Omar Alexander",
-    "Carlos Abbott",
-    "Miriam Wagner",
-    "Bradley Wilkerson",
-    "Virginia Andrews",
-    "Kelly Snyder",
+export default function ChartBasedOnCategory({
+  donutChartData,
+  donutChartV2Data,
+  isSummaryLoading,
+  isSummaryLoadingForDonutChartBasedOnCategory,
+}: {
+  donutChartData: any;
+  donutChartV2Data: any;
+  isSummaryLoading: any;
+  isSummaryLoadingForDonutChartBasedOnCategory: any;
+}) {
+  const colors = [
+    "#FF0000",
+    "#00FF00",
+    "#0000FF",
+    "#FFFF00",
+    "#FF00FF",
+    "#00FFFF",
+    "#FFA500",
+    "#800080",
+    "#FFC0CB",
+    "#808080",
+    "#C0C0C0",
+    "#000000",
+    "#FFC0CB",
+    "#808080",
+    "#C0C0C0",
+    "#000000",
+    "#FFC0CB",
+    "#808080",
+    "#C0C0C0",
+    "#000000",
   ];
-  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
+  let v2DonutChart = <> </>;
+  if (!isSummaryLoadingForDonutChartBasedOnCategory) {
+    const v2Categories = donutChartV2Data
+      .filter((item: any) => item.categoryName !== "Incomes")
+      .map((item: any) => item.categoryName);
+    let data: any = [];
+
+    donutChartV2Data
+      .filter((item: any) => item.categoryName !== "Incomes")
+      .map((item: any, index: number) => {
+        const amounts = item.subCategoryInfoWithAmounts.map(
+          (subCategory: any) => subCategory.amount
+        );
+
+        data.push({
+          y: amounts.reduce((acc: any, cur: any) => acc + cur, 0),
+          color: colors[index],
+          drilldown: {
+            name: item.categoryName,
+            categories: item.subCategoryInfoWithAmounts.map(
+              (subCategory: any) => subCategory.subcategoryName
+            ),
+            data: amounts,
+          },
+        });
+      });
+
+    console.log("Data: ", data);
+    console.log("Categories: ", v2Categories);
+
+    v2DonutChart = (
+      <DonutChartv2
+        title="Expense, Saving Summary"
+        subtitle=""
+        categories={v2Categories}
+        chartData={data}
+      />
     );
-  };
+  }
+
   return (
     <>
       <Grid container spacing={2} sx={{ mt: 2 }}>
-    
         <Grid size={6}>
-          <DonutChart
-            title="2023 Norway car registrations"
-            subtitle='Source: <a href="https://www.ssb.no/transport-og-reiseliv/faktaside/bil-og-transport">SSB</a>'
-            chartData={[
-              { name: "EV", y: 23.9 },
-              { name: "Hybrids", y: 12.6 },
-              { name: "Diesel", y: 37.0 },
-              { name: "Petrol", y: 26.4 },
-            ]}
-          />
+          {!isSummaryLoading && (
+            <DonutChart
+              title="Expense, Saving Summary"
+              subtitle=""
+              chartData={[
+                { name: "Expense", y: donutChartData?.expense || 0 },
+                { name: "Saving", y: donutChartData?.saving || 0 },
+              ]}
+            />
+          )}
         </Grid>
-        <Grid size={6}>
-          <DonutChartv2
-            title="2023 Norway car registrations"
-            subtitle='asdfasd'
-          />
-        </Grid>
+        <Grid size={6}>{v2DonutChart}</Grid>
       </Grid>
     </>
   );

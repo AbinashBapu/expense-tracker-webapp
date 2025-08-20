@@ -27,15 +27,39 @@ const useReport = () => {
     } catch (error) {
       console.error("Error fetching summary data:", error);
       return {
-        "categories": [],
-        "incomes": [],
-        "expense":[],
-        "saving": [],
+        categories: [],
+        incomes: [],
+        expense: [],
+        saving: [],
       };
     }
   };
 
-  return { fetchFinanceSummary, fetchFinanceSummaryForSplineChart };
+  const fetchFinanceSummaryForDonutChartBasedOnCategory = async (
+    data: SearchParamDto
+  ) => {
+    try {
+      const response = await post(
+        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/report/categorySubcategoryDonutChartSummary`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching summary data:", error);
+      return {
+        categories: [],
+        incomes: [],
+        expense: [],
+        saving: [],
+      };
+    }
+  };
+
+  return {
+    fetchFinanceSummary,
+    fetchFinanceSummaryForSplineChart,
+    fetchFinanceSummaryForDonutChartBasedOnCategory,
+  };
 };
 
 export { useReport };

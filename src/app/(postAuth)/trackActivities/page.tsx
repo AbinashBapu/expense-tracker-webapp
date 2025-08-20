@@ -23,7 +23,7 @@ export default function FinancePage() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [fetch, setFetch] = useState(false);
   const [open, setOpen] = useState(false);
-  const [openViewDrawer, setOpenViewDrawer] = useState(true);
+  const [openViewDrawer, setOpenViewDrawer] = useState(false);
   const [editData, setEditData] = useState<any>(null);
   const transactionRef: any = useRef();
   const { fetchParties } = useFinance();
