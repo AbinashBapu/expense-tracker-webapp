@@ -1,10 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { FormControl, MenuItem } from "@mui/material";
+import {
+  Button,
+  ButtonGroup,
+  FormControl,
+  FormControlLabel,
+  MenuItem,
+  Paper,
+  Switch,
+} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import DonutChart from "@/components/feature/donutChart";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import DonutChartv2 from "@/components/feature/donutChartV2";
+import ExpenseSavingBreakdown from "./expenseSavingBreakDown";
+import QueryStatsIcon from "@mui/icons-material/QueryStats";
+import ScoreIcon from "@mui/icons-material/Score";
+import {
+  ToggleButton,
+  ToggleButtonGroup,
+  Box,
+  Typography,
+  Divider,
+} from "@mui/material";
 
 export default function ChartBasedOnCategory({
   donutChartData,
@@ -17,6 +35,8 @@ export default function ChartBasedOnCategory({
   isSummaryLoading: any;
   isSummaryLoadingForDonutChartBasedOnCategory: any;
 }) {
+  const [view, setView] = useState<"chart" | "breakdown">("chart");
+
   const colors = [
     "#9F00FF", // Vibrant Purple
     "#FF00C5", // Hot Pink
@@ -54,40 +74,19 @@ export default function ChartBasedOnCategory({
     "#FFDAB9", // Peach Puff
   ];
 
+  const handleSwitchChange = (newView: "chart" | "breakdown") => {
+    setView(newView);
+  };
+
   let v2DonutChart = <> </>;
   if (!isSummaryLoadingForDonutChartBasedOnCategory) {
-    // const v2Categories = donutChartV2Data
-    //   .filter((item: any) => item.categoryName !== "Incomes")
-    //   .map((item: any) => item.categoryName);
-    // let data: any = [];
-
-    // donutChartV2Data
-    //   .filter((item: any) => item.categoryName !== "Incomes")
-    //   .map((item: any, index: number) => {
-    //     const amounts = item.subCategoryInfoWithAmounts.map(
-    //       (subCategory: any) => subCategory.amount
-    //     );
-
-    //     data.push({
-    //       y: amounts.reduce((acc: any, cur: any) => acc + cur, 0),
-    //       color: colors[index],
-    //       drilldown: {
-    //         name: item.categoryName,
-    //         categories: item.subCategoryInfoWithAmounts.map(
-    //           (subCategory: any) => subCategory.subcategoryName
-    //         ),
-    //         data: amounts,
-    //       },
-    //     });
-    //   });
-
     const v2Categories = donutChartV2Data
       .filter((item: any) => item.categoryName !== "Incomes")
       .map((item: any) => item.categoryName);
 
     let data: any = [];
+    let amountwithPercentage: any[] = [];
 
-    // 1️⃣ Calculate total expenses (excluding Incomes)
     const totalExpenses = donutChartV2Data
       .filter((item: any) => item.categoryName !== "Incomes")
       .reduce((catAcc: number, cat: any) => {
@@ -100,7 +99,6 @@ export default function ChartBasedOnCategory({
         );
       }, 0);
 
-    // 2️⃣ Build percentage-based data with 2 decimals
     donutChartV2Data
       .filter((item: any) => item.categoryName !== "Incomes")
       .map((item: any, index: number) => {
@@ -133,24 +131,62 @@ export default function ChartBasedOnCategory({
             ),
           },
         });
+
+        amountwithPercentage.push({
+          categoryName: item.categoryName,
+          color: colors[index],
+          subCategories: item.subCategoryInfoWithAmounts.map(
+            (subCategory: any) => ({
+              subcategoryName: subCategory.subcategoryName,
+              amount: subCategory.amount,
+              contributedPercentage: `${(
+                (subCategory.amount / totalExpenses) *
+                100
+              ).toFixed(2)}%`,
+            })
+          ),
+        });
       });
 
-    console.log("Total Expenses:", totalExpenses);
-    console.log("Final Data:", data);
-
     v2DonutChart = (
-      <DonutChartv2
-        title="Expense, Saving Summary"
-        subtitle=""
-        categories={v2Categories}
-        chartData={data}
-      />
+      <>
+        {view === "chart" ? (
+          <DonutChartv2
+            title="Expense, Saving Summary"
+            subtitle=""
+            categories={v2Categories}
+            chartData={data}
+          />
+        ) : (
+          <Box>
+            <ExpenseSavingBreakdown data={amountwithPercentage} />
+          </Box>
+        )}
+      </>
     );
   }
 
   return (
     <>
-      <Grid container spacing={2} sx={{ mt: 2 }}>
+      <Grid container spacing={1} sx={{ mt: 1 }}>
+        <Grid size={12}>
+          <Box display="flex" justifyContent="flex-end">
+            <ButtonGroup variant="outlined" aria-label="view toggle buttons">
+              <Button
+                onClick={() => handleSwitchChange("chart")}
+                variant={view === "chart" ? "contained" : "outlined"}
+              >
+                <QueryStatsIcon />
+              </Button>
+              <Button
+                onClick={() => handleSwitchChange("breakdown")}
+                variant={view === "breakdown" ? "contained" : "outlined"}
+              >
+                <ScoreIcon />
+              </Button>
+            </ButtonGroup>
+          </Box>
+        </Grid>
         <Grid size={6}>
           {!isSummaryLoading && (
             <DonutChart

@@ -231,7 +231,7 @@ export default function ReportPage() {
           />
         </Grid>
 
-        <Grid size={12}>
+        <Grid size={12} sx={{ mb: 2 }}>
           <ChartBasedOnCategory
             donutChartData={summaryData}
             donutChartV2Data={summaaryDataForDonutChartBasedOnCategory}
