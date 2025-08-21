@@ -18,34 +18,89 @@ export default function ChartBasedOnCategory({
   isSummaryLoadingForDonutChartBasedOnCategory: any;
 }) {
   const colors = [
-    "#FF0000",
-    "#00FF00",
-    "#0000FF",
-    "#FFFF00",
-    "#FF00FF",
-    "#00FFFF",
-    "#FFA500",
-    "#800080",
-    "#FFC0CB",
-    "#808080",
-    "#C0C0C0",
-    "#000000",
-    "#FFC0CB",
-    "#808080",
-    "#C0C0C0",
-    "#000000",
-    "#FFC0CB",
-    "#808080",
-    "#C0C0C0",
-    "#000000",
+    "#9F00FF", // Vibrant Purple
+    "#FF00C5", // Hot Pink
+    "#00C5FF", // Bright Cyan
+    "#FFC080", // Peach Orange
+    "#C6FF00", // Lime Green
+    "#FFA57D", // Soft Coral
+    "#FFC0E5", // Light Pink
+    "#F2FF00", // Neon Yellow
+    "#00F2FF", // Aqua Blue
+    "#FF6F61", // Coral Red
+    "#6A5ACD", // Slate Blue
+    "#40E0D0", // Turquoise
+    "#FFD700", // Gold
+    "#7FFF00", // Chartreuse
+    "#FFB347", // Pastel Orange
+    "#FF69B4", // Pink
+    "#BA55D3", // Orchid Purple
+    "#20B2AA", // Light Sea Green
+    "#FF7F50", // Coral
+    "#6495ED", // Cornflower Blue
+    "#32CD32", // Lime
+    "#FF1493", // Deep Pink
+    "#00CED1", // Dark Turquoise
+    "#ADFF2F", // Green Yellow
+    "#FF8C00", // Dark Orange
+    "#8A2BE2", // Blue Violet
+    "#00FA9A", // Medium Spring Green
+    "#DC143C", // Crimson
+    "#87CEFA", // Light Sky Blue
+    "#FF6347", // Tomato
+    "#3CB371", // Medium Sea Green
+    "#DA70D6", // Orchid
+    "#00BFFF", // Deep Sky Blue
+    "#FFDAB9", // Peach Puff
   ];
+
   let v2DonutChart = <> </>;
   if (!isSummaryLoadingForDonutChartBasedOnCategory) {
+    // const v2Categories = donutChartV2Data
+    //   .filter((item: any) => item.categoryName !== "Incomes")
+    //   .map((item: any) => item.categoryName);
+    // let data: any = [];
+
+    // donutChartV2Data
+    //   .filter((item: any) => item.categoryName !== "Incomes")
+    //   .map((item: any, index: number) => {
+    //     const amounts = item.subCategoryInfoWithAmounts.map(
+    //       (subCategory: any) => subCategory.amount
+    //     );
+
+    //     data.push({
+    //       y: amounts.reduce((acc: any, cur: any) => acc + cur, 0),
+    //       color: colors[index],
+    //       drilldown: {
+    //         name: item.categoryName,
+    //         categories: item.subCategoryInfoWithAmounts.map(
+    //           (subCategory: any) => subCategory.subcategoryName
+    //         ),
+    //         data: amounts,
+    //       },
+    //     });
+    //   });
+
     const v2Categories = donutChartV2Data
       .filter((item: any) => item.categoryName !== "Incomes")
       .map((item: any) => item.categoryName);
+
     let data: any = [];
 
+    // 1️⃣ Calculate total expenses (excluding Incomes)
+    const totalExpenses = donutChartV2Data
+      .filter((item: any) => item.categoryName !== "Incomes")
+      .reduce((catAcc: number, cat: any) => {
+        return (
+          catAcc +
+          cat.subCategoryInfoWithAmounts.reduce(
+            (subAcc: number, sub: any) => subAcc + sub.amount,
+            0
+          )
+        );
+      }, 0);
+
+    // 2️⃣ Build percentage-based data with 2 decimals
     donutChartV2Data
       .filter((item: any) => item.categoryName !== "Incomes")
       .map((item: any, index: number) => {
@@ -53,21 +108,35 @@ export default function ChartBasedOnCategory({
           (subCategory: any) => subCategory.amount
         );
 
+        const totalCategoryAmount = amounts.reduce(
+          (acc: any, cur: any) => acc + cur,
+          0
+        );
+
         data.push({
-          y: amounts.reduce((acc: any, cur: any) => acc + cur, 0),
+          // Category % of total (2 decimals)
+          y: parseFloat(
+            ((totalCategoryAmount / totalExpenses) * 100).toFixed(2)
+          ),
+
           color: colors[index],
+
           drilldown: {
             name: item.categoryName,
             categories: item.subCategoryInfoWithAmounts.map(
               (subCategory: any) => subCategory.subcategoryName
             ),
-            data: amounts,
+
+            // Each subcategory % of total (2 decimals)
+            data: amounts.map((amt: number) =>
+              parseFloat(((amt / totalExpenses) * 100).toFixed(2))
+            ),
           },
         });
       });
 
-    console.log("Data: ", data);
-    console.log("Categories: ", v2Categories);
+    console.log("Total Expenses:", totalExpenses);
+    console.log("Final Data:", data);
 
     v2DonutChart = (
       <DonutChartv2
