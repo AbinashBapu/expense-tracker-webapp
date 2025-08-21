@@ -6,6 +6,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { ReportFilter } from "@/dto/SearchParamDto";
 
 const DATE_RANGE_PRESETS = [
+  { value: "today", label: "Today" },
   { value: "currentWeek", label: "Current Week" },
   { value: "currentMonth", label: "Current Month" },
   { value: "currentYear", label: "Current Year" },
@@ -33,40 +34,6 @@ export default function SearchReportForm({
     filter.endDate ? dayjs(filter.endDate) : null
   );
 
-  // useEffect(() => {
-  //   setDuration(filter.duration);
-  //   switch (filter.duration) {
-  //     case "currentWeek":
-  //       setStartDate(dayjs().startOf("week"));
-  //       setEndDate(dayjs().endOf("week"));
-  //       break;
-  //     case "currentMonth":
-  //       setStartDate(dayjs().startOf("month"));
-  //       setEndDate(dayjs().endOf("month"));
-  //       break;
-  //     case "currentYear":
-  //       setStartDate(dayjs().startOf("year"));
-  //       setEndDate(dayjs().endOf("year"));
-  //       break;
-  //     case "last7days":
-  //       setStartDate(dayjs().subtract(7, "day"));
-  //       setEndDate(dayjs());
-  //       break;
-  //     case "last30days":
-  //       setStartDate(dayjs().subtract(30, "day"));
-  //       setEndDate(dayjs());
-  //       break;
-  //     case "customDate":
-  //       setStartDate(filter.startDate ? dayjs(filter.startDate) : null);
-  //       setEndDate(filter.endDate ? dayjs(filter.endDate) : null);
-  //       break;
-  //     default:
-  //       setStartDate(dayjs().startOf("week"));
-  //       setEndDate(dayjs().endOf("week"));
-  //       break;
-  //   }
-  // }, [filter]);
-
   const handleReset = () => {
     setDuration("");
     setStartDate(null);
@@ -86,6 +53,10 @@ export default function SearchReportForm({
   const handleOnChangeDuration = (value: any) => {
     setDuration(value);
     switch (value) {
+      case "today":
+        setStartDate(dayjs().startOf("day"));
+        setEndDate(dayjs().endOf("day"));
+        break;
       case "currentWeek":
         setStartDate(dayjs().startOf("week"));
         setEndDate(dayjs().endOf("week"));
