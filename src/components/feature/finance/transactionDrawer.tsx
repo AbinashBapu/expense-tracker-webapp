@@ -68,7 +68,7 @@ export default function TransactionForm({
       transactionType: initialData?.transactionType || "Dr",
       amount: initialData?.amount || "",
       description: initialData?.description || "",
-      transactionDate: initialData?.spentOn || null,
+      transactionDate: dayjs(initialData?.spentOn) || null,
     },
     enableReinitialize: true, // <-- this is key
     validate: transactionFormValidate,

@@ -77,8 +77,8 @@ export default function FinancePage() {
   };
 
   const handleEdit = (transaction: any) => {
-    // setEditData(transaction);
-    // setOpen(true);
+    setEditData(transaction);
+    setOpen(true);
   };
 
   const handleView = (transaction: any) => {
