@@ -12,6 +12,8 @@ import {
   ListItemText,
   Divider,
   Chip,
+  Card,
+  CardContent,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
@@ -40,7 +42,7 @@ const ExpenseSavingBreakdown: React.FC<Props> = ({ data }) => {
       }}
     >
       {data.map((category, idx) => (
-        <Accordion key={idx}>
+        <Accordion key={idx} defaultExpanded>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Box
               sx={{
@@ -73,27 +75,80 @@ const ExpenseSavingBreakdown: React.FC<Props> = ({ data }) => {
           </AccordionSummary>
 
           <AccordionDetails>
-            <List dense>
+            <Box
+              display="flex"
+              flexWrap="wrap"
+              gap={2}
+              justifyContent="flex-start"
+            >
               {category.subCategories.map((sub, subIdx) => (
-                <React.Fragment key={subIdx}>
-                  <ListItem
-                    secondaryAction={
-                      <Box textAlign="right">
-                        <Typography variant="body2">
+                <Card
+                  key={subIdx}
+                  elevation={3}
+                  sx={{
+                    flex: "0 0 calc(33.33% - 16px)",
+                    minWidth: 240,
+                    borderRadius: 2,
+                    backgroundColor: "#f9f9f9",
+                    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      boxShadow: 6,
+                    },
+                  }}
+                >
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Box>
+                      <Typography
+                        variant="subtitle1"
+                        fontWeight="bold"
+                        gutterBottom
+                      >
+                        {sub.subcategoryName}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Category:
+                        <strong sx={{ ml: 1 }}>{category.categoryName}</strong>
+                      </Typography>
+                    </Box>
+
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      sx={{ mt: 2 }}
+                    >
+                      <Box>
+                        <Typography variant="body2" color="text.secondary">
+                          Amount
+                        </Typography>
+                        <Typography variant="h6" fontWeight="bold">
                           ₹{sub.amount.toLocaleString()}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {sub.contributedPercentage}
-                        </Typography>
                       </Box>
-                    }
-                  >
-                    <ListItemText primary={sub.subcategoryName} />
-                  </ListItem>
-                  {subIdx < category.subCategories.length - 1 && <Divider />}
-                </React.Fragment>
+
+                      <Box textAlign="right">
+                        <Typography variant="body2" color="text.secondary">
+                          Contribution
+                        </Typography>
+                        <Chip
+                          label={sub.contributedPercentage}
+                          size="small"
+                          color="primary"
+                          sx={{ fontWeight: 500 }}
+                        />
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
               ))}
-            </List>
+            </Box>
           </AccordionDetails>
         </Accordion>
       ))}
