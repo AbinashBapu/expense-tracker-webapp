@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import {
   Card,
   CardContent,
@@ -13,6 +13,9 @@ import {
   Button,
   Pagination,
   Box,
+  Skeleton,
+  Chip,
+  Grid,
 } from "@mui/material";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -22,6 +25,9 @@ import { useFinance } from "@/hooks/useFinance";
 import { useQuery } from "@tanstack/react-query";
 import { DateUtils } from "@/utils/dateUtil";
 import dayjs from "dayjs";
+import { ToggleButton, ToggleButtonGroup } from "@mui/material";
+import ViewListIcon from "@mui/icons-material/ViewList";
+import ViewModuleIcon from "@mui/icons-material/ViewModule";
 
 type TransactionRow = {
   transactionId: string;
@@ -33,6 +39,7 @@ type TransactionRow = {
   description: string;
   transactionType: string;
 };
+
 type Props = {
   onEdit: (transaction: any) => void;
   onView: (transaction: any) => void;
@@ -43,24 +50,22 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
   { selectedDate, onEdit, onView }: Props,
   ref
 ) {
-  console.log("ActivityTransactions: ", selectedDate);
-
-  const { fetchTransactions } = useFinance();
-
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-
   const [page, setPage] = useState(0);
+  const [viewMode, setViewMode] = useState<"table" | "card">("table");
+  const { fetchTransactions } = useFinance();
+
   const size = 10;
 
   const {
     data: transactionData,
-    isLoading: isTransactionDataLoading,
-    error: transactionError,
+    isLoading,
+    error,
     refetch,
     isFetching,
   } = useQuery({
-    queryKey: ["transactions", page],
+    queryKey: ["transactions", page, selectedDate],
     queryFn: () =>
       fetchTransactions({
         page,
@@ -68,8 +73,7 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
         sortBy: "spentOn",
         direction: "desc",
         filters: {
-          fromDate:
-            selectedDate == null ? null : dayjs(selectedDate).toISOString(),
+          fromDate: selectedDate ? dayjs(selectedDate).toISOString() : null,
           toDate: null,
         },
       }),
@@ -79,17 +83,13 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
     refetchTransactions: refetch,
   }));
 
-  if (isTransactionDataLoading) return <p>Loading...</p>;
-  if (transactionError)
-    return <p>Error: {(transactionError as Error)?.message}</p>;
-
   const rows: GridRowsProp =
     transactionData?.content.map((transaction: any) => ({
       id: transaction.transactionId,
       categoryName: transaction.category.label,
       subCategoryName: transaction.subCategory.label,
       incurredBy: transaction.incurredBy.name,
-      incurredFor: transaction.incurredFor.map((p: any) => p.name).join(", "),
+      incurredFor: transaction.incurredFor.map((p: any) => p.name),
       amount: transaction.amount,
       spentOn: DateUtils.parseUTCDateToDDMMYYYY(transaction.spentOn),
       description: transaction.description,
@@ -126,12 +126,47 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
   const columns: GridColDef[] = [
     { field: "categoryName", headerName: "Category", flex: 1 },
     { field: "subCategoryName", headerName: "Subcategory", flex: 1 },
-    { field: "amount", headerName: "Amount", flex: 1 },
-    { field: "transactionType", headerName: "Type", flex: 0.5 },
-    { field: "incurredFor", headerName: "Incurred For", flex: 1 },
+    {
+      field: "amount",
+      headerName: "Amount",
+      flex: 0.8,
+    },
+    { field: "transactionType", headerName: "Type", flex: 0.6 },
+    {
+      field: "incurredFor",
+      headerName: "Incurred For",
+      flex: 1.5,
+      renderCell: (params) => (
+        <Stack direction="row" spacing={0.5} flexWrap="wrap">
+          {params.value.map((name: string, idx: number) => (
+            <Chip
+              key={idx}
+              label={name}
+              size="small"
+              color="primary"
+              variant="outlined"
+            />
+          ))}
+        </Stack>
+      ),
+    },
     { field: "incurredBy", headerName: "Incurred By", flex: 1 },
     { field: "spentOn", headerName: "Date", flex: 1 },
-    { field: "description", headerName: "Description", flex: 2 },
+    {
+      field: "description",
+      headerName: "Description",
+      flex: 2,
+      renderCell: (params) => (
+        <Typography
+          variant="body2"
+          noWrap
+          title={params.value}
+          sx={{ maxWidth: "100%" }}
+        >
+          {params.value}
+        </Typography>
+      ),
+    },
     {
       field: "actions",
       headerName: "Actions",
@@ -144,6 +179,7 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
             color="primary"
             size="small"
             onClick={() => handleViewClick(params.row.id)}
+            title="View"
           >
             <VisibilityIcon fontSize="small" />
           </IconButton>
@@ -151,6 +187,7 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
             color="secondary"
             size="small"
             onClick={() => handleEditClick(params.row.id)}
+            title="Edit"
           >
             <EditIcon fontSize="small" />
           </IconButton>
@@ -158,6 +195,7 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
             color="error"
             size="small"
             onClick={() => handleDeleteClick(params.row.id)}
+            title="Delete"
           >
             <DeleteIcon fontSize="small" />
           </IconButton>
@@ -166,19 +204,270 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
     },
   ];
 
+  // Skeleton loading state
+  if (isLoading) {
+    return (
+      <Card variant="outlined" sx={{ mt: 2, p: 2 }}>
+        <CardContent>
+          <Stack spacing={2}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} variant="rectangular" height={40} />
+            ))}
+          </Stack>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <Card variant="outlined" sx={{ mt: 2, p: 3, textAlign: "center" }}>
+        <Typography variant="h6" color="error" gutterBottom>
+          Failed to load transactions
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {(error as Error)?.message}
+        </Typography>
+        <Button
+          variant="outlined"
+          color="primary"
+          sx={{ mt: 2 }}
+          onClick={() => refetch()}
+        >
+          Retry
+        </Button>
+      </Card>
+    );
+  }
+
   return (
     <>
-      <Card variant="outlined" sx={{ mt: 2, p: 1 }}>
+      <Card variant="outlined" sx={{}}>
         <CardContent>
-          <div style={{ width: "100%" }}>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              disableRowSelectionOnClick
-              hideFooter
-              loading={isFetching}
-            />
-          </div>
+          {rows.length === 0 ? (
+            <Typography
+              textAlign="center"
+              color="text.secondary"
+              sx={{ mt: 4 }}
+            >
+              No transactions found for the selected date.
+            </Typography>
+          ) : (
+            <>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  p: 1,
+                  borderRadius: 2,
+                }}
+              >
+                <ToggleButtonGroup
+                  value={viewMode}
+                  exclusive
+                  onChange={(_, newView) => {
+                    if (newView !== null) setViewMode(newView);
+                  }}
+                  size="small"
+                  sx={{
+                    backgroundColor: "#8080802b",
+                    borderRadius: 2,
+                    "& .MuiToggleButton-root": {
+                      border: "none",
+                      borderRadius: 2,
+                      px: 2,
+                      py: 1,
+                      fontWeight: 500,
+                      textTransform: "none",
+                      transition: "all 0.3s ease",
+                      color: "text.secondary",
+                      "& svg": {
+                        mr: 1,
+                      },
+                      "&:hover": {
+                        backgroundColor: "#f0f0f0",
+                      },
+                      "&.Mui-selected": {
+                        backgroundColor: "primary.main",
+                        color: "#fff",
+                        "&:hover": {
+                          backgroundColor: "primary.dark",
+                        },
+                      },
+                    },
+                  }}
+                >
+                  <ToggleButton value="table" aria-label="Table View">
+                    <ViewListIcon />
+                    Table
+                  </ToggleButton>
+                  <ToggleButton value="card" aria-label="Card View">
+                    <ViewModuleIcon />
+                    Card
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </Box>
+
+              {viewMode === "table" ? (
+                <DataGrid
+                  rows={rows}
+                  columns={columns}
+                  disableRowSelectionOnClick
+                  hideFooter
+                  loading={isFetching}
+                  autoHeight
+                  sx={{
+                    border: "none",
+                    "& .MuiDataGrid-cell": {
+                      py: 1,
+                    },
+                    "& .MuiDataGrid-columnHeaders": {
+                      backgroundColor: "rgba(0, 0, 0, 0.04)",
+                      fontWeight: 600,
+                    },
+                  }}
+                />
+              ) : (
+                <Box sx={{ maxHeight: 600, overflowY: "auto", pr: 1 }}>
+                  <Grid container spacing={3}>
+                    {rows.map((row: any) => (
+                      <Grid size={3} key={row.id}>
+                        <Card
+                          variant="outlined"
+                          sx={{
+                            height: "100%",
+                            borderRadius: 2,
+                            boxShadow: 3,
+                            transition: "transform 0.2s, box-shadow 0.2s",
+                            "&:hover": {
+                              boxShadow: 6,
+                              transform: "translateY(-4px)",
+                              bgcolor: "#f9f9f9",
+                            },
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                        >
+                          <CardContent sx={{ flexGrow: 1 }}>
+                            <Stack
+                              spacing={1}
+                              height="100%"
+                              justifyContent="space-between"
+                            >
+                              <Box>
+                                <Typography
+                                  variant="subtitle2"
+                                  color="text.secondary"
+                                  gutterBottom
+                                  sx={{ fontWeight: 600 }}
+                                >
+                                  {row.categoryName} / {row.subCategoryName}
+                                </Typography>
+
+                                <Typography
+                                  variant="h5"
+                                  sx={{
+                                    fontWeight: "bold",
+                                    mb: 0.5,
+                                    color:
+                                      row.transactionType === "Dr"
+                                        ? "error.main"
+                                        : "success.main",
+                                  }}
+                                >
+                                  ₹{row.amount.toLocaleString("en-IN")}
+                                </Typography>
+
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                  sx={{ mb: 1 }}
+                                >
+                                  {row.transactionType} | {row.spentOn}
+                                </Typography>
+
+                                <Typography
+                                  variant="body2"
+                                  color="text.primary"
+                                  sx={{
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    display: "-webkit-box",
+                                    WebkitLineClamp: 3,
+                                    WebkitBoxOrient: "vertical",
+                                    minHeight: 60,
+                                  }}
+                                  title={row.description}
+                                >
+                                  {row.description}
+                                </Typography>
+
+                                <Stack
+                                  direction="row"
+                                  spacing={0.5}
+                                  mt={1}
+                                  flexWrap="wrap"
+                                  useFlexGap
+                                >
+                                  {row.incurredFor.map(
+                                    (name: string, idx: number) => (
+                                      <Chip
+                                        key={idx}
+                                        label={name}
+                                        size="small"
+                                        variant="outlined"
+                                        color="primary"
+                                      />
+                                    )
+                                  )}
+                                </Stack>
+                              </Box>
+                            </Stack>
+                          </CardContent>
+
+                          <Stack
+                            direction="row"
+                            spacing={1}
+                            justifyContent="flex-end"
+                            p={1}
+                            pt={0}
+                            borderTop="1px solid"
+                            borderColor="divider"
+                          >
+                            <IconButton
+                              color="primary"
+                              size="small"
+                              onClick={() => handleViewClick(row.id)}
+                              title="View"
+                            >
+                              <VisibilityIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton
+                              color="secondary"
+                              size="small"
+                              onClick={() => handleEditClick(row.id)}
+                              title="Edit"
+                            >
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton
+                              color="error"
+                              size="small"
+                              onClick={() => handleDeleteClick(row.id)}
+                              title="Delete"
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </Stack>
+                        </Card>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
+              )}
+            </>
+          )}
           <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
             <Typography variant="body2" color="text.secondary">
               Total Transactions: {transactionData?.totalElements ?? 0}
@@ -187,23 +476,24 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
         </CardContent>
       </Card>
 
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-        <Stack spacing={2}>
-          <Pagination
-            page={page + 1}
-            count={transactionData?.totalPages ?? 1}
-            onChange={(e, value) => {
-              setPage(value - 1);
-            }}
-            showFirstButton
-            showLastButton
-            color="primary"
-            variant="outlined"
-          />
-        </Stack>
-      </Box>
+      {/* Pagination */}
+      {transactionData?.totalPages > 1 && (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+          <Stack spacing={2}>
+            <Pagination
+              page={page + 1}
+              count={transactionData.totalPages}
+              onChange={(e, value) => setPage(value - 1)}
+              showFirstButton
+              showLastButton
+              color="primary"
+              variant="outlined"
+            />
+          </Stack>
+        </Box>
+      )}
 
-      {/* Delete Confirmation Dialog */}
+      {/* Delete Dialog */}
       <Dialog open={openDeleteDialog} onClose={handleDeleteCancel}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
@@ -228,4 +518,5 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
     </>
   );
 });
+
 export default ActivityTransactions;

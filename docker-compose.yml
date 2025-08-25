@@ -1,0 +1,7 @@
+version: "3"
+services:
+  finance-web-app:
+    build: .
+    ports:
+      - "80:80"
+    container_name: react-nginx

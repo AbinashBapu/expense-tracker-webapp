@@ -56,15 +56,6 @@ export default function FinancePage() {
     queryFn: () => fetchCategoryData(),
   });
 
-  if (isLoadingParties || isLoadingCategory) return <p>Loading...</p>;
-  if (partiesError || categoryError)
-    return (
-      <p>
-        Error: {(partiesError as Error)?.message}{" "}
-        {(categoryError as Error)?.message}
-      </p>
-    );
-
   const handleAddNew = () => {
     setEditData(null);
     setOpen(true);
@@ -73,7 +64,6 @@ export default function FinancePage() {
   const handleSearch = (date: string | null) => {
     setSelectedDate(date);
     setFetch(true);
-    // refetchTransactionData();
   };
 
   const handleEdit = (transaction: any) => {
@@ -82,7 +72,6 @@ export default function FinancePage() {
   };
 
   const handleView = (transaction: any) => {
-    // setEditData(transaction);
     toggleViewDrawer();
   };
   const refetchTransactionData = () => {
@@ -90,25 +79,6 @@ export default function FinancePage() {
       transactionRef.current?.refetchTransactions();
     }
   };
-  // const handleSearch = () => {
-  //   setFetch(true);
-  //   // refetchTransactionData();
-  // };
-
-  // const handleAddNew = () => {
-  // setEditData(null);
-  // setOpen(true);
-  // };
-
-  // const handleEdit = (transaction: any) => {
-  // setEditData(transaction);
-  // setOpen(true);
-  // };
-
-  // const handleView = (transaction: any) => {
-  // setEditData(transaction);
-  // toggleViewDrawer();
-  // };
 
   const resetSearch = () => {
     setSelectedDate(null);

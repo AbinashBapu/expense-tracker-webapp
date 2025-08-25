@@ -54,21 +54,62 @@ export default function TransactionForm({
   const { showSnackbar } = useSnackbar();
   const [subCategories, setSubCategories] = useState<SubCategoryDto[]>([]);
 
+  // const formik = useFormik<TransactionFormValues>({
+  //   initialValues: {
+  //     categoryId: initialData?.categoryId || "",
+  //     subCategoryId: initialData?.subCategoryId || "",
+  //     incurredById:
+  //       parties.find((p) => p.name === initialData?.incurredBy) || null,
+  //     incurredForIds: initialData
+  //       ? parties.filter((p) =>
+  //           initialData.incurredFor?.split(",").includes(p.name)
+  //         )
+  //       : [],
+  //     transactionType: initialData?.transactionType || "Dr",
+  //     amount: initialData?.amount || "",
+  //     description: initialData?.description || "",
+  //     transactionDate: dayjs(initialData?.spentOn) || null,
+  //   },
+  //   enableReinitialize: true, // <-- this is key
+  //   validate: transactionFormValidate,
+  //   onSubmit: (values) => {
+  //     console.log("Form submitted: ", values);
+  //     // closeDrawer();
+
+  //     let payload = {
+  //       amount: values.amount,
+  //       categoryId: values.categoryId,
+  //       description: values.description,
+  //       incurredBy: values.incurredById?.transactionPartyId,
+  //       incurredFor: values.incurredForIds.map((p) => p.transactionPartyId),
+  //       spentOn: dayjs(values.transactionDate).toISOString(),
+  //       subCategoryId: values.subCategoryId,
+  //       type: values.transactionType,
+  //     };
+
+  //     saveTransaction(payload)
+  //       .then((response: any) => {
+  //         console.log("Transaction Saved: ", response);
+  //         showSnackbar("Transaction saved successfully", "success");
+  //         closeDrawer();
+  //         refetch();
+  //       })
+  //       .catch((error: any) => {
+  //         console.log("Some error occureed");
+  //       });
+  //   },
+  // });
+
   const formik = useFormik<TransactionFormValues>({
     initialValues: {
-      categoryId: initialData?.categoryId || "",
-      subCategoryId: initialData?.subCategoryId || "",
-      incurredById:
-        parties.find((p) => p.name === initialData?.incurredBy) || null,
-      incurredForIds: initialData
-        ? parties.filter((p) =>
-            initialData.incurredFor?.split(",").includes(p.name)
-          )
-        : [],
-      transactionType: initialData?.transactionType || "Dr",
-      amount: initialData?.amount || "",
-      description: initialData?.description || "",
-      transactionDate: dayjs(initialData?.spentOn) || null,
+      categoryId: "",
+      subCategoryId: "",
+      incurredById: null,
+      incurredForIds: [],
+      transactionType: "Dr",
+      amount: "",
+      description: "",
+      transactionDate: null,
     },
     enableReinitialize: true, // <-- this is key
     validate: transactionFormValidate,

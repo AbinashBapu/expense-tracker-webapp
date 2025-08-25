@@ -198,9 +198,6 @@ export default function ReportPage() {
     );
   }
 
-  console.log("Report page reloaded");
-  console.log(summaaryDataForDonutChartBasedOnCategory);
-
   return (
     <>
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
