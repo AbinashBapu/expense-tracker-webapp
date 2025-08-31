@@ -22,8 +22,13 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Grid,
+  Chip,
 } from "@mui/material";
-import { red } from "@mui/material/colors";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -32,6 +37,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useFinance } from "@/hooks/useFinance";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import PartyForm from "@/components/feature/party/partyForm";
+import {
+  deepPurple,
+  green,
+  orange,
+  blue,
+  red,
+  teal,
+} from "@mui/material/colors";
 
 const INITIAL_PARTIES: Array<TransactionPartyInfo> = [
   {
@@ -46,6 +59,16 @@ const INITIAL_PARTIES: Array<TransactionPartyInfo> = [
     relationType: "Family",
     active: true,
   },
+];
+
+// Define your color palette
+const AVATAR_COLOR = [
+  red[500],
+  blue[500],
+  green[500],
+  orange[500],
+  deepPurple[500],
+  teal[500],
 ];
 
 export default function Page() {
@@ -136,84 +159,98 @@ export default function Page() {
         </Button>
       </Box>
       {partiesData.length > 0 ? (
-        <TableContainer component={Paper} elevation={3}>
-          <Table>
-            <TableHead>
-              <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
-                <TableCell>Avatar</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Relation</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell align="right">Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {partiesData.map((party: TransactionPartyInfo) => (
-                <TableRow key={party.transactionPartyId}>
-                  <TableCell>
-                    <Avatar sx={{ bgcolor: red[500] }}>
+        <Grid container spacing={1}>
+          {partiesData.map((party: TransactionPartyInfo, index: number) => (
+            <Grid size={2} key={party.transactionPartyId}>
+              <Card
+                elevation={3}
+                sx={{ transition: "0.3s", "&:hover": { boxShadow: 6 } }}
+              >
+                {/* Custom Header Layout */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: 1,
+                    paddingBottom: 0,
+                  }}
+                >
+                  <Stack direction="row" alignItems="center" spacing={2}>
+                    <Avatar
+                      sx={{
+                        bgcolor: AVATAR_COLOR[index % AVATAR_COLOR.length],
+                      }}
+                    >
                       {party.name.charAt(0).toUpperCase()}
                     </Avatar>
-                  </TableCell>
-                  <TableCell>{party.name}</TableCell>
-                  <TableCell>{party.relationType}</TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body2"
-                      color={party.active ? "green" : "error"}
-                    >
-                      {party.active ? "Active" : "Inactive"}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Stack
-                      direction="row"
-                      spacing={1}
-                      justifyContent="flex-end"
-                    >
-                      <Tooltip title="Toggle Active">
-                        <Switch
-                          checked={party.active}
-                          onChange={() =>
-                            handleToggleActive(party.transactionPartyId)
-                          }
-                          color="primary"
-                        />
-                      </Tooltip>
-                      <Tooltip title="View">
-                        <IconButton
-                          aria-label="view"
-                          color="info"
-                          onClick={() => openViewDrawer(party)}
-                        >
-                          <VisibilityIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Edit">
-                        <IconButton
-                          aria-label="edit"
-                          color="primary"
-                          onClick={() => openEditDrawer(party)}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete">
-                        <IconButton
-                          aria-label="delete"
-                          color="error"
-                          onClick={() => confirmDelete(party)}
-                        >
-                          <DeleteForeverIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                    <Box>
+                      <Typography variant="h6">{party.name}</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {party.relationType}
+                      </Typography>
+                    </Box>
+                  </Stack>
+
+                  <Chip
+                    label={party.active ? "Active" : "Inactive"}
+                    color={party.active ? "success" : "error"}
+                    variant="outlined"
+                    size="small"
+                    sx={{ fontWeight: 500 }}
+                  />
+                </Box>
+
+                <CardContent>
+                  {/* Optional: Add additional card content here */}
+                </CardContent>
+
+                <CardActions disableSpacing>
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    justifyContent="flex-end"
+                    sx={{ width: "100%" }}
+                  >
+                    <Tooltip title="Toggle Active">
+                      <Switch
+                        checked={party.active}
+                        onChange={() =>
+                          handleToggleActive(party.transactionPartyId)
+                        }
+                        color="primary"
+                      />
+                    </Tooltip>
+                    <Tooltip title="View">
+                      <IconButton
+                        color="info"
+                        onClick={() => openViewDrawer(party)}
+                      >
+                        <VisibilityIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Edit">
+                      <IconButton
+                        color="primary"
+                        onClick={() => openEditDrawer(party)}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                      <IconButton
+                        color="error"
+                        onClick={() => confirmDelete(party)}
+                      >
+                        <DeleteForeverIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Stack>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       ) : (
         <Paper
           elevation={0}
