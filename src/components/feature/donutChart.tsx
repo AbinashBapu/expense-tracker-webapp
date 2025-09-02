@@ -19,22 +19,24 @@ export default function DonutChart({
   const options: Highcharts.Options = {
     chart: {
       type: "pie",
-      // Add custom field for label handling (not standard, so use a type cast)
+      // @ts-ignore - custom is not part of Highcharts.Options.chart
       custom: {} as { label?: Highcharts.SVGElement },
       events: {
         render(this: Highcharts.Chart) {
           const chart = this;
-          const series = chart.series[0] as Highcharts.SeriesPie;
+          const series = chart.series[0];
           const center = series.center;
 
           if (!center) return;
-
+          // @ts-ignore - custom is not part of Highcharts.Options.chart
           let customLabel = chart.options.chart?.custom?.label;
 
           const labelText = `Total<br/><strong>${total.toLocaleString()}</strong>`;
 
           if (!customLabel) {
+            // @ts-ignore - custom is not part of Highcharts.Options.chart
             customLabel = chart.options.chart!.custom!.label = chart.renderer
+              // @ts-ignore - custom is not part of Highcharts.Options.chart
               .label(labelText)
               .css({
                 color: "var(--highcharts-neutral-color-100, #000)",
@@ -72,11 +74,13 @@ export default function DonutChart({
         dataLabels: [
           {
             enabled: true,
+            // @ts-ignore - custom is not part of Highcharts.Options.chart
             distance: 20,
             format: "{point.name}",
           },
           {
             enabled: true,
+            // @ts-ignore - custom is not part of Highcharts.Options.chart
             distance: -15,
             format: "{point.percentage:.0f}%",
             style: { fontSize: "0.9em" },
@@ -89,6 +93,7 @@ export default function DonutChart({
       {
         type: "pie",
         name: "Registrations",
+        // @ts-ignore - custom is not part of Highcharts.Options.chart
         colorByPoint: true,
         innerSize: "75%",
         data: chartData,

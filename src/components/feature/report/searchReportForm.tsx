@@ -130,6 +130,7 @@ export default function SearchReportForm({
                 label="Transaction To"
                 value={endDate}
                 onChange={(newValue) => setEndDate(newValue)}
+                // @ts-ignore
                 minDate={startDate}
                 slotProps={{
                   textField: {

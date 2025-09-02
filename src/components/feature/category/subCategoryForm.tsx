@@ -45,7 +45,7 @@ const CreateSubCategoryForm = ({
   const { saveSubcategory } = useCategory();
   const { showSnackbar } = useSnackbar();
 
-  const formik = useFormik({
+  const formik: any = useFormik({
     initialValues: {
       categoryId: "",
       subCategoryName: "",
@@ -53,9 +53,6 @@ const CreateSubCategoryForm = ({
     },
     validate: subCategoryFormValidate,
     onSubmit: (values: any) => {
-      console.log("Form submitted: ", values);
-      // closeDrawer();
-
       let payload = {
         categoryId: values.categoryId,
         label: values.subCategoryName,
@@ -64,7 +61,6 @@ const CreateSubCategoryForm = ({
 
       saveSubcategory(payload)
         .then((response: any) => {
-          console.log("SubCategory Saved: ", response);
           showSnackbar("SubCategory saved successfully", "success");
           closeDrawer();
         })
