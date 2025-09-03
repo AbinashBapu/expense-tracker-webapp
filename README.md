@@ -43,3 +43,25 @@ Other Admin page: (https://preview.themeforest.net/item/velzon-aspnet-core-admin
 https://kanakku.dreamstechnologies.com/react/template/customer/customer-dashboard
 
 https://kanakku.dreamstechnologies.com/react/template/admin-dashboard
+
+```
+server {
+    listen 80;
+    server_name localhost;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    location / {
+        try_files $uri /index.html;
+    }
+
+    error_page 404 /index.html;
+
+    # Optional: Cache control
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 30d;
+        access_log off;
+    }
+}
+```

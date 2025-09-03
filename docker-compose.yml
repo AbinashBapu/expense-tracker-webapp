@@ -3,5 +3,15 @@ services:
   finance-web-app:
     build: .
     ports:
-      - "80:80"
-    container_name: react-nginx
+      - "3000:3000"
+    container_name: finance-web-app
+    restart: always
+    env_file:
+      - .env.production
+    environment:
+      - NODE_ENV=production
+    networks:
+      - exp-tracker-net
+networks:
+  exp-tracker-net:
+    driver: bridge

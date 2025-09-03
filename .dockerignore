@@ -1,5 +1,32 @@
+# dependencies
 node_modules
-build
-.dockerignore
-Dockerfile
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Next.js build outputs
+.next
+out
+dist
+
+# local env files (don’t copy secrets into image)
+.env.local
+.env.development
+.env.test
+
+# OS / editor junk
+.DS_Store
+*.swp
+*.swo
+*.swp
+*.log
+
+# Git / VCS
+.git
+.gitignore
+.gitattributes
+
+# Docker files (optional — keep if you want to copy them in)
 docker-compose.yml
+Dockerfile
+.dockerignore
