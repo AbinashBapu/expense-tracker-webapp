@@ -44,10 +44,11 @@ type Props = {
   onEdit: (transaction: any) => void;
   onView: (transaction: any) => void;
   selectedDate: string | null;
+  selectedCategory: string | null;
 };
 
 const ActivityTransactions = forwardRef(function ActivityTransactions(
-  { selectedDate, onEdit, onView }: Props,
+  { selectedCategory, selectedDate, onEdit, onView }: Props,
   ref
 ) {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -65,7 +66,7 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
     refetch,
     isFetching,
   } = useQuery({
-    queryKey: ["transactions", page, selectedDate],
+    queryKey: ["transactions", page, selectedDate, selectedCategory],
     queryFn: () =>
       fetchTransactions({
         page,
@@ -75,6 +76,7 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
         filters: {
           fromDate: selectedDate ? dayjs(selectedDate).toISOString() : null,
           toDate: null,
+          categoryId: selectedCategory,
         },
       }),
   });

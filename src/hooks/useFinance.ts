@@ -55,7 +55,12 @@ const useFinance = () => {
       return response.data;
     } catch (error) {
       console.error("Error fetching category data:", error);
-      return { content: [], totalElements: 0, totalPages: 0, numberOfElements: 0};
+      return {
+        content: [],
+        totalElements: 0,
+        totalPages: 0,
+        numberOfElements: 0,
+      };
     }
   };
 

@@ -21,6 +21,7 @@ import TransactionView from "@/components/feature/finance/transactionView";
 
 export default function FinancePage() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [categoryId, setCategoryId] = useState<string | null>(null);
   const [fetch, setFetch] = useState(false);
   const [open, setOpen] = useState(false);
   const [openViewDrawer, setOpenViewDrawer] = useState(false);
@@ -61,7 +62,8 @@ export default function FinancePage() {
     setOpen(true);
   };
 
-  const handleSearch = (date: string | null) => {
+  const handleSearch = (date: string | null, categoryId: string | null) => {
+    setCategoryId(categoryId);
     setSelectedDate(date);
     setFetch(true);
   };
@@ -82,6 +84,7 @@ export default function FinancePage() {
 
   const resetSearch = () => {
     setSelectedDate(null);
+    setCategoryId(null);
     setFetch(true);
   };
 
@@ -95,12 +98,14 @@ export default function FinancePage() {
   return (
     <Box>
       <FinanceSearchBox
+        categories={categoryData || []}
         onSearch={handleSearch}
         onClear={resetSearch}
         onAdd={handleAddNew}
       />
 
       <ActivityTransactions
+        selectedCategory={categoryId}
         selectedDate={selectedDate}
         onEdit={handleEdit}
         onView={handleView}
