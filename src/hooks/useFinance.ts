@@ -64,7 +64,25 @@ const useFinance = () => {
     }
   };
 
-  return { fetchParties, createAParty, saveTransaction, fetchTransactions };
+  const saveInvestmentPortfolio = async (data: any) => {
+    try {
+      const response = await post(
+        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/portfolio`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching category data:", error);
+    }
+  };
+
+  return {
+    fetchParties,
+    createAParty,
+    saveTransaction,
+    fetchTransactions,
+    saveInvestmentPortfolio,
+  };
 };
 
 export { useFinance };

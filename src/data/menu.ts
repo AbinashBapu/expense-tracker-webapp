@@ -7,6 +7,7 @@ import CalculateIcon from "@mui/icons-material/Calculate";
 import CreditScoreSharpIcon from "@mui/icons-material/CreditScoreSharp";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import AutoGraphIcon from "@mui/icons-material/AutoGraph";
 
 export const MENUS = [
   {
@@ -20,11 +21,10 @@ export const MENUS = [
     url: "/trackActivities",
   },
   {
-    name: "Report",
-    icon: InsertChartIcon,
-    url: "/reports",
+    name: "Investment Growth",
+    icon: AutoGraphIcon,
+    url: "/investmentGrowth",
   },
-
   {
     name: "Category",
     icon: CategoryIcon,
