@@ -27,53 +27,37 @@ import dayjs, { Dayjs } from "dayjs";
 import { useSnackbar } from "@/provider/SnackbarContext";
 import { CategoryIdConsts } from "@/data/CategoryIdConsts";
 
-type TransactionFormValues = {
+type InvestmentSearchFormType = {
   subCategoryId: string;
-  investedAmount: string | number;
-  portfolioAmount: string | number;
-  description: string;
   asOfDate: Dayjs | null;
 };
 
-export default function InvestmentGrowthForm({
+export default function InvestmentSearchForm({
   closeDrawer,
   subCatgories,
+  applySearch,
 }: {
   closeDrawer: any;
   subCatgories: SubCategoryDto[];
+  applySearch: any;
 }) {
   const { saveInvestmentPortfolio } = useFinance();
   const { showSnackbar } = useSnackbar();
-  const formik = useFormik<TransactionFormValues>({
+  const formik = useFormik<InvestmentSearchFormType>({
     initialValues: {
       subCategoryId: "",
-      investedAmount: "",
-      portfolioAmount: "",
-      description: "",
       asOfDate: null,
     },
     enableReinitialize: true, // <-- this is key
 
     onSubmit: (values) => {
       const investmentPayload = {
-        categoryId: CategoryIdConsts.SavingId,
         subCategoryId: values.subCategoryId,
-        investedAmount: values.investedAmount,
-        portfolioAmount: values.portfolioAmount,
-        description: values.description,
         asOfDate: values.asOfDate?.toISOString(),
       };
+      applySearch(investmentPayload);
 
-      saveInvestmentPortfolio(investmentPayload)
-        .then((response: any) => {
-          console.log("Transaction Saved: ", response);
-          showSnackbar("Successfully saved the investment", "success");
-          closeDrawer();
-          // refetch();
-        })
-        .catch((error: any) => {
-          console.log("Some error occureed");
-        });
+      console.log("Payload: ", investmentPayload);
     },
   });
   return (
@@ -110,10 +94,11 @@ export default function InvestmentGrowthForm({
             {formik.touched.subCategoryId && formik.errors.subCategoryId}
           </FormHelperText>
         </FormControl>
+
         <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
-              label="As On Date"
+              label="As Of Date"
               value={formik.values.asOfDate}
               onChange={(value) => {
                 formik.setFieldValue("asOfDate", value);
@@ -132,60 +117,6 @@ export default function InvestmentGrowthForm({
             />
           </LocalizationProvider>
         </FormControl>
-        <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
-          <TextField
-            label="Invested Amount"
-            name="investedAmount"
-            variant="standard"
-            type="number"
-            value={formik.values.investedAmount}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched.investedAmount &&
-              Boolean(formik.errors.investedAmount)
-            }
-            helperText={
-              formik.touched.investedAmount && formik.errors.investedAmount
-            }
-          />
-        </FormControl>
-
-        <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
-          <TextField
-            label="Portfolio Amount"
-            name="portfolioAmount"
-            variant="standard"
-            type="number"
-            value={formik.values.portfolioAmount}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched.portfolioAmount &&
-              Boolean(formik.errors.portfolioAmount)
-            }
-            helperText={
-              formik.touched.portfolioAmount && formik.errors.portfolioAmount
-            }
-          />
-        </FormControl>
-
-        <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
-          <TextField
-            label="Description"
-            name="description"
-            variant="standard"
-            multiline
-            minRows={3}
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched.description && Boolean(formik.errors.description)
-            }
-            helperText={formik.touched.description && formik.errors.description}
-          />
-        </FormControl>
 
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
           <Button
@@ -196,7 +127,7 @@ export default function InvestmentGrowthForm({
             type="submit"
             sx={{ mr: 1 }}
           >
-            Save
+            Apply
           </Button>
           <Button
             fullWidth

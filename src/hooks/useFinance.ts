@@ -1,4 +1,5 @@
 import { useFetch } from "@/hooks/useFetch";
+import { postponeWithTracking } from "next/dist/server/app-render/dynamic-rendering";
 
 const useFinance = () => {
   const { get, post, put, del, postWithQueryParams } = useFetch();
@@ -76,12 +77,43 @@ const useFinance = () => {
     }
   };
 
+  /**
+   * Fetches the investment growth values based on the given filters.
+   * @param {any} data - The filters to be applied to the query.
+   * @returns {Promise<{content: any[], totalElements: number, totalPages: number, numberOfElements: number}>}
+   * The promise resolves with an object containing the fetched data and metadata.
+   * The object will have the following structure:
+   * {
+   *   content: any[],
+   *   totalElements: number,
+   *   totalPages: number,
+   *   numberOfElements: number
+   * }
+   */
+  const fetchInvestmentGrowthValues = async (data: any) => {
+    try {
+      const response = await post(
+        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/portfolio/search`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching category data:", error);
+      return {
+        content: [],
+        totalElements: 0,
+        totalPages: 0,
+        numberOfElements: 0,
+      };
+    }
+  };
   return {
     fetchParties,
     createAParty,
     saveTransaction,
     fetchTransactions,
     saveInvestmentPortfolio,
+    fetchInvestmentGrowthValues,
   };
 };
 
