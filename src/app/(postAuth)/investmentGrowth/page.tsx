@@ -15,6 +15,7 @@ import { useFinance } from "@/hooks/useFinance";
 import GrowthTables from "@/components/feature/investmentGrowth/growthTables";
 import AddIcon from '@mui/icons-material/Add';
 import SyncIcon from '@mui/icons-material/Sync';
+import InvestmentGrowthAnalysis from "@/components/feature/investmentGrowth/investmentAnalysisCards";
 
 export default function InvestGrowthAnalysis() {
   const [open, setOpen] = useState(false);
@@ -88,9 +89,10 @@ export default function InvestGrowthAnalysis() {
           gap: 2,
           flexDirection: "row",
           justifyContent: "flex-end",
+          mb:2
         }}
       >
-        <Tooltip title="Refetch Portfolio Data" sx={{mt:2}}>
+        <Tooltip title="Refetch Portfolio Data" sx={{ mt: 2 }}>
           <IconButton onClick={() => refetchPortfolio()} >
             <SyncIcon />
           </IconButton>
@@ -109,8 +111,8 @@ export default function InvestGrowthAnalysis() {
         </Button>
       </Box>
 
-      <Grid container spacing={2}>
-        <Grid size={12}>
+      <Grid container spacing={1}>
+        <Grid size={9}>
           {isLoadingPortfolioData ? (
             <Card variant="outlined" sx={{ mt: 2, p: 2 }}>
               <CardContent>
@@ -163,7 +165,9 @@ export default function InvestGrowthAnalysis() {
             </Box>
           )}
         </Grid>
-        <Grid size={4}></Grid>
+        <Grid size={3}>
+          <InvestmentGrowthAnalysis />
+        </Grid>
       </Grid>
 
       <Drawer open={openViewDrawer} onClose={toggleViewDrawer} anchor="right">
