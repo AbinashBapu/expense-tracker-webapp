@@ -245,17 +245,22 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
 
   return (
     <>
-      <Card variant="outlined" sx={{}}>
-        <CardContent>
-          {rows.length === 0 ? (
-            <Typography
-              textAlign="center"
-              color="text.secondary"
-              sx={{ mt: 4 }}
-            >
-              No transactions found for the selected date.
-            </Typography>
-          ) : (
+      {rows.length === 0 ? (
+        <Box sx={{ textAlign: "center", mt: 6 }}>
+          <Typography variant="h6" color="text.secondary" gutterBottom>
+            No transaction records found
+          </Typography>
+          <Typography variant="body2" color="text.disabled">
+            Add an investment to start tracking your portfolio growth.
+          </Typography>
+          {/* <Button onClick={toggleViewDrawer} variant="contained" sx={{ mt: 2 }} endIcon={<AddIcon />}>
+                Add to Portfolio
+              </Button> */}
+        </Box>
+      ) : (
+        <Card variant="outlined" sx={{}}>
+          <CardContent>
+
             <>
               <Box
                 sx={{
@@ -469,14 +474,14 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
                 </Box>
               )}
             </>
-          )}
-          <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
-            <Typography variant="body2" color="text.secondary">
-              Total Transactions: {transactionData?.totalElements ?? 0}
-            </Typography>
-          </Box>
-        </CardContent>
-      </Card>
+
+            <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
+              <Typography variant="body2" color="text.secondary">
+                Total Transactions: {transactionData?.totalElements ?? 0}
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>)}
 
       {/* Pagination */}
       {transactionData?.totalPages > 1 && (

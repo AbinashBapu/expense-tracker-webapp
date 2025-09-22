@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
 import React, { useEffect, useRef, useState } from "react";
-import { Card, CardContent, Grid, Pagination, Skeleton, Stack, Typography } from "@mui/material";
+import { Card, CardContent, Grid, IconButton, Pagination, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
 import InvestmentGrowthForm from "@/components/feature/investmentGrowth/investmentForm";
 import { useCategory } from "@/hooks/useCategory";
 import { useQuery } from "@tanstack/react-query";
@@ -14,6 +14,7 @@ import InvestmentSearchForm from "@/components/feature/investmentGrowth/investme
 import { useFinance } from "@/hooks/useFinance";
 import GrowthTables from "@/components/feature/investmentGrowth/growthTables";
 import AddIcon from '@mui/icons-material/Add';
+import SyncIcon from '@mui/icons-material/Sync';
 
 export default function InvestGrowthAnalysis() {
   const [open, setOpen] = useState(false);
@@ -47,6 +48,7 @@ export default function InvestGrowthAnalysis() {
     data: portfolioData,
     isLoading: isLoadingPortfolioData,
     error: portfolioError,
+    refetch: refetchPortfolio
   } = useQuery({
     queryKey: ["portfolioSearch", searchValues],
     queryFn: () => fetchInvestmentGrowthValues(searchValues),
@@ -88,6 +90,12 @@ export default function InvestGrowthAnalysis() {
           justifyContent: "flex-end",
         }}
       >
+        <Tooltip title="Refetch Portfolio Data" sx={{mt:2}}>
+          <IconButton onClick={() => refetchPortfolio()} >
+            <SyncIcon />
+          </IconButton>
+        </Tooltip>
+        {/* <Button onClick={()=>refetchPortfolio()} variant="contained" sx={{ mt: 2 }} tooltip="Refetch Portfolio Data"><SyncIcon /></Button> */}
         <Button onClick={toggleViewDrawer} variant="contained" sx={{ mt: 2 }} endIcon={<AddIcon />}>
           Add to Portfolio
         </Button>
@@ -95,7 +103,7 @@ export default function InvestGrowthAnalysis() {
           onClick={toggleSearchDrawer}
           variant="contained"
           endIcon={<QueryStatsIcon />}
-          sx={{ mt: 2 }} 
+          sx={{ mt: 2 }}
         >
           Search
         </Button>
@@ -104,7 +112,6 @@ export default function InvestGrowthAnalysis() {
       <Grid container spacing={2}>
         <Grid size={12}>
           {isLoadingPortfolioData ? (
-            // 🔹 Loading state → Skeleton
             <Card variant="outlined" sx={{ mt: 2, p: 2 }}>
               <CardContent>
                 <Stack spacing={2}>

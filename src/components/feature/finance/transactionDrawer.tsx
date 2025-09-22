@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import z from "zod";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -50,6 +50,7 @@ export default function TransactionForm({
   initialData?: any;
   refetch: any;
 }) {
+ const today = useMemo(() => dayjs(), []);
   const { saveTransaction } = useFinance();
   const { showSnackbar } = useSnackbar();
   const [subCategories, setSubCategories] = useState<SubCategoryDto[]>([]);
@@ -63,7 +64,7 @@ export default function TransactionForm({
       transactionType: "Dr",
       amount: "",
       description: "",
-      transactionDate: null,
+      transactionDate: today,
     },
     enableReinitialize: true, // <-- this is key
     validate: transactionFormValidate,
@@ -424,4 +425,3 @@ const transactionFormValidate = (values: any) => {
   }
 };
 
-// https://www.highcharts.com/demo/highcharts/combo
