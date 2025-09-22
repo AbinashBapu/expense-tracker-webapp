@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
 import React, { useEffect, useRef, useState } from "react";
-import { Grid, Pagination, Stack, Typography } from "@mui/material";
+import { Card, CardContent, Grid, Pagination, Skeleton, Stack, Typography } from "@mui/material";
 import InvestmentGrowthForm from "@/components/feature/investmentGrowth/investmentForm";
 import { useCategory } from "@/hooks/useCategory";
 import { useQuery } from "@tanstack/react-query";
@@ -13,6 +13,7 @@ import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import InvestmentSearchForm from "@/components/feature/investmentGrowth/investmentSearchForm";
 import { useFinance } from "@/hooks/useFinance";
 import GrowthTables from "@/components/feature/investmentGrowth/growthTables";
+import AddIcon from '@mui/icons-material/Add';
 
 export default function InvestGrowthAnalysis() {
   const [open, setOpen] = useState(false);
@@ -81,20 +82,20 @@ export default function InvestGrowthAnalysis() {
     <Box>
       <Box
         sx={{
-          mb: 2,
           display: "flex",
           gap: 2,
           flexDirection: "row",
           justifyContent: "flex-end",
         }}
       >
-        <Button onClick={toggleViewDrawer} variant="contained">
-          Log Portfolio
+        <Button onClick={toggleViewDrawer} variant="contained" sx={{ mt: 2 }} endIcon={<AddIcon />}>
+          Add to Portfolio
         </Button>
         <Button
           onClick={toggleSearchDrawer}
           variant="contained"
           endIcon={<QueryStatsIcon />}
+          sx={{ mt: 2 }} 
         >
           Search
         </Button>
@@ -102,39 +103,58 @@ export default function InvestGrowthAnalysis() {
 
       <Grid container spacing={2}>
         <Grid size={12}>
-          {(!isLoadingPortfolioData &&
-            portfolioData &&
-            portfolioData.content.length > 0 && (
-              <>
-                <GrowthTables
-                  growthData={portfolioData}
-                  isLoading={isLoadingPortfolioData}
-                  error={portfolioError}
-                />
-                {portfolioData?.totalPages > 1 && (
-                  <Box
-                    sx={{ display: "flex", justifyContent: "center", mt: 3 }}
-                  >
-                    <Stack spacing={2}>
-                      <Pagination
-                        page={searchValues.page + 1}
-                        count={portfolioData.totalPages}
-                        onChange={(e, value) => {
-                          setSearchValues((prv) => ({
-                            ...prv,
-                            page: value - 1,
-                          }));
-                        }}
-                        showFirstButton
-                        showLastButton
-                        color="primary"
-                        variant="outlined"
-                      />
-                    </Stack>
-                  </Box>
-                )}
-              </>
-            )) || <Typography>No Data</Typography>}
+          {isLoadingPortfolioData ? (
+            // 🔹 Loading state → Skeleton
+            <Card variant="outlined" sx={{ mt: 2, p: 2 }}>
+              <CardContent>
+                <Stack spacing={2}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Skeleton key={i} variant="rectangular" height={40} />
+                  ))}
+                </Stack>
+              </CardContent>
+            </Card>
+          ) : portfolioData && portfolioData.content.length > 0 ? (
+            <>
+              <GrowthTables
+                growthData={portfolioData}
+                isLoading={isLoadingPortfolioData}
+                error={portfolioError}
+              />
+              {portfolioData?.totalPages > 1 && (
+                <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+                  <Stack spacing={2}>
+                    <Pagination
+                      page={searchValues.page + 1}
+                      count={portfolioData.totalPages}
+                      onChange={(e, value) => {
+                        setSearchValues((prv) => ({
+                          ...prv,
+                          page: value - 1,
+                        }));
+                      }}
+                      showFirstButton
+                      showLastButton
+                      color="primary"
+                      variant="outlined"
+                    />
+                  </Stack>
+                </Box>
+              )}
+            </>
+          ) : (
+            <Box sx={{ textAlign: "center", mt: 4 }}>
+              <Typography variant="h6" color="text.secondary" gutterBottom>
+                No portfolio records found
+              </Typography>
+              <Typography variant="body2" color="text.disabled">
+                Add an investment to start tracking your portfolio growth.
+              </Typography>
+              <Button onClick={toggleViewDrawer} variant="contained" sx={{ mt: 2 }} endIcon={<AddIcon />}>
+                Add to Portfolio
+              </Button>
+            </Box>
+          )}
         </Grid>
         <Grid size={4}></Grid>
       </Grid>

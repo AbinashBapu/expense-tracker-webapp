@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import z from "zod";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -27,7 +27,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { useSnackbar } from "@/provider/SnackbarContext";
 import { CategoryIdConsts } from "@/data/CategoryIdConsts";
 
-type TransactionFormValues = {
+type InvestmentGrowthFormType = {
   subCategoryId: string;
   investedAmount: string | number;
   portfolioAmount: string | number;
@@ -44,16 +44,17 @@ export default function InvestmentGrowthForm({
 }) {
   const { saveInvestmentPortfolio } = useFinance();
   const { showSnackbar } = useSnackbar();
-  const formik = useFormik<TransactionFormValues>({
+  const today = useMemo(() => dayjs(), []);
+  const formik = useFormik<InvestmentGrowthFormType>({
     initialValues: {
       subCategoryId: "",
       investedAmount: "",
       portfolioAmount: "",
       description: "",
-      asOfDate: null,
+      asOfDate: today, // Set default to today
     },
-    enableReinitialize: true, // <-- this is key
-
+    enableReinitialize: true,
+    validate: validateInvestmentForm, // enable this
     onSubmit: (values) => {
       const investmentPayload = {
         categoryId: CategoryIdConsts.SavingId,
@@ -69,15 +70,16 @@ export default function InvestmentGrowthForm({
           console.log("Transaction Saved: ", response);
           showSnackbar("Successfully saved the investment", "success");
           closeDrawer();
-          // refetch();
         })
         .catch((error: any) => {
-          console.log("Some error occureed");
+          showSnackbar("Unable to process your request, please contact support!", "error");
         });
     },
   });
+
   return (
     <>
+
       <form onSubmit={formik.handleSubmit}>
         <FormControl
           variant="standard"
@@ -113,7 +115,7 @@ export default function InvestmentGrowthForm({
         <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
-              label="As On Date"
+              label="As Of Date"
               value={formik.values.asOfDate}
               onChange={(value) => {
                 formik.setFieldValue("asOfDate", value);
@@ -213,3 +215,42 @@ export default function InvestmentGrowthForm({
     </>
   );
 }
+
+const validateInvestmentForm = (values: any) => {
+  const validateInvestmentForm = z.object({
+    subCategoryId: z.string().min(1, "Subcategory is required"),
+    investedAmount: z
+      .union([
+        z.number().min(1, "Invested amount is required"),
+        z
+          .string()
+          .refine((val) => !!val && !isNaN(Number(val)) && Number(val) > 0, {
+            message: "Invested amount is required",
+          }),
+      ]),
+    portfolioAmount: z
+      .union([
+        z.number().min(1, "Portfolio amount is required"),
+        z
+          .string()
+          .refine((val) => !!val && !isNaN(Number(val)) && Number(val) > 0, {
+            message: "Portfolio amount is required",
+          }),
+      ]),
+    description: z.string().min(1, "Description is required"),
+    asOfDate: z
+      .any()
+      .refine((val) => val != null && val !== "", {
+        message: "As of date is required",
+      }),
+  });
+
+  try {
+    validateInvestmentForm.parse(values);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.log("Error: " + JSON.stringify(error.formErrors.fieldErrors));
+      return error.formErrors.fieldErrors;
+    }
+  }
+};
