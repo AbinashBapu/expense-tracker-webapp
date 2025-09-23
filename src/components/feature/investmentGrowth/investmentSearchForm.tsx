@@ -29,6 +29,7 @@ import { CategoryIdConsts } from "@/data/CategoryIdConsts";
 
 type InvestmentSearchFormType = {
   subCategoryId: string;
+  direction: string;
   asOfDate: Dayjs | null;
 };
 
@@ -36,23 +37,27 @@ export default function InvestmentSearchForm({
   closeDrawer,
   subCatgories,
   applySearch,
+  searchValues,
 }: {
   closeDrawer: any;
   subCatgories: SubCategoryDto[];
   applySearch: any;
+  searchValues: any;
 }) {
   const { saveInvestmentPortfolio } = useFinance();
   const { showSnackbar } = useSnackbar();
   const formik = useFormik<InvestmentSearchFormType>({
     initialValues: {
-      subCategoryId: "",
-      asOfDate: null,
+      subCategoryId: searchValues.subCategoryId,
+      direction: searchValues.direction,
+      asOfDate: searchValues.asOfDate ? dayjs(searchValues.asOfDate) : null,
     },
     enableReinitialize: true, // <-- this is key
 
     onSubmit: (values) => {
       const investmentPayload = {
         subCategoryId: values.subCategoryId,
+        direction: values.direction,
         asOfDate: values.asOfDate?.toISOString(),
       };
       applySearch(investmentPayload);
@@ -95,7 +100,26 @@ export default function InvestmentSearchForm({
           </FormHelperText>
         </FormControl>
 
-        <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
+        <FormControl variant="standard" fullWidth sx={{ mb: 1 }}>
+          <InputLabel id="direction-select-label">direction</InputLabel>
+          <Select
+            fullWidth
+            labelId="subcategory-select-label"
+            id="subcategory-select"
+            name="direction"
+            value={formik.values.direction}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value="asc">Ascending</MenuItem>
+            <MenuItem value="desc">Descending</MenuItem>
+          </Select>
+        </FormControl>
+
+        {/* <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               label="As Of Date"
@@ -116,7 +140,7 @@ export default function InvestmentSearchForm({
               }}
             />
           </LocalizationProvider>
-        </FormControl>
+        </FormControl> */}
 
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
           <Button
@@ -129,6 +153,18 @@ export default function InvestmentSearchForm({
           >
             Apply
           </Button>
+          {/* <Button
+            fullWidth
+            size="small"
+            variant="contained"
+            color="error"
+            type="submit"
+            sx={{ mr: 1 }}
+            onClick={() => formik.resetForm()}
+          >
+            Reset
+          </Button> */}
+
           <Button
             fullWidth
             size="small"

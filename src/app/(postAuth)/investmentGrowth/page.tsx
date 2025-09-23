@@ -3,7 +3,17 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
 import React, { useEffect, useRef, useState } from "react";
-import { Card, CardContent, Grid, IconButton, Pagination, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Grid,
+  IconButton,
+  Pagination,
+  Skeleton,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import InvestmentGrowthForm from "@/components/feature/investmentGrowth/investmentForm";
 import { useCategory } from "@/hooks/useCategory";
 import { useQuery } from "@tanstack/react-query";
@@ -13,8 +23,8 @@ import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import InvestmentSearchForm from "@/components/feature/investmentGrowth/investmentSearchForm";
 import { useFinance } from "@/hooks/useFinance";
 import GrowthTables from "@/components/feature/investmentGrowth/growthTables";
-import AddIcon from '@mui/icons-material/Add';
-import SyncIcon from '@mui/icons-material/Sync';
+import AddIcon from "@mui/icons-material/Add";
+import SyncIcon from "@mui/icons-material/Sync";
 import InvestmentGrowthAnalysis from "@/components/feature/investmentGrowth/investmentAnalysisCards";
 
 export default function InvestGrowthAnalysis() {
@@ -24,7 +34,9 @@ export default function InvestGrowthAnalysis() {
   const [searchValues, setSearchValues] = useState({
     page: 0,
     size: 10,
-    subCategoryId: null,
+    direction: "asc",
+    subCategoryId: "",
+    sortBy: "asOfDate",
     asOnDate: null,
   });
   const { fetchSubCategories } = useCategory();
@@ -49,7 +61,7 @@ export default function InvestGrowthAnalysis() {
     data: portfolioData,
     isLoading: isLoadingPortfolioData,
     error: portfolioError,
-    refetch: refetchPortfolio
+    refetch: refetchPortfolio,
   } = useQuery({
     queryKey: ["portfolioSearch", searchValues],
     queryFn: () => fetchInvestmentGrowthValues(searchValues),
@@ -78,6 +90,7 @@ export default function InvestGrowthAnalysis() {
       closeDrawer={toggleSearchDrawer}
       subCatgories={subCategoryData}
       applySearch={applySearch}
+      searchValues={searchValues}
     />
   );
 
@@ -89,16 +102,21 @@ export default function InvestGrowthAnalysis() {
           gap: 2,
           flexDirection: "row",
           justifyContent: "flex-end",
-          mb:2
+          mb: 2,
         }}
       >
         <Tooltip title="Refetch Portfolio Data" sx={{ mt: 2 }}>
-          <IconButton onClick={() => refetchPortfolio()} >
+          <IconButton onClick={() => refetchPortfolio()}>
             <SyncIcon />
           </IconButton>
         </Tooltip>
         {/* <Button onClick={()=>refetchPortfolio()} variant="contained" sx={{ mt: 2 }} tooltip="Refetch Portfolio Data"><SyncIcon /></Button> */}
-        <Button onClick={toggleViewDrawer} variant="contained" sx={{ mt: 2 }} endIcon={<AddIcon />}>
+        <Button
+          onClick={toggleViewDrawer}
+          variant="contained"
+          sx={{ mt: 2 }}
+          endIcon={<AddIcon />}
+        >
           Add to Portfolio
         </Button>
         <Button
@@ -159,7 +177,12 @@ export default function InvestGrowthAnalysis() {
               <Typography variant="body2" color="text.disabled">
                 Add an investment to start tracking your portfolio growth.
               </Typography>
-              <Button onClick={toggleViewDrawer} variant="contained" sx={{ mt: 2 }} endIcon={<AddIcon />}>
+              <Button
+                onClick={toggleViewDrawer}
+                variant="contained"
+                sx={{ mt: 2 }}
+                endIcon={<AddIcon />}
+              >
                 Add to Portfolio
               </Button>
             </Box>

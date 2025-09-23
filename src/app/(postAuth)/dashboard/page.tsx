@@ -229,19 +229,14 @@ export default function ReportPage() {
         </Grid>
 
         <Grid size={12} sx={{ mb: 5 }}>
-          {summaaryDataForDonutChartBasedOnCategory
-            && summaaryDataForDonutChartBasedOnCategory.categories.length >0
-            && summaaryDataForDonutChartBasedOnCategory.expense.length >0
-            && summaaryDataForDonutChartBasedOnCategory.incomes.length >0
-            && summaaryDataForDonutChartBasedOnCategory.saving.length >0
-            && <ChartBasedOnCategory
-              donutChartData={summaryData}
-              donutChartV2Data={summaaryDataForDonutChartBasedOnCategory}
-              isSummaryLoading={isSummaryLoading}
-              isSummaryLoadingForDonutChartBasedOnCategory={
-                isSummaryLoadingForDonutChartBasedOnCategory
-              }
-            />}
+          <ChartBasedOnCategory
+            donutChartData={summaryData}
+            donutChartV2Data={summaaryDataForDonutChartBasedOnCategory}
+            isSummaryLoading={isSummaryLoading}
+            isSummaryLoadingForDonutChartBasedOnCategory={
+              isSummaryLoadingForDonutChartBasedOnCategory
+            }
+          />
         </Grid>
       </Grid>
 
