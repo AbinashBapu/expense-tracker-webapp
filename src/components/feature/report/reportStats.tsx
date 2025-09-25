@@ -1,14 +1,14 @@
-import { Box, Card, CardContent, Skeleton, Typography } from "@mui/material";
 import { FC } from "react";
-import Grid from "@mui/material/Grid";
+import {
+  Box,
+  Card,
+  CardContent,
+  Divider,
+  Grid,
+  Skeleton,
+  Typography,
+} from "@mui/material";
 
-import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
-
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import MoneyOffIcon from "@mui/icons-material/MoneyOff";
-import SavingsIcon from "@mui/icons-material/Savings";
-import AssessmentIcon from "@mui/icons-material/Assessment";
-import ReportStatsCard from "./reportStatsCard";
 interface ReportStatsProps {
   isSummaryLoading: boolean;
   incomeAmount: number;
@@ -25,55 +25,79 @@ const ReportStats: FC<ReportStatsProps> = ({
   console.log("ReportStats page reloaded");
 
   return (
-    <Box sx={{ p: 2 }}>
-      <Grid container spacing={2}>
-        <Grid size={4}>
-          <ReportStatsCard
-            isSummaryLoading={isSummaryLoading}
-            amount={incomeAmount}
-            title={"Total Income"}
-            cardStyle={{
-              bgcolor: "#dbeddb",
-              boxShadow: 3,
-              borderRadius: 3,
+    <>
+      <Box sx={{ mb: 1 }}>
+        {isSummaryLoading ? (
+          <Skeleton variant="rectangular" width="100%" height="100%" />
+        ) : (
+          <Card
+            sx={{
+              bgcolor: "#f9f9f9",
+              boxShadow: 1,
+              borderRadius: 1,
               p: 2,
             }}
-          />
-        </Grid>
-
-        {/* Total Expense */}
-
-        <Grid size={4}>
-          <ReportStatsCard
-            isSummaryLoading={isSummaryLoading}
-            amount={expenseAmount}
-            title={"Total Expense"}
-            cardStyle={{
-              bgcolor: "#ffebee",
-              boxShadow: 2,
-              borderRadius: 2,
-              p: 2,
-            }}
-          />
-        </Grid>
-
-        {/* Total Saving */}
-
-        <Grid size={4}>
-          <ReportStatsCard
-            isSummaryLoading={isSummaryLoading}
-            amount={savingsAmount}
-            title={" Total Saving"}
-            cardStyle={{
-              bgcolor: "#3f50b533",
-              boxShadow: 2,
-              borderRadius: 2,
-              p: 2,
-            }}
-          />
-        </Grid>
-      </Grid>
-    </Box>
+          >
+            <Grid container>
+              <Grid
+                size={4}
+                sx={{
+                  textAlign: "center",
+                  borderRight: 1,
+                  borderColor: "#cfd0da",
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: "bold", color: "#017BFE" }}
+                >
+                  ₹
+                  {incomeAmount.toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </Typography>
+                <Typography variant="caption">Total Income</Typography>
+              </Grid>
+              <Grid
+                size={4}
+                sx={{
+                  textAlign: "center",
+                  borderRight: 1,
+                  borderColor: "#cfd0da",
+                }}
+              >
+                {/* <Typography variant="h6">Expense</Typography> */}
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: "bold", color: "#DC3444" }}
+                >
+                  ₹
+                  {expenseAmount.toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </Typography>
+                <Typography variant="caption">Total Expense</Typography>
+              </Grid>
+              <Grid size={4} sx={{ textAlign: "center" }}>
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: "bold", color: "#28A745" }}
+                >
+                  ₹
+                  {savingsAmount?.toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </Typography>
+                <Typography variant="caption">Total Savings</Typography>
+              </Grid>
+            </Grid>
+          </Card>
+        )}
+      </Box>
+    </>
   );
 };
 

@@ -1,35 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Drawer,
-  duration,
-  FormControl,
-  IconButton,
-  MenuItem,
-  Paper,
-  SelectChangeEvent,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Drawer, Paper, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 
-import { DatePicker } from "@mui/x-date-pickers";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import dayjs, { Dayjs } from "dayjs";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
 
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import MoneyOffIcon from "@mui/icons-material/MoneyOff";
-import SavingsIcon from "@mui/icons-material/Savings";
-import AssessmentIcon from "@mui/icons-material/Assessment";
 import SearchReportForm from "@/components/feature/report/searchReportForm";
 import ReportStats from "@/components/feature/report/reportStats";
 import { ReportFilter } from "@/dto/SearchParamDto";
@@ -38,20 +15,13 @@ import { useQuery } from "@tanstack/react-query";
 import TransactionStepper from "@/components/feature/report/transactionStepper";
 import { useFinance } from "@/hooks/useFinance";
 import SplineChart from "@/components/feature/splineChart";
-import DonutChart from "@/components/feature/donutChart";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import Chip from "@mui/material/Chip";
-import DonutChartv2 from "@/components/feature/donutChartV2";
 import ChartBasedOnCategory from "@/components/feature/report/transaactionSummaryBasedOnCat";
 
 export default function ReportPage() {
   const [page, setPage] = useState(0);
   const [filter, setFilter] = useState<ReportFilter>(() => {
-    console.log("Setting default filter");
-    const endDate = dayjs();
-    const startDate = endDate.subtract(30, "day");
+    const endDate = dayjs().endOf("day");
+    const startDate = endDate.subtract(30, "day").startOf("day");
 
     return {
       duration: "last30days",
@@ -85,7 +55,10 @@ export default function ReportPage() {
       return {
         duration: filterParam.duration,
         startDate: filterParam.startDate,
-        endDate: filterParam.endDate,
+        endDate:
+          filterParam.endDate == "" || filterParam.endDate == null
+            ? null
+            : filterParam.endDate,
       };
     });
     setApplySearch(true);

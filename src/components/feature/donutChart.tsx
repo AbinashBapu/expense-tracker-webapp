@@ -92,7 +92,7 @@ export default function DonutChart({
     series: [
       {
         type: "pie",
-        name: "Registrations",
+        name: "Percentage",
         // @ts-ignore - custom is not part of Highcharts.Options.chart
         colorByPoint: true,
         innerSize: "75%",
