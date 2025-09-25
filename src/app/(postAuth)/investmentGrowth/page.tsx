@@ -28,7 +28,7 @@ import SyncIcon from "@mui/icons-material/Sync";
 import InvestmentGrowthAnalysis from "@/components/feature/investmentGrowth/investmentAnalysisCards";
 
 export default function InvestGrowthAnalysis() {
-  const [open, setOpen] = useState(false);
+  const [showGrowthDiff, setShowGrowthDiff] = useState(false);
   const [openViewDrawer, setOpenViewDrawer] = useState(false);
   const [openSearchDrawer, setOpenSearchDrawer] = useState(false);
   const [searchValues, setSearchValues] = useState({
@@ -40,7 +40,19 @@ export default function InvestGrowthAnalysis() {
     asOnDate: null,
   });
   const { fetchSubCategories } = useCategory();
-  const { fetchInvestmentGrowthValues } = useFinance();
+  const { fetchInvestmentGrothAnalysisDtails, fetchInvestmentGrowthValues } =
+    useFinance();
+
+  useEffect(() => {
+    if (
+      searchValues.subCategoryId != null &&
+      searchValues.subCategoryId.trim() != ""
+    ) {
+      setShowGrowthDiff(true);
+    } else {
+      setShowGrowthDiff(false);
+    }
+  }, [searchValues]);
 
   const {
     data: subCategoryData,
@@ -55,6 +67,7 @@ export default function InvestGrowthAnalysis() {
     setSearchValues((prv) => ({ ...search, page: 0, size: 10 }));
     console.log("Search value", searchValues);
     toggleSearchDrawer();
+    refetchPortfolio();
   };
 
   const {
@@ -66,6 +79,18 @@ export default function InvestGrowthAnalysis() {
     queryKey: ["portfolioSearch", searchValues],
     queryFn: () => fetchInvestmentGrowthValues(searchValues),
   });
+
+  const {
+    data: portfolioAnalysisData,
+    isLoading: isLoadingPortfolioAnalysisData,
+    error: portfolioAnalysisError,
+    refetch: refetchPortfolioAnalysis,
+  } = useQuery({
+    queryKey: ["portfolioAnalysis", searchValues],
+    queryFn: () => fetchInvestmentGrothAnalysisDtails(searchValues),
+  });
+
+  console.log("Portfolio Data", portfolioAnalysisData);
 
   const toggleViewDrawer = () =>
     setOpenViewDrawer((prev) => {
@@ -147,6 +172,7 @@ export default function InvestGrowthAnalysis() {
                 growthData={portfolioData}
                 isLoading={isLoadingPortfolioData}
                 error={portfolioError}
+                showGrowthDiff={showGrowthDiff}
               />
               {portfolioData?.totalPages > 1 && (
                 <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
@@ -189,7 +215,9 @@ export default function InvestGrowthAnalysis() {
           )}
         </Grid>
         <Grid size={3}>
-          <InvestmentGrowthAnalysis />
+          <InvestmentGrowthAnalysis
+            portfolioAnalysisData={portfolioAnalysisData}
+          />
         </Grid>
       </Grid>
 

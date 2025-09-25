@@ -1,4 +1,3 @@
-
 import {
   Card,
   CardContent,
@@ -13,15 +12,12 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 export default function GrowthCard({
   title,
-  investedGrowth,
-  portfolioGrowth,
+  titleValues,
 }: {
-  title: string,
-  investedGrowth: { amount: number; percentage: number };
-  portfolioGrowth: { amount: number; percentage: number };
+  title: string;
+  titleValues: [];
 }) {
   return (
-
     <Card
       sx={{
         mb: 1,
@@ -44,78 +40,45 @@ export default function GrowthCard({
 
         <Divider sx={{ mb: 2 }} />
 
-        <Stack>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            sx={{
-              borderRadius: 2,
-            }}
-          >
-            <Box display="flex" alignItems="center" gap={1.2}>
+        <Stack spacing={1}>
+          {titleValues.map((item: any, index: number) => {
+            const icon = item.title.toLowerCase().includes("invested") ? (
               <AccountBalanceWalletIcon color="secondary" fontSize="small" />
-              <Typography variant="body2" color="text.secondary">
-                Invested
-              </Typography>
-            </Box>
-            <Box display="flex" alignItems="center" gap={1.5}>
-              <Typography
-                variant="body1"
-                fontWeight="600"
-                color={investedGrowth.percentage >= 0 ? "success.main" : "error.main"}
-              >
-                ₹{investedGrowth.amount.toLocaleString()}
-              </Typography>
-              <Chip
-                size="small"
-                label={`${investedGrowth.percentage}%`}
-                color={investedGrowth.percentage >= 0 ? "success" : "error"}
-                sx={{ fontWeight: 500 }}
-                variant="outlined"
-              />
-            </Box>
-
-
-          </Box>
-
-          {/* Portfolio Growth */}
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            sx={{ mt: 1 }}
-          >
-            <Box display="flex" alignItems="center" gap={1.2}>
+            ) : (
               <TrendingUpIcon color="success" fontSize="small" />
-              <Typography variant="body2" color="text.secondary">
-                Portfolio
-              </Typography>
-            </Box>
-            <Box display="flex" alignItems="center" gap={1.5}>
-              <Typography
-                variant="body1"
-                fontWeight="600"
-                color={portfolioGrowth.percentage >= 0 ? "success.main" : "error.main"}
+            );
+
+            return (
+              <Box
+                key={index}
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                sx={{ borderRadius: 2 }}
               >
-                ₹{portfolioGrowth.amount.toLocaleString()}
-              </Typography>
-              <Chip
-                size="small"
-                label={`${portfolioGrowth.percentage}%`}
-                color={portfolioGrowth.percentage >= 0 ? "success" : "error"}
-                sx={{ fontWeight: 500 }}
-                variant="outlined"
-              />
-            </Box>
+                {/* Left: Icon + Title */}
+                <Box display="flex" alignItems="center" gap={1.2}>
+                  {icon}
+                  <Typography variant="body2" color="text.secondary">
+                    {item.title}
+                  </Typography>
+                </Box>
 
-
-
-          </Box>
+                {/* Right: Amount + % Chip */}
+                <Box display="flex" alignItems="center" gap={1.5}>
+                  <Typography
+                    variant="body1"
+                    fontWeight={500}
+                    sx={{ color: "green" }}
+                  >
+                    ₹{Number(item.value).toLocaleString()}
+                  </Typography>
+                </Box>
+              </Box>
+            );
+          })}
         </Stack>
       </CardContent>
     </Card>
-
-
   );
 }

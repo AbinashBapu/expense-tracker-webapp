@@ -3,74 +3,16 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import { DateUtils } from "@/utils/dateUtil";
 
-const columns: GridColDef[] = [
-  { field: "asOnDate", headerName: "Date", flex: 1 },
-  { field: "numberOfDays", headerName: "No Of Days", flex: 1 },
-  { field: "category", headerName: "Category", flex: 1 },
-  { field: "amountInvested", headerName: "Invested Amount", flex: 1 },
-  { field: "amountAccumulated", headerName: "Amount Accumulated", flex: 1 },
-  {
-    field: "interest",
-    headerName: "Interest Gained",
-    flex: 1,
-    renderCell: (params) => {
-      return (
-        <span style={{ color: "green", fontWeight: "bold" }}>
-          {params.value}
-        </span>
-      );
-    },
-  },
-  {
-    field: "investmentGrowthAmount",
-    headerName: "Investment Grows Amount",
-    flex: 1,
-    renderCell: (params) => {
-      const rawValue = Number(params.value?.replace(/[₹,]/g, "")); // Remove ₹ and commas
-      const isNegative = rawValue < 0;
-
-      return (
-        <span style={{ color: isNegative ? "red" : "inherit" }}>
-          {params.value}
-        </span>
-      );
-    },
-  },
-  {
-    field: "portfolioGrowthAmount",
-    headerName: "Portfolio Grows Amount",
-    flex: 1,
-    renderCell: (params) => {
-      const rawValue = Number(params.value?.replace(/[₹,]/g, "")); // Remove ₹ and commas
-      const isNegative = rawValue < 0;
-
-      return (
-        <span style={{ color: isNegative ? "red" : "inherit" }}>
-          {params.value}
-        </span>
-      );
-    },
-  },
-  {
-    field: "investmentGrowthPercentage",
-    headerName: "Investment Grows In %",
-    flex: 1,
-  },
-  {
-    field: "portFolioGrowthPercentage",
-    headerName: "Portfolio Grows In %",
-    flex: 1,
-  },
-];
-
 export default function GrowthTables({
   growthData,
   isLoading,
   error,
+  showGrowthDiff,
 }: {
   growthData: any;
   isLoading: boolean;
   error: any;
+  showGrowthDiff: boolean;
 }) {
   const rowData = growthData.content.map((item: any) => ({
     id: item.investmentId,
@@ -84,7 +26,91 @@ export default function GrowthTables({
     portfolioGrowthAmount: formatINRCurrency(item.portfolioGrowthAmount),
     investmentGrowthPercentage: item.investmentGrowthPercentage,
     portFolioGrowthPercentage: item.portFolioGrowthPercentage,
+    portfolioPercentageChangeInDiff: item.portfolioPercentageChangeInDiff,
   }));
+  const columns: GridColDef[] = [
+    { field: "asOnDate", headerName: "Date", flex: 1 },
+    { field: "numberOfDays", headerName: "No Of Days", flex: 1 },
+    { field: "category", headerName: "Category", flex: 1 },
+    { field: "amountInvested", headerName: "Invested Amount", flex: 1 },
+    { field: "amountAccumulated", headerName: "Amount Accumulated", flex: 1 },
+    {
+      field: "interest",
+      headerName: "Interest Gained",
+      flex: 1,
+      renderCell: (params) => {
+        return (
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {params.value}
+          </span>
+        );
+      },
+    },
+    {
+      field: "investmentGrowthAmount",
+      headerName: "Investment Grows Amount",
+      flex: 1,
+      renderCell: (params) => {
+        const rawValue = Number(params.value?.replace(/[₹,]/g, "")); // Remove ₹ and commas
+        const isNegative = rawValue < 0;
+
+        return (
+          <span style={{ color: isNegative ? "red" : "inherit" }}>
+            {params.value}
+          </span>
+        );
+      },
+    },
+    {
+      field: "portfolioGrowthAmount",
+      headerName: "Portfolio Grows Amount",
+      flex: 1,
+      renderCell: (params) => {
+        const rawValue = Number(params.value?.replace(/[₹,]/g, "")); // Remove ₹ and commas
+        const isNegative = rawValue < 0;
+
+        return (
+          <span style={{ color: isNegative ? "red" : "inherit" }}>
+            {params.value}
+          </span>
+        );
+      },
+    },
+    {
+      field: "investmentGrowthPercentage",
+      headerName: "Investment Grows In %",
+      flex: 1,
+    },
+    {
+      field: "portFolioGrowthPercentage",
+      headerName: "Portfolio Grows In %",
+      flex: 1,
+    },
+    {
+      field: "portfolioPercentageChangeInDiff",
+      headerName: "Portfolio % Change",
+      flex: 1,
+      renderCell: (params) => {
+        const rawValue = params.value; // Remove ₹ and commas
+        const isNegative = rawValue < 0;
+
+        return (
+          <span style={{ color: isNegative ? "red" : "green" }}>
+            {Number(params.value).toFixed(2)}%
+          </span>
+        );
+      },
+    },
+  ];
+
+  if (!showGrowthDiff) {
+    columns.splice(
+      columns.findIndex(
+        (column) => column.field === "portfolioPercentageChangeInDiff"
+      ),
+      1
+    );
+  }
 
   function formatINRCurrency(amount: number): string {
     return new Intl.NumberFormat("en-IN", {
