@@ -26,6 +26,11 @@ export const MENUS = [
     url: "/investmentGrowth",
   },
   {
+    name: "Reports",
+    icon: InsertChartIcon,
+    url: "/reports",
+  },
+  {
     name: "Category",
     icon: CategoryIcon,
     url: "/category",
