@@ -18,8 +18,11 @@ import ClearIcon from "@mui/icons-material/Clear";
 import AddIcon from "@mui/icons-material/Add";
 import { FinanceSearchBox } from "@/components/feature/finance/financeSearchBox";
 import TransactionView from "@/components/feature/finance/transactionView";
+import { LogTransactionForm } from "@/components/feature/finance/logTransaction";
 
 export default function FinancePage() {
+  const [showMoreThan1TransactionForm, setShowMoreThan1TransactionForm] =
+    useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [fetch, setFetch] = useState(false);
@@ -95,6 +98,13 @@ export default function FinancePage() {
       return !prev;
     });
 
+  const showTransactionForm = () => {
+    setShowMoreThan1TransactionForm(true);
+  };
+  const hideTransactionForm = () => {
+    setShowMoreThan1TransactionForm(false);
+  };
+
   return (
     <Box>
       <FinanceSearchBox
@@ -102,7 +112,17 @@ export default function FinancePage() {
         onSearch={handleSearch}
         onClear={resetSearch}
         onAdd={handleAddNew}
+        onAddTransction={showTransactionForm}
       />
+
+      {showMoreThan1TransactionForm && categoryData && (
+        <LogTransactionForm
+          parties={partiesData}
+          categories={categoryData}
+          refetch={refetchTransactionData}
+          closeTransactionForm={hideTransactionForm}
+        />
+      )}
 
       <ActivityTransactions
         selectedCategory={categoryId}

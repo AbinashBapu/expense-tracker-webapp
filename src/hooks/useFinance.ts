@@ -40,6 +40,18 @@ const useFinance = () => {
     }
   };
 
+  const saveAllTransactions = async (data: any) => {
+    try {
+      const response = await post(
+        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/transactions/saveAll`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Please retry after sometime.", error);
+    }
+  };
+
   const fetchTransactions = async (data: any, config?: RequestInit) => {
     try {
       const response = await postWithQueryParams(
@@ -127,6 +139,7 @@ const useFinance = () => {
     fetchTransactions,
     saveInvestmentPortfolio,
     fetchInvestmentGrowthValues,
+    saveAllTransactions,
     fetchInvestmentGrothAnalysisDtails,
   };
 };

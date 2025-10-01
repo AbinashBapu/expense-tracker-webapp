@@ -25,11 +25,13 @@ export function FinanceSearchBox({
   onSearch,
   onClear,
   onAdd,
+  onAddTransction,
 }: {
   categories: CategoryDto[];
   onSearch: (date: string | null, categoryId: string | null) => void;
   onClear: () => void;
   onAdd: () => void;
+  onAddTransction: () => void;
 }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -128,16 +130,28 @@ export function FinanceSearchBox({
         </Button>
       </Stack>
 
-      <Button
-        onClick={handleAddNew}
-        variant="contained"
-        color="success"
-        size="small"
-        startIcon={<AddIcon />}
-        sx={{ whiteSpace: "nowrap", mt: { xs: 2, sm: 0 } }}
-      >
-        Transaction
-      </Button>
+      <Box gap={2}>
+        <Button
+          onClick={onAddTransction}
+          variant="contained"
+          color="primary"
+          size="small"
+          startIcon={<AddIcon />}
+          sx={{ whiteSpace: "nowrap", mt: { xs: 2, sm: 0 }, mr: 2 }}
+        >
+          Log Transactions
+        </Button>
+        <Button
+          onClick={handleAddNew}
+          variant="contained"
+          color="success"
+          size="small"
+          startIcon={<AddIcon />}
+          sx={{ whiteSpace: "nowrap", mt: { xs: 2, sm: 0 } }}
+        >
+          Transaction
+        </Button>
+      </Box>
     </Box>
   );
 }
