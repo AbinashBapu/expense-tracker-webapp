@@ -170,7 +170,7 @@ export default function ChartBasedOnCategory({
     <>
       <Grid container spacing={1} sx={{ mt: 1 }}>
         <Grid size={12}>
-          <Box display="flex" justifyContent="flex-end">
+          <Box display="flex">
             <ButtonGroup variant="outlined" aria-label="view toggle buttons">
               <Button
                 onClick={() => handleSwitchChange("chart")}
@@ -187,6 +187,7 @@ export default function ChartBasedOnCategory({
             </ButtonGroup>
           </Box>
         </Grid>
+        <Grid size={6}>{v2DonutChart}</Grid>
         <Grid size={6}>
           {!isSummaryLoading && (
             <DonutChart
@@ -199,7 +200,6 @@ export default function ChartBasedOnCategory({
             />
           )}
         </Grid>
-        <Grid size={6}>{v2DonutChart}</Grid>
       </Grid>
     </>
   );

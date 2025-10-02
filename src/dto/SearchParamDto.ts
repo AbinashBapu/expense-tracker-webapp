@@ -1,10 +1,9 @@
+import { Dayjs } from "dayjs";
+
 export interface SearchParamDto {
   fromDate: string | null;
   toDate: string | null;
-}
-
-export interface ReportFilter {
-  duration: string;
-  startDate: string | null;
-  endDate: string | null;
+  categoryId: string | null;
+  subCategoryId: string | null;
+  transactionType: string | null;
 }

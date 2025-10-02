@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Box, Button, Drawer, Paper, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 
@@ -9,58 +9,70 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
 import SearchReportForm from "@/components/feature/report/searchReportForm";
 import ReportStats from "@/components/feature/report/reportStats";
-import { ReportFilter } from "@/dto/SearchParamDto";
+import { SearchParamDto } from "@/dto/SearchParamDto";
 import { useReport } from "@/hooks/useReport";
 import { useQuery } from "@tanstack/react-query";
 import TransactionStepper from "@/components/feature/report/transactionStepper";
 import { useFinance } from "@/hooks/useFinance";
 import SplineChart from "@/components/feature/splineChart";
 import ChartBasedOnCategory from "@/components/feature/report/transaactionSummaryBasedOnCat";
+import { useCategory } from "@/hooks/useCategory";
 
 export default function ReportPage() {
+  const size = 10;
   const [page, setPage] = useState(0);
-  const [filter, setFilter] = useState<ReportFilter>(() => {
-    const endDate = dayjs().endOf("day");
-    const startDate = endDate.subtract(30, "day").startOf("day");
-
+  const today = useMemo(() => dayjs(), []);
+  const [filter, setFilter] = useState<SearchParamDto>(() => {
     return {
-      duration: "last30days",
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
+      fromDate: today.startOf("month").toISOString(),
+      toDate: today.endOf("day").toISOString(), //values.toDate,
+      categoryId: "",
+      subCategoryId: "",
+      transactionType: "",
     };
   });
   const [applySearch, setApplySearch] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { fetchCategoryData } = useCategory();
+  const { fetchTransactions, fetchParties } = useFinance();
+  const [days, setDays] = useState(0);
+  const {
+    data: partiesData,
+    isLoading: isLoadingParties,
+    error: partiesError,
+  } = useQuery({
+    queryKey: ["parties"],
+    queryFn: () => fetchParties(),
+  });
+
+  const {
+    data: categoryData,
+    isLoading: isLoadingCategory,
+    error: categoryError,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => fetchCategoryData(),
+  });
+
   const {
     fetchFinanceSummary,
     fetchFinanceSummaryForSplineChart,
     fetchFinanceSummaryForDonutChartBasedOnCategory,
   } = useReport();
-  const { fetchTransactions } = useFinance();
 
   useEffect(() => {
-    if (applySearch) {
-      summaryRefetch();
-      transactionRefetch();
+    if (filter) {
+      setDays(
+        filter.fromDate ? dayjs(filter.toDate).diff(filter.fromDate, "day") : 0
+      );
       setApplySearch(false);
     }
-  }, [applySearch]);
+  }, [filter]);
 
-  const size = 10;
-
-  console.log("Report page reloaded");
-
-  const handleSearch = (filterParam: ReportFilter) => {
-    setFilter((prev: ReportFilter) => {
-      return {
-        duration: filterParam.duration,
-        startDate: filterParam.startDate,
-        endDate:
-          filterParam.endDate == "" || filterParam.endDate == null
-            ? null
-            : filterParam.endDate,
-      };
-    });
+  const handleSearch = (filterParam: SearchParamDto) => {
+    console.log("Search param", filterParam);
+    setFilter(filterParam);
+    setDrawerOpen(false);
     setApplySearch(true);
   };
 
@@ -72,11 +84,7 @@ export default function ReportPage() {
     isFetching: isSummaryFetching,
   } = useQuery({
     queryKey: ["financeSummary", filter],
-    queryFn: () =>
-      fetchFinanceSummary({
-        fromDate: filter.startDate,
-        toDate: filter.endDate,
-      }),
+    queryFn: () => fetchFinanceSummary(filter),
   });
 
   const {
@@ -87,11 +95,7 @@ export default function ReportPage() {
     isFetching: isSummaryFetchingForSplineChart,
   } = useQuery({
     queryKey: ["financeSummarySplineChart", filter],
-    queryFn: () =>
-      fetchFinanceSummaryForSplineChart({
-        fromDate: filter.startDate,
-        toDate: filter.endDate,
-      }),
+    queryFn: () => fetchFinanceSummaryForSplineChart(filter),
   });
 
   const {
@@ -102,11 +106,7 @@ export default function ReportPage() {
     isFetching: isSummaryFetchingForDonutChartBasedOnCategory,
   } = useQuery({
     queryKey: ["fetchFinanceSummaryForDonutChartBasedOnCategory", filter],
-    queryFn: () =>
-      fetchFinanceSummaryForDonutChartBasedOnCategory({
-        fromDate: filter.startDate,
-        toDate: filter.endDate,
-      }),
+    queryFn: () => fetchFinanceSummaryForDonutChartBasedOnCategory(filter),
   });
 
   const {
@@ -123,10 +123,7 @@ export default function ReportPage() {
         size,
         sortBy: "spentOn",
         direction: "desc",
-        filters: {
-          fromDate: filter.startDate,
-          toDate: filter.endDate,
-        },
+        filters: filter,
       }),
   });
 
@@ -160,14 +157,12 @@ export default function ReportPage() {
       },
     ];
     SplineChartComponent = (
-      <Paper elevation={3}>
-        <SplineChart
-          categories={summaaryDataForSplineChart?.categories || []}
-          chartData={chartData}
-          title="Income vs Expense vs Savings"
-          yaxisTitle="Amount (in ₹)"
-        />
-      </Paper>
+      <SplineChart
+        categories={summaaryDataForSplineChart?.categories || []}
+        chartData={chartData}
+        title="Income vs Expense vs Savings"
+        yaxisTitle="Amount (in ₹)"
+      />
     );
   }
 
@@ -191,11 +186,15 @@ export default function ReportPage() {
             incomeAmount={summaryData?.income || 0}
             expenseAmount={summaryData?.expense || 0}
             savingsAmount={summaryData?.saving || 0}
+            incomePerDay={summaryData?.avgIncomePerDay || 0}
+            savingsPerDay={summaryData?.avgSavingPerDay || 0}
+            expensePerDay={summaryData?.avgExpensePerDay || 0}
           />
           {SplineChartComponent}
         </Grid>
         <Grid size={4}>
           <TransactionStepper
+            days={days}
             transactionData={transactionData}
             onClickBtn={handleOnClickNextOrPrev}
           />
@@ -234,6 +233,8 @@ export default function ReportPage() {
             <SearchReportForm
               closeDrawer={() => setDrawerOpen(false)}
               onSearch={handleSearch}
+              parties={partiesData}
+              categories={categoryData}
               filter={filter}
             />
           </Box>

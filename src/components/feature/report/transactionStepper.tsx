@@ -27,9 +27,11 @@ import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import ShareIcon from "@mui/icons-material/Share";
 
 export default function TransactionStepper({
+  days,
   onClickBtn,
   transactionData,
 }: {
+  days: number;
   onClickBtn: (pageNumber: number) => void;
   transactionData: any;
 }) {
@@ -50,7 +52,7 @@ export default function TransactionStepper({
   };
 
   return (
-    <Paper elevation={3}>
+    <Paper elevation={1}>
       <Paper
         square
         elevation={1}
@@ -62,7 +64,7 @@ export default function TransactionStepper({
           bgcolor: "background.default",
         }}
       >
-        <Typography variant="h5">Transactions</Typography>
+        <Typography variant="h5">Transactions ( {days} days )</Typography>
       </Paper>
       <Box
         sx={{
@@ -75,7 +77,7 @@ export default function TransactionStepper({
         {transactionData?.content?.map((transaction: TransactionDto) => (
           <Card
             key={transaction.transactionId}
-            elevation={3}
+            elevation={1}
             sx={{
               borderRadius: 3,
               mb: 1,
@@ -176,7 +178,7 @@ export default function TransactionStepper({
         ))}
       </Box>
       <MobileStepper
-        elevation={6}
+        elevation={1}
         variant="progress"
         steps={maxSteps}
         position="static"
