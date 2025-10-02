@@ -63,7 +63,9 @@ export default function ReportPage() {
   useEffect(() => {
     if (filter) {
       setDays(
-        filter.fromDate ? dayjs(filter.toDate).diff(filter.fromDate, "day") : 0
+        filter.fromDate
+          ? dayjs(filter.toDate).diff(filter.fromDate, "day") + 1
+          : 0
       );
       setApplySearch(false);
     }

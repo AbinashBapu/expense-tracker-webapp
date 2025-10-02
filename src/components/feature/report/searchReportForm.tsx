@@ -111,8 +111,8 @@ export default function SearchReportForm({
               onChange={(value) => {
                 formik.setFieldValue("toDate", value);
               }}
-              maxDate={dayjs()}
               format="DD-MM-YYYY HH:mm"
+              maxDate={dayjs()}
               slotProps={{
                 textField: {
                   variant: "standard",
