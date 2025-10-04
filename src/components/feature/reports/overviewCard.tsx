@@ -66,7 +66,7 @@ export default function OverviewCard() {
       >
         <CardContent>
           <Box display="flex" justifyContent="space-between">
-            <Typography variant="h6" sx={{ mb: 1.5, textAlign: "center" }}>
+            <Typography variant="subtitle1" sx={{ mb: 1.5, textAlign: "center" }}>
               Overview{" "}
               <Typography variant="caption">
                 (20-05-2025 To 20-05-2026)
@@ -113,7 +113,7 @@ export default function OverviewCard() {
                 borderRight: " 2px dotted #cbcdcf",
               }}
             >
-              <Typography variant="h6">Rs. {invExpOverview.income}</Typography>
+              <Typography variant="subtitle1">₹{invExpOverview.income}</Typography>
               <Typography variant="caption">Income</Typography>
             </Grid>
             <Grid
@@ -123,11 +123,11 @@ export default function OverviewCard() {
                 borderRight: " 2px dotted #cbcdcf",
               }}
             >
-              <Typography variant="h6">Rs. {invExpOverview.saving}</Typography>
+              <Typography variant="subtitle1">₹{invExpOverview.saving}</Typography>
               <Typography variant="caption">Saving</Typography>
             </Grid>
             <Grid size={4} sx={{ textAlign: "center" }}>
-              <Typography variant="h6">Rs. {invExpOverview.expense}</Typography>
+              <Typography variant="subtitle1">₹{invExpOverview.expense}</Typography>
               <Typography variant="caption">Expense</Typography>
             </Grid>
           </Grid>

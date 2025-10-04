@@ -5,37 +5,37 @@ import * as React from "react";
 
 import OverviewCard from "./overviewCard";
 export default function ExpenseCards() {
-  const investments = [
+  const expenseCard = [
     {
-      title: "Total Income",
-      amount: "Rs. 34,334.89",
+      title: "Ongoing Month Expenses",
+      amount: "₹344.89",
       percentage: "+4.75%",
       description: "Increased last month",
     },
     {
-      title: "Total Saving",
-      amount: "Rs. 34,334.89",
-      percentage: "+4.75%",
-      description: "Increased last month",
+      title: "Ongoing Week Expenses",
+      amount: "₹344.89",
+      percentage: "-4.75%",
+      description: "Decreased current week",
     },
     {
-      title: "Total Expenses",
-      amount: "Rs. 34,334.89",
+      title: "Todays Expense",
+      amount: "₹345.89",
       percentage: "+4.75%",
-      description: "Increased last month",
+      description: "Increased today",
     },
   ];
 
   return (
     <Grid container spacing={0.5}>
-      {investments.map((item) => (
-        <Grid size={6} key={item.title}>
+      {expenseCard.map((exp) => (
+        <Grid size={3} key={exp.title}>
           <Card variant="outlined">
             <CardContent>
-              <Typography variant="h5" sx={{ color: "#2d75cd" }}>
-                Rs. 34,334.89
+              <Typography variant="h6" sx={{ color: "#2d75cd" }}>
+                {exp.amount}
               </Typography>
-              <Typography variant="subtitle1">Total Investment</Typography>
+              <Typography variant="caption">{exp.title}</Typography>
 
               <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
                 <Box
@@ -48,16 +48,16 @@ export default function ExpenseCards() {
                   }}
                 >
                   <ArrowDropUpIcon fontSize="small" />
-                  +4.75%
+                  {exp.percentage}
                 </Box>
-                <Typography variant="body1">Increase last week</Typography>
+                <Typography variant="caption">{exp.description}</Typography>
               </Box>
             </CardContent>
           </Card>
         </Grid>
       ))}
 
-      <Grid size={6}>
+      <Grid size={3}>
         <OverviewCard />
       </Grid>
     </Grid>

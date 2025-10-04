@@ -125,7 +125,7 @@ export default function Parties({ parties, isLoading, onEdit, onDelete, onView }
                                                 <Typography variant="caption"><span style={{ color: "#cf2d2d", fontWeight: "bold" }}>₹30000</span>/<span style={{ color: "green", fontWeight: "bold" }}>₹20000</span></Typography>
                                             </Box>
 
-                                            <LinearProgressWithLabel value={party.contribution} />
+                                            {/* <LinearProgressWithLabel value={party.contribution} /> */}
                                         </>
 
                                     </CardContent>

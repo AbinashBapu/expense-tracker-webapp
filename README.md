@@ -44,6 +44,10 @@ https://kanakku.dreamstechnologies.com/react/template/customer/customer-dashboar
 
 https://kanakku.dreamstechnologies.com/react/template/admin-dashboard
 
+https://preview.themeforest.net/item/joblly-career-admin-dashboard-bootstrap-html/full_screen_preview/29916105
+
+party ui:  https://arctic-bootstrap.vercel.app/layout4/dist/pages/list/column-list.html
+
 ```
 server {
     listen 80;
