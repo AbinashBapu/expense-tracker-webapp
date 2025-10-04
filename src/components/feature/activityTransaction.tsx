@@ -77,6 +77,8 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
           fromDate: selectedDate ? dayjs(selectedDate).toISOString() : null,
           toDate: null,
           categoryId: selectedCategory,
+          subCategoryId:null,
+          transactionType:null,
         },
       }),
   });

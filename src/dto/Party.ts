@@ -5,6 +5,7 @@ interface TransactionPartyInfo {
   name: string;
   relationType: string;
   active: boolean;
+  contribution:number
 }
 
 export type { TransactionPartyInfo };

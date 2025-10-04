@@ -6,8 +6,8 @@ export default function Page() {
   return (
     <Box>
       <Grid container spacing={2}>
-        <Grid size={7}>sadf</Grid>
-        <Grid size={5}>
+        <Grid size={{lg:7,md:6}}>sadf</Grid>
+        <Grid size={{lg:5,md:6}}>
           <ExpenseCards />
         </Grid>
       </Grid>

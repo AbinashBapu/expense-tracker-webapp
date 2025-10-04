@@ -29,7 +29,7 @@ export default function ExpenseCards() {
   return (
     <Grid container spacing={0.5}>
       {investments.map((item) => (
-        <Grid size={6}>
+        <Grid size={6} key={item.title}>
           <Card variant="outlined">
             <CardContent>
               <Typography variant="h5" sx={{ color: "#2d75cd" }}>
