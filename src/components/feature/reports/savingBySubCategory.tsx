@@ -16,7 +16,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-export default function ExpenseByParty() {
+export default function SavingBySubcategory() {
     const [openDialog, setOpenDialog] = React.useState(false);
     const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
     const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
@@ -58,30 +58,42 @@ export default function ExpenseByParty() {
     const partiesContributionToExpenses = [
         {
             id: 1,
-            name: "Baba",
+            name: "Food",
             percentage: 40,
             amount: 100,
         },
         {
             id: 2,
-            name: "Me",
+            name: "Entertainment",
             percentage: 10,
             amount: 100
         },
         {
             id: 3,
-            name: "Bou",
+            name: "Education",
             percentage: 25,
             amount: 100,
         }, {
             id: 4,
-            name: "Sinu",
+            name: "Housing",
             percentage: 23,
             amount: 100,
-        }, {
+        },
+        {
             id: 5,
-            name: "xtyg",
-            percentage: 2,
+            name: "Entertainment",
+            percentage: 10,
+            amount: 100
+        },
+        {
+            id: 6,
+            name: "Education",
+            percentage: 25,
+            amount: 100,
+        }, {
+            id: 7,
+            name: "Housing",
+            percentage: 23,
             amount: 100,
         }
     ]
@@ -91,11 +103,10 @@ export default function ExpenseByParty() {
 
 
     return (
-        <Box sx={{ p: 1, backgroundColor: "#ffffff94" }}>
+        <Box sx={{ p: 1, backgroundColor: "#ffffff94", }}>
             <Box display="flex" justifyContent="space-between">
                 <Typography variant="subtitle1" sx={{ mb: 1.5, textAlign: "center" }}>
-                    Expense by party
-
+                    Saving by Subcategory
                 </Typography>
 
                 <IconButton
@@ -109,7 +120,6 @@ export default function ExpenseByParty() {
                     <MoreVertIcon />
                 </IconButton>
             </Box>
-
             <Box sx={{
                 p: 1,
                 backgroundColor: "#ffffff94",
@@ -119,7 +129,7 @@ export default function ExpenseByParty() {
 
                 {
                     partiesContributionToExpenses.map((item) =>
-                        <Card key={item.name} sx={{ mb: 1 }}>
+                        <Card key={item.id} sx={{ mb: 1 }}>
                             <CardHeader
                                 sx={{ padding: "7px" }}
                                 avatar={
@@ -135,8 +145,8 @@ export default function ExpenseByParty() {
                         </Card>
                     )
                 }
-            </Box>
 
+            </Box>
             <Menu
                 id="basic-menu"
                 anchorEl={anchorEl}
@@ -155,6 +165,9 @@ export default function ExpenseByParty() {
                 <MenuItem onClick={handleClose}>Curent Year</MenuItem>
                 <MenuItem onClick={handleClickOpenDialog}>Choose Dates</MenuItem>
             </Menu>
+
+
+
 
             <Dialog open={openDialog} onClose={handleCloseDialog}>
                 <DialogTitle>Choose Date</DialogTitle>
@@ -205,6 +218,7 @@ export default function ExpenseByParty() {
                     </Button>
                 </DialogActions>
             </Dialog>
+
         </Box>
     );
 }
