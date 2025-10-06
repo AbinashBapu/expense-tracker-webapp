@@ -16,7 +16,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-export default function SavingBySubcategory() {
+export default function PortfolioAnalysisCards() {
     const [openDialog, setOpenDialog] = React.useState(false);
     const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
     const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
@@ -55,46 +55,36 @@ export default function SavingBySubcategory() {
         setAnchorEl(null);
     };
 
-    const partiesContributionToExpenses = [
+
+
+    const data = [
         {
-            id: 1,
-            name: "Food",
-            percentage: 40,
-            amount: 100,
+            name: "Total",
+            invested: 30000,
+            totalValue: 60000,
+            gain: 30000,
+            totalPortfolioContribution: 100
         },
         {
-            id: 2,
-            name: "Entertainment",
-            percentage: 10,
-            amount: 100
+            name: "Mutual Fund",
+            invested: 10000,
+            totalValue: 20000,
+            gain: 10000,
+            totalPortfolioContribution: 70
         },
         {
-            id: 3,
-            name: "Education",
-            percentage: 25,
-            amount: 100,
-        }, {
-            id: 4,
-            name: "Housing",
-            percentage: 23,
-            amount: 100,
+            name: "Stocks",
+            invested: 10000,
+            totalValue: 20000,
+            gain: 10000,
+            totalPortfolioContribution: 20
         },
         {
-            id: 5,
-            name: "Entertainment",
-            percentage: 10,
-            amount: 100
-        },
-        {
-            id: 6,
-            name: "Education",
-            percentage: 25,
-            amount: 100,
-        }, {
-            id: 7,
-            name: "Housing",
-            percentage: 23,
-            amount: 100,
+            name: "LIC",
+            invested: 10000,
+            totalValue: 20000,
+            gain: 10000,
+            totalPortfolioContribution: 10
         }
     ]
 
@@ -103,10 +93,13 @@ export default function SavingBySubcategory() {
 
 
     return (
-        <Box sx={{ p: 1, backgroundColor: "#ffffff94", }}>
+        <Box sx={{ p: 1, backgroundColor: "#ffffff94" }}>
             <Box display="flex" justifyContent="space-between">
-                <Typography variant="subtitle1" sx={{ mb: 1.5, textAlign: "center" }}>
-                    Saving by Subcategory
+                <Typography variant="subtitle1" sx={{
+                    mb: 1.5, textAlign: "center", fontWeight: 600,
+                    color: "gray"
+                }}>
+                    Portfolio investment by category
                 </Typography>
 
                 <IconButton
@@ -120,7 +113,8 @@ export default function SavingBySubcategory() {
                     <MoreVertIcon />
                 </IconButton>
             </Box>
-            <Divider sx={{mb:1}}/>
+            <Divider sx={{ mb: 1 }} />
+
             <Box sx={{
                 p: 1,
                 backgroundColor: "#ffffff94",
@@ -128,26 +122,41 @@ export default function SavingBySubcategory() {
                 overflowY: "auto", // enables vertical scrolling when content overflows
             }}>
 
-                {
-                    partiesContributionToExpenses.map((item) =>
-                        <Card key={item.id} sx={{ mb: 1 }}>
-                            <CardHeader
-                                sx={{ padding: "7px" }}
-                                avatar={
-                                    <Avatar sx={{ bgcolor: blue[500] }} aria-label="recipe"> {
-                                        item.name[0]
-                                    } </Avatar>
-                                }
-                                title={`${item.name} - ₹${item.amount}`}
-                                subheader={
-                                    <> <LinearProgressWithLabel value={item.percentage} /> </>
-                                }
-                            />
-                        </Card>
-                    )
-                }
+                <Box sx={{
+                    p: 1,
+                    backgroundColor: "#ffffff94",
+                }}>
+
+                    {
+                        data.map((item, index) =>
+                            <>
+                                <Card key={item.name} sx={{ mb: 1 }}>
+                                    <CardHeader
+                                        sx={{ padding: "7px" }}
+                                        avatar={<Avatar sx={{ bgcolor: blue[500] }} aria-label="recipe"> {item.name[0]} </Avatar>}
+                                        title={`${item.name}`} />
+                                    <CardContent>
+                                        <Typography>Invested: {item.invested}</Typography>
+                                        <Typography>Total: {item.totalValue}</Typography>
+                                        <Typography>Gained: {item.gain}</Typography>
+                                        <LinearProgressWithLabel value={item.totalPortfolioContribution} />
+                                    </CardContent>
+                                </Card>
+                                {index == 0 ? <Divider sx={{mb:2}}/> : <></>}
+                            </>
+
+                        )
+                    }
+                </Box>
+
+
+
+
+
+
 
             </Box>
+
             <Menu
                 id="basic-menu"
                 anchorEl={anchorEl}
@@ -166,9 +175,6 @@ export default function SavingBySubcategory() {
                 <MenuItem onClick={handleClose}>Curent Year</MenuItem>
                 <MenuItem onClick={handleClickOpenDialog}>Choose Dates</MenuItem>
             </Menu>
-
-
-
 
             <Dialog open={openDialog} onClose={handleCloseDialog}>
                 <DialogTitle>Choose Date</DialogTitle>
@@ -219,7 +225,6 @@ export default function SavingBySubcategory() {
                     </Button>
                 </DialogActions>
             </Dialog>
-
         </Box>
     );
 }

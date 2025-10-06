@@ -3,7 +3,7 @@ import MultipleSeariesChart from "@/components/feature/multipleSeriesChart";
 import ExpenseByCategory from "@/components/feature/reports/expenseByCategory";
 import ExpenseByParty from "@/components/feature/reports/expenseByParty";
 import ExpenseCards from "@/components/feature/reports/expenseCards";
-import SavingBySubcategory from "@/components/feature/reports/savingBySubCategory";
+import PortfolioAnalysisCards from "@/components/feature/reports/portfolioAnalysisCards";
 import { Box, Grid } from "@mui/material";
 
 export default function Page() {
@@ -20,7 +20,7 @@ export default function Page() {
           <ExpenseByCategory />
         </Grid>
         <Grid size={4}>
-          <SavingBySubcategory />
+          <PortfolioAnalysisCards/>
         </Grid>
 
         <Grid size={6}>

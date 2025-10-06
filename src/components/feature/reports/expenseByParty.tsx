@@ -89,7 +89,10 @@ export default function ExpenseByParty() {
     return (
         <Box sx={{ p: 1, backgroundColor: "#ffffff94" }}>
             <Box display="flex" justifyContent="space-between">
-                <Typography variant="subtitle1" sx={{ mb: 1.5, textAlign: "center" }}>
+                <Typography variant="subtitle1" sx={{
+                    mb: 1.5, textAlign: "center", fontWeight: 600,
+                    color: "gray"
+                }}>
                     Expense By Party
                 </Typography>
 
@@ -104,7 +107,7 @@ export default function ExpenseByParty() {
                     <MoreVertIcon />
                 </IconButton>
             </Box>
-            <Divider sx={{mb:1}}/>
+            <Divider sx={{ mb: 1 }} />
 
             <Box sx={{
                 p: 1,

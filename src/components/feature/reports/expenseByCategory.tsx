@@ -1,4 +1,5 @@
-
+import { TreeViewBaseItem } from '@mui/x-tree-view/models';
+import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
 
 import * as React from 'react';
 import List from '@mui/material/List';
@@ -8,13 +9,18 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
-import LinearProgressWithLabel from '@/components/common/linearProgressWithlabel';
-import { Box, Button, Card, CardContent, CardHeader, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, IconButton, Menu, MenuItem, Paper } from '@mui/material';
+import { Box, Button, Card, CardContent, CardHeader, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, IconButton, LinearProgress, Menu, MenuItem, Paper } from '@mui/material';
 import { blue, red } from '@mui/material/colors';
 import { Dayjs } from 'dayjs';
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import CategorySubCategoryTreeView from './categorySubcategoryTreeView';
+
+
+
+
+
 
 export default function ExpenseByCategory() {
     const [openDialog, setOpenDialog] = React.useState(false);
@@ -61,47 +67,77 @@ export default function ExpenseByCategory() {
             name: "Food",
             percentage: 40,
             amount: 100,
+            subCategories: [
+                {
+                    id: 10,
+                    name: "Snacks",
+                    percentage: 40,
+                    amount: 100,
+                },
+                {
+                    id: 12,
+                    name: "Fruits",
+                    percentage: 40,
+                    amount: 100,
+                },
+                {
+                    id: 13,
+                    name: "Drinks",
+                    percentage: 20,
+                    amount: 100,
+                }
+
+            ]
         },
         {
             id: 2,
             name: "Entertainment",
             percentage: 10,
-            amount: 100
+            amount: 100,
+            subCategories: []
         },
         {
             id: 3,
             name: "Education",
             percentage: 25,
             amount: 100,
+            subCategories: []
         }, {
             id: 4,
             name: "Housing",
             percentage: 23,
             amount: 100,
+            subCategories: []
         },
         {
             id: 5,
             name: "Entertainment",
             percentage: 10,
-            amount: 100
+            amount: 100,
+            subCategories: []
         },
         {
             id: 6,
             name: "Education",
             percentage: 25,
             amount: 100,
+            subCategories: []
         }, {
             id: 7,
             name: "Housing",
             percentage: 23,
             amount: 100,
+            subCategories: []
         }
     ]
 
     return (
         <Box sx={{ p: 1, backgroundColor: "#ffffff94", }}>
             <Box display="flex" justifyContent="space-between">
-                <Typography variant="subtitle1" sx={{ mb: 1.5, textAlign: "center" }}>
+                <Typography variant="subtitle1" sx={{
+                    mb: 1.5, textAlign: "center", fontWeight: 600,
+                    color: "gray"
+                }}>
                     Expense by category
                 </Typography>
 
@@ -116,7 +152,7 @@ export default function ExpenseByCategory() {
                     <MoreVertIcon />
                 </IconButton>
             </Box>
-            <Divider sx={{mb:1}}/>
+            <Divider sx={{ mb: 1 }} />
             <Box sx={{
                 p: 1,
                 backgroundColor: "#ffffff94",
@@ -124,25 +160,7 @@ export default function ExpenseByCategory() {
                 overflowY: "auto", // enables vertical scrolling when content overflows
             }}>
 
-                {
-                    partiesContributionToExpenses.map((item) =>
-                        <Card key={item.id} sx={{ mb: 1 }}>
-                            <CardHeader
-                                sx={{ padding: "7px" }}
-                                avatar={
-                                    <Avatar sx={{ bgcolor: blue[500] }} aria-label="recipe"> {
-                                        item.name[0]
-                                    } </Avatar>
-                                }
-                                title={`${item.name} - ₹${item.amount}`}
-                                subheader={
-                                    <> <LinearProgressWithLabel value={item.percentage} /> </>
-                                }
-                            />
-                        </Card>
-                    )
-                }
-
+                <CategorySubCategoryTreeView data={partiesContributionToExpenses} />
             </Box>
             <Menu
                 id="basic-menu"
