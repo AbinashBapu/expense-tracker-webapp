@@ -120,6 +120,7 @@ export default function SavingBySubcategory() {
                     <MoreVertIcon />
                 </IconButton>
             </Box>
+            <Divider sx={{mb:1}}/>
             <Box sx={{
                 p: 1,
                 backgroundColor: "#ffffff94",

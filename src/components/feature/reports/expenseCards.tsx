@@ -1,4 +1,4 @@
-import { Grid, Card, CardContent, Typography, Box } from "@mui/material";
+import { Grid, Card, CardContent, Typography, Box, Divider } from "@mui/material";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
 import * as React from "react";
@@ -37,7 +37,8 @@ export default function ExpenseCards() {
               </Typography>
               <Typography variant="caption">{exp.title}</Typography>
 
-              <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
+                <Divider sx={{mt:1,mb:1}}/>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Box
                   sx={{
                     display: "flex",
