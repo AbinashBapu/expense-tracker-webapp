@@ -6,34 +6,18 @@ import HighchartsReact from "highcharts-react-official";
 import { Box, Skeleton } from "@mui/material";
 
 export default function StockComparisonChart({
-  names = ["MSFT", "AAPL", "GOOG"],
   title = "Stock Comparison",
+  data,
 }: {
-  names?: string[];
   title?: string;
+  data: any[];
 }) {
   const [options, setOptions] = useState<any>(null);
 
   useEffect(() => {
     async function fetchData() {
-      const series: any[] = [];
-
-      for (const name of names) {
-        const data = [
-          [
-            1405296000000,
-            29.2435
-          ],
-          [
-            1405382400000,
-            9.239
-          ],
-          [
-            1405468800000,
-            39.133
-          ]];
-        series.push({ name, data });
-      }
+      console.log("UseEffect Data", data);
+      const series: any[] = data;
 
       setOptions({
         rangeSelector: {
@@ -44,8 +28,10 @@ export default function StockComparisonChart({
         },
         yAxis: {
           labels: {
-            formatter: function (this: Highcharts.AxisLabelsFormatterContextObject) {
-              return (this.value as number > 0 ? "+" : "") + this.value + "%";
+            formatter: function (
+              this: Highcharts.AxisLabelsFormatterContextObject
+            ) {
+              return ((this.value as number) > 0 ? "+" : "") + this.value + "%";
             },
           },
           plotLines: [
@@ -88,7 +74,7 @@ export default function StockComparisonChart({
           animation="wave"
           variant="rectangular"
           width="100%"
-          height={200}  // adjust based on your chart height
+          height={200} // adjust based on your chart height
           sx={{ borderRadius: 2 }}
         />
       )}

@@ -12,18 +12,47 @@ import {
   FormControl,
   DialogActions,
   Button,
+  Skeleton,
 } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Grid from "@mui/material/Grid";
 import React, { useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
+import { SearchParamDto } from "@/dto/SearchParamDto";
+import { useReport } from "@/hooks/useReport";
+import { useQuery } from "@tanstack/react-query";
 
 export default function OverviewCard() {
-  const [openDialog, setOpenDialog] = useState(false);
-  const [startDate, setStartDate] = useState<Dayjs | null>(null);
-  const [endDate, setEndDate] = useState<Dayjs | null>(null);
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [startDate, setStartDate] = React.useState<Dayjs | null>(
+    dayjs().startOf("month")
+  );
+  const [endDate, setEndDate] = React.useState<Dayjs | null>(
+    dayjs().endOf("day")
+  );
+
+  const [applySearch, setApplySearch] = React.useState<SearchParamDto>({
+    fromDate: startDate ? startDate?.toISOString() : null,
+    toDate: endDate ? endDate?.toISOString() : null,
+    categoryId: null,
+    subCategoryId: null,
+    transactionType: null,
+  });
+
+  const { fetchFinanceSummary } = useReport();
+
+  const {
+    data: summaryData,
+    isLoading: isSummaryLoading,
+    error: summaryError,
+    refetch: summaryRefetch,
+    isFetching: isSummaryFetching,
+  } = useQuery({
+    queryKey: ["financeSummary", applySearch],
+    queryFn: () => fetchFinanceSummary(applySearch),
+  });
 
   const handleClickOpenDialog = () => {
     handleClose();
@@ -35,21 +64,6 @@ export default function OverviewCard() {
     setOpenDialog(false);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const formJson = Object.fromEntries((formData as any).entries());
-    const email = formJson.email;
-    console.log(email);
-    handleClose();
-  };
-
-  const invExpOverview = {
-    income: 122233,
-    saving: 200000,
-    expense: 100000,
-  };
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -58,6 +72,19 @@ export default function OverviewCard() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleSearch = () => {
+    if (!startDate || !endDate) {
+      alert("Please select both start and end dates.");
+      return;
+    }
+
+    applySearch.fromDate = startDate?.toISOString();
+    applySearch.toDate = endDate?.toISOString();
+
+    setOpenDialog(false);
+  };
+
   return (
     <>
       <Card
@@ -66,7 +93,10 @@ export default function OverviewCard() {
       >
         <CardContent>
           <Box display="flex" justifyContent="space-between">
-            <Typography variant="subtitle1" sx={{ mb: 1.5, textAlign: "center" }}>
+            <Typography
+              variant="subtitle1"
+              sx={{ mb: 1.5, textAlign: "center" }}
+            >
               Overview{" "}
               <Typography variant="caption">
                 (20-05-2025 To 20-05-2026)
@@ -86,25 +116,6 @@ export default function OverviewCard() {
             </IconButton>
           </Box>
 
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            slotProps={{
-              list: {
-                "aria-labelledby": "basic-button",
-              },
-            }}
-          >
-            <MenuItem onClick={handleClose}>Today</MenuItem>
-            <MenuItem onClick={handleClose}>Yesterday</MenuItem>
-            <MenuItem onClick={handleClose}>Current Week</MenuItem>
-            <MenuItem onClick={handleClose}>Current Month</MenuItem>
-            <MenuItem onClick={handleClose}>Curent Year</MenuItem>
-            <MenuItem onClick={handleClickOpenDialog}>Choose Dates</MenuItem>
-          </Menu>
-
           <Grid container>
             <Grid
               size={4}
@@ -113,7 +124,31 @@ export default function OverviewCard() {
                 borderRight: " 2px dotted #cbcdcf",
               }}
             >
-              <Typography variant="subtitle1">₹{invExpOverview.income}</Typography>
+              {isSummaryLoading ? (
+                <Skeleton width={100} height={20} />
+              ) : (
+                <Box>
+                  <Typography variant="subtitle1">
+                    {new Intl.NumberFormat("en-IN", {
+                      style: "currency",
+                      currency: "INR",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(summaryData.income)}
+                  </Typography>
+
+                  <Typography variant="caption">
+                    (
+                    {new Intl.NumberFormat("en-IN", {
+                      style: "currency",
+                      currency: "INR",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(summaryData.avgIncomePerDay)}{" "}
+                    / day )
+                  </Typography>
+                </Box>
+              )}
               <Typography variant="caption">Income</Typography>
             </Grid>
             <Grid
@@ -123,30 +158,99 @@ export default function OverviewCard() {
                 borderRight: " 2px dotted #cbcdcf",
               }}
             >
-              <Typography variant="subtitle1">₹{invExpOverview.saving}</Typography>
+              {isSummaryLoading ? (
+                <Skeleton width={100} height={20} />
+              ) : (
+                <Box>
+                  <Typography variant="subtitle1">
+                    {new Intl.NumberFormat("en-IN", {
+                      style: "currency",
+                      currency: "INR",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(summaryData.saving)}
+                  </Typography>
+                  <Typography variant="caption">
+                    (
+                    {new Intl.NumberFormat("en-IN", {
+                      style: "currency",
+                      currency: "INR",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(summaryData.avgSavingPerDay)}{" "}
+                    / day )
+                  </Typography>
+                </Box>
+              )}
               <Typography variant="caption">Saving</Typography>
             </Grid>
             <Grid size={4} sx={{ textAlign: "center" }}>
-              <Typography variant="subtitle1">₹{invExpOverview.expense}</Typography>
+              {isSummaryLoading ? (
+                <Skeleton width={100} height={20} />
+              ) : (
+                <Box>
+                  <Typography variant="subtitle1">
+                    {new Intl.NumberFormat("en-IN", {
+                      style: "currency",
+                      currency: "INR",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(summaryData.expense)}
+                  </Typography>
+                  <Typography variant="caption">
+                    (
+                    {new Intl.NumberFormat("en-IN", {
+                      style: "currency",
+                      currency: "INR",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(summaryData.avgExpensePerDay)}{" "}
+                    / day )
+                  </Typography>
+                </Box>
+              )}
               <Typography variant="caption">Expense</Typography>
             </Grid>
           </Grid>
         </CardContent>
       </Card>
 
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        slotProps={{
+          list: {
+            "aria-labelledby": "basic-button",
+          },
+        }}
+      >
+        {/* <MenuItem onClick={handleClose}>Today</MenuItem>
+              <MenuItem onClick={handleClose}>Yesterday</MenuItem>
+              <MenuItem onClick={handleClose}>Current Week</MenuItem>
+              <MenuItem onClick={handleClose}>Current Month</MenuItem>
+              <MenuItem onClick={handleClose}>Curent Year</MenuItem> */}
+        <MenuItem onClick={handleClickOpenDialog}>Choose Dates</MenuItem>
+      </Menu>
+
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Choose Date</DialogTitle>
-        <DialogContent>
-          <Box sx={{ mt: 2 }}>
-            <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSearch(); // call the search logic
+          }}
+        >
+          <DialogContent>
+            <Box sx={{ mt: 2 }}>
               <FormControl fullWidth sx={{ mb: 2 }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     value={startDate}
-                    onChange={(newValue) => {
-                      setStartDate(newValue);
-                    }}
-                    label="Transaction From"
+                    onChange={(newValue) => setStartDate(newValue)}
+                    label="Start Date"
+                    format="DD-MM-YYYY HH:mm"
                     slotProps={{
                       textField: {
                         size: "small",
@@ -156,14 +260,14 @@ export default function OverviewCard() {
                   />
                 </LocalizationProvider>
               </FormControl>
+
               <FormControl fullWidth sx={{ mb: 2 }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
+                    format="DD-MM-YYYY HH:mm"
                     value={endDate}
-                    onChange={(newValue) => {
-                      setEndDate(newValue);
-                    }}
-                    label="Transaction From"
+                    onChange={(newValue) => setEndDate(newValue)}
+                    label="End Date"
                     slotProps={{
                       textField: {
                         size: "small",
@@ -173,15 +277,15 @@ export default function OverviewCard() {
                   />
                 </LocalizationProvider>
               </FormControl>
-            </form>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button type="submit" form="subscription-form">
-            Search
-          </Button>
-        </DialogActions>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Cancel</Button>
+            <Button type="submit" variant="contained">
+              Search
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </>
   );

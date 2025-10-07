@@ -141,7 +141,7 @@ export function FinanceSearchBox({
         >
           Log Transactions
         </Button>
-        <Button
+        {/* <Button
           onClick={handleAddNew}
           variant="contained"
           color="success"
@@ -150,7 +150,7 @@ export function FinanceSearchBox({
           sx={{ whiteSpace: "nowrap", mt: { xs: 2, sm: 0 } }}
         >
           Transaction
-        </Button>
+        </Button> */}
       </Box>
     </Box>
   );

@@ -19,6 +19,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { FinanceSearchBox } from "@/components/feature/finance/financeSearchBox";
 import TransactionView from "@/components/feature/finance/transactionView";
 import { LogTransactionForm } from "@/components/feature/finance/logTransaction";
+import dayjs from "dayjs";
 
 export default function FinancePage() {
   const [showMoreThan1TransactionForm, setShowMoreThan1TransactionForm] =
@@ -34,8 +35,6 @@ export default function FinancePage() {
   const { fetchCategoryData } = useCategory();
 
   useEffect(() => {
-    console.log("UseEffect: ", selectedDate, fetch);
-
     if (fetch) {
       refetchTransactionData();
       setFetch(false);
@@ -72,7 +71,17 @@ export default function FinancePage() {
   };
 
   const handleEdit = (transaction: any) => {
-    setEditData(transaction);
+    setEditData({
+      transactionId: transaction.transactionId,
+      categoryId: transaction?.category.categoryId,
+      subCategoryId: transaction?.subCategory.pkSubCategoryId,
+      incurredById: transaction?.incurredBy,
+      incurredForIds: transaction?.incurredFor,
+      transactionType: transaction?.transactionType,
+      amount: transaction?.amount,
+      description: transaction?.description,
+      transactionDate: transaction?.spentOn ?? dayjs(transaction?.spentOn),
+    });
     setOpen(true);
   };
 

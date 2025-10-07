@@ -27,6 +27,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { useSnackbar } from "@/provider/SnackbarContext";
 
 type TransactionFormValues = {
+  transactionId: string;
   categoryId: string;
   subCategoryId: string;
   incurredById: TransactionPartyInfo | null;
@@ -50,21 +51,24 @@ export default function TransactionForm({
   initialData?: any;
   refetch: any;
 }) {
- const today = useMemo(() => dayjs(), []);
+  const today = useMemo(() => dayjs(), []);
   const { saveTransaction } = useFinance();
   const { showSnackbar } = useSnackbar();
   const [subCategories, setSubCategories] = useState<SubCategoryDto[]>([]);
 
   const formik = useFormik<TransactionFormValues>({
     initialValues: {
-      categoryId: "",
-      subCategoryId: "",
-      incurredById: null,
-      incurredForIds: [],
-      transactionType: "Dr",
-      amount: "",
-      description: "",
-      transactionDate: today,
+      transactionId: initialData?.transactionId ?? "",
+      categoryId: initialData?.categoryId ?? "",
+      subCategoryId: initialData?.subCategoryId ?? "",
+      incurredById: initialData?.incurredById ?? null,
+      incurredForIds: initialData?.incurredForIds ?? [],
+      transactionType: initialData?.transactionType ?? "Dr",
+      amount: initialData?.amount ?? "",
+      description: initialData?.description ?? "",
+      transactionDate: initialData?.transactionDate
+        ? dayjs(initialData?.transactionDate)
+        : today,
     },
     enableReinitialize: true, // <-- this is key
     validate: transactionFormValidate,
@@ -73,6 +77,7 @@ export default function TransactionForm({
       // closeDrawer();
 
       let payload = {
+        transactionId: values.transactionId,
         amount: values.amount,
         categoryId: values.categoryId,
         description: values.description,
@@ -218,7 +223,6 @@ export default function TransactionForm({
           )}
         />
       </FormControl>
-
       <FormControl
         variant="standard"
         fullWidth
@@ -424,4 +428,3 @@ const transactionFormValidate = (values: any) => {
     }
   }
 };
-

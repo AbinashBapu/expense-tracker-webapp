@@ -55,10 +55,91 @@ const useReport = () => {
     }
   };
 
+  const fetchExpenseInsights = async () => {
+    try {
+      const financeData = await get(
+        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/report/expenseInsights`
+      );
+      return financeData.data;
+    } catch (error) {
+      console.error("Error fetching category data:", error);
+      return [];
+    }
+  };
+
+  const fetchExpensesByParty = async (data: SearchParamDto) => {
+    try {
+      const response = await post(
+        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/report/expensesByParty`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching summary data:", error);
+      return [];
+    }
+  };
+
+  const fetchExpensesByCategory = async (data: SearchParamDto) => {
+    try {
+      const response = await post(
+        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/report/expensesByCategory`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching summary data:", error);
+      return [];
+    }
+  };
+
+  const fetchDailyFinanceSummary = async () => {
+    try {
+      const financeData = await get(
+        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/report/dailyFinanceSummary`
+      );
+      return financeData.data;
+    } catch (error) {
+      console.error("Error fetching category data:", error);
+      return [];
+    }
+  };
+
+  const fetchDailyPortfolioSummary = async () => {
+    try {
+      const financeData = await get(
+        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/report/dailyPortfolioSummary`
+      );
+      return financeData.data;
+    } catch (error) {
+      console.error("Error fetching category data:", error);
+      return [];
+    }
+  };
+
+  const fetchPortfolioSavingByCategory = async (data: any) => {
+    try {
+      const response = await post(
+        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/report/portfolioSavingByCategory`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching summary data:", error);
+      return [];
+    }
+  };
+
   return {
     fetchFinanceSummary,
     fetchFinanceSummaryForSplineChart,
     fetchFinanceSummaryForDonutChartBasedOnCategory,
+    fetchExpenseInsights,
+    fetchExpensesByParty,
+    fetchExpensesByCategory,
+    fetchDailyFinanceSummary,
+    fetchDailyPortfolioSummary,
+    fetchPortfolioSavingByCategory,
   };
 };
 

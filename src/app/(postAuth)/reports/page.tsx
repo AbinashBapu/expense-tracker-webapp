@@ -1,9 +1,10 @@
 "use client";
-import MultipleSeariesChart from "@/components/feature/multipleSeriesChart";
 import ExpenseByCategory from "@/components/feature/reports/expenseByCategory";
 import ExpenseByParty from "@/components/feature/reports/expenseByParty";
 import ExpenseCards from "@/components/feature/reports/expenseCards";
+import IncomeSavingExpenseChart from "@/components/feature/reports/incomeSavingExpenseChart";
 import PortfolioAnalysisCards from "@/components/feature/reports/portfolioAnalysisCards";
+import PortfolioSavingChart from "@/components/feature/reports/portfolioSavingChart";
 import { Box, Grid } from "@mui/material";
 
 export default function Page() {
@@ -20,20 +21,19 @@ export default function Page() {
           <ExpenseByCategory />
         </Grid>
         <Grid size={4}>
-          <PortfolioAnalysisCards/>
+          <PortfolioAnalysisCards />
         </Grid>
 
         <Grid size={6}>
           <Box>
-            <MultipleSeariesChart title="Income Vs Saving Vs Expense" />
+            <IncomeSavingExpenseChart />
           </Box>
         </Grid>
         <Grid size={6}>
           <Box>
-            <MultipleSeariesChart title="Portfolio Growth Analysis" />
+            <PortfolioSavingChart />
           </Box>
         </Grid>
-
       </Grid>
     </Box>
   );

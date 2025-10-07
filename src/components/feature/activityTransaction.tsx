@@ -77,8 +77,8 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
           fromDate: selectedDate ? dayjs(selectedDate).toISOString() : null,
           toDate: null,
           categoryId: selectedCategory,
-          subCategoryId:null,
-          transactionType:null,
+          subCategoryId: null,
+          transactionType: null,
         },
       }),
   });
@@ -105,10 +105,17 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
     if (transaction) onView(transaction);
   };
 
-  const handleEditClick = (id: number) => {
-    const transaction = rows.find((row) => row.id === id);
-    if (transaction) onEdit(transaction);
-  };
+  function handleEditClick(id: number) {
+    if (transactionData.content != undefined) {
+      const transaction = transactionData.content.find(
+        (txn: any) => txn.transactionId === id
+      );
+      console.log("Transaction: ", transaction);
+      if (transaction) {
+        onEdit(transaction);
+      }
+    }
+  }
 
   const handleDeleteClick = (id: number) => {
     setSelectedId(id);
@@ -262,7 +269,6 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
       ) : (
         <Card variant="outlined" sx={{}}>
           <CardContent>
-
             <>
               <Box
                 sx={{
@@ -483,7 +489,8 @@ const ActivityTransactions = forwardRef(function ActivityTransactions(
               </Typography>
             </Box>
           </CardContent>
-        </Card>)}
+        </Card>
+      )}
 
       {/* Pagination */}
       {transactionData?.totalPages > 1 && (
