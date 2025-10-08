@@ -1,10 +1,11 @@
 import { TransactionPartyInfo } from "@/dto/Party"
-import { Card, CardHeader, Skeleton, Avatar, IconButton, CardMedia, CardContent, Typography, Grid, Box, Menu, MenuItem } from "@mui/material";
+import { Card, CardHeader, Skeleton, Avatar, IconButton, CardMedia, CardContent, Typography, Grid, Box, Menu, MenuItem, Button } from "@mui/material";
 import React, { useState } from "react";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { red, blue, green, orange, deepPurple, teal } from "@mui/material/colors";
 import LinearProgressWithLabel from "@/components/common/linearProgressWithlabel";
 
+import AddIcon from "@mui/icons-material/Add";
 type PartyInfo = {
     parties: Array<TransactionPartyInfo>,
     isLoading: boolean,
@@ -99,42 +100,69 @@ export default function Parties({ parties, isLoading, onEdit, onDelete, onView }
                 </Grid>
             </> :
                 <>
-                    <Grid container spacing={1}>
-                        {parties.map((party, index) =>
-                            <Grid size={{ lg: 3, md: 4, sm: 6, xs: 6 }} key={party.transactionPartyId}>
-                                <Card>
-                                    <CardHeader
-                                        avatar={
-                                            <Avatar sx={{ bgcolor: AVATAR_COLOR[index % AVATAR_COLOR.length] }}>
-                                                {party.name.charAt(0).toUpperCase()}
-                                            </Avatar>
-                                        }
-                                        action={<IconButton aria-label="settings"
-                                            aria-controls={open ? 'basic-menu' : undefined}
-                                            aria-haspopup="true"
-                                            aria-expanded={open ? 'true' : undefined}
-                                            onClick={(event) => handleClick(event, party)}
-                                        > <MoreVertIcon /> </IconButton>}
-                                        title={party.name}
-                                        subheader={party.relationType}
-                                    />
-                                    <CardContent>
-                                        <>
-                                            <Box sx={{ display: "flex", flexDirection: "row" }}>
-                                                <Typography variant="caption" sx={{ color: "gray" }}>Current Month Expenses: </Typography>
-                                                <Typography variant="caption"><span style={{ color: "#cf2d2d", fontWeight: "bold" }}>₹30000</span>/<span style={{ color: "green", fontWeight: "bold" }}>₹20000</span></Typography>
+                    {parties.length > 0 ? (
+                        <Grid container spacing={1}>
+                            {parties.map((party, index) => (
+                                <Grid size={{ lg: 3, md: 4, sm: 6, xs: 6 }} key={party.transactionPartyId}>
+                                    <Card>
+                                        <CardHeader
+                                            avatar={
+                                                <Avatar sx={{ bgcolor: AVATAR_COLOR[index % AVATAR_COLOR.length] }}>
+                                                    {party.name.charAt(0).toUpperCase()}
+                                                </Avatar>
+                                            }
+                                            action={
+                                                <IconButton
+                                                    aria-label="settings"
+                                                    aria-controls={open ? 'basic-menu' : undefined}
+                                                    aria-haspopup="true"
+                                                    aria-expanded={open ? 'true' : undefined}
+                                                    onClick={(event) => handleClick(event, party)}
+                                                >
+                                                    <MoreVertIcon />
+                                                </IconButton>
+                                            }
+                                            title={party.name}
+                                            subheader={party.relationType}
+                                        />
+                                        <CardContent>
+                                            <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+                                                <Typography variant="caption" sx={{ color: "gray" }}>
+                                                    Current Month Expenses:
+                                                </Typography>
+                                                <Typography variant="caption">
+                                                    <span style={{ color: "#cf2d2d", fontWeight: "bold" }}>₹30000</span> /
+                                                    <span style={{ color: "green", fontWeight: "bold" }}>₹20000</span>
+                                                </Typography>
                                             </Box>
-
                                             {/* <LinearProgressWithLabel value={party.contribution} /> */}
-                                        </>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    ) : (
+                        <Box sx={{ textAlign: "center", mt: 8, p: 4, backgroundColor: "#f9f9f9", borderRadius: 2 }}>
+                            <Typography variant="h6" color="text.primary" gutterBottom>
+                                No Parties Available
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                You haven’t added any parties yet. Start by adding a new party to view them here.
+                            </Typography>
 
-                                    </CardContent>
-                                </Card>
+                            {/* <Button
+                                onClick={toggleViewDrawer}
+                                variant="contained"
+                                sx={{ mt: 3 }}
+                                endIcon={<AddIcon />}
+                            >
+                                Add Party
+                            </Button> */}
+                        </Box>
 
-                            </Grid>
-                        )}
-                    </Grid>
+                    )}
                 </>
+
         }
         <Menu
             id="basic-menu"

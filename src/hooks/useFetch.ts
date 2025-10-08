@@ -1,17 +1,22 @@
 export const useFetch = () => {
   const get = async (url: string, config?: RequestInit) => {
-    const response = await fetch(url, {
-      ...config,
-      method: "GET",
-      headers: {
-        Authorization: `Bearer asdfasdf.asdfasd.asdfasdf`,
-      },
-    });
-    if (!response.ok) {
-      // Server responded but with an error (e.g., 404, 500)
-      return { error: `Request failed with status ${response.status}` };
+    try {
+      const response = await fetch(url, {
+        ...config,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer asdfasdf.asdfasd.asdfasdf`,
+        },
+      });
+      if (!response.ok) {
+        // Server responded but with an error (e.g., 404, 500)
+        return { error: `Request failed with status ${response.status}` };
+      }
+      return response.json();
+    } catch (except) {
+      console.log("ERRRR: ", except);
     }
-    return response.json();
+
   };
 
   const post = async (url: string, data: any, config?: RequestInit) => {

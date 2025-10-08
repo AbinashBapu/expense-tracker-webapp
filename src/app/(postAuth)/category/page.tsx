@@ -14,6 +14,7 @@ import {
   DialogContentText,
   DialogTitle,
   Drawer,
+  Skeleton,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -70,8 +71,8 @@ export default function page() {
     queryFn: () => fetchCategoryData(),
   });
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {(error as Error).message}</p>;
+  // if (isLoading) return <p>Loading...</p>;
+  // if (error) return <p>Error: {(error as Error).message}</p>;
 
   return (
     <>
@@ -94,101 +95,158 @@ export default function page() {
           Add Subcategory
         </Button>
       </Box>
-
-      <Grid container spacing={3} padding={2}>
-        {categoryData.map((category: any) => (
-          <Grid size={4} key={category.categoryId}>
-            <Card
-              elevation={4}
-              sx={{
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                "&:hover": {
-                  transform: "translateY(-6px)",
-                  boxShadow: 8,
-                },
-              }}
-            >
-              <CardActionArea sx={{ flexGrow: 1, padding: 2 }}>
-                <CardContent sx={{ paddingBottom: "16px !important" }}>
-                  <Typography
-                    gutterBottom
-                    variant="h6"
-                    component="div"
-                    fontWeight="600"
-                    color="primary.dark"
-                    sx={{ mb: 1 }}
-                  >
-                    {category.label}{" "}
-                    <Typography
-                      component="span"
-                      variant="subtitle2"
-                      color="text.secondary"
-                      sx={{ fontWeight: 500, ml: 1 }}
-                    >
-                      ({category.type.typeName})
-                    </Typography>
-                  </Typography>
-
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 2, lineHeight: 1.5 }}
-                  >
-                    {category.description}
-                  </Typography>
-
-                  <Box
+      {isLoading ? (
+        <Grid container spacing={3} padding={2}>
+          {[...Array(6)].map((_, index) => (
+            <Grid size={4} key={index}>
+              <Card elevation={4} sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+                <CardActionArea sx={{ flexGrow: 1, padding: 2 }}>
+                  <CardContent>
+                    <Skeleton variant="text" width="60%" height={30} sx={{ mb: 1 }} />
+                    <Skeleton variant="text" width="40%" />
+                    <Skeleton variant="rectangular" height={80} sx={{ mt: 2, borderRadius: 1 }} />
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
+                      {[...Array(3)].map((__, chipIndex) => (
+                        <Skeleton key={chipIndex} variant="rectangular" width={60} height={24} sx={{ borderRadius: 2 }} />
+                      ))}
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+                <CardActions
+                  sx={{
+                    borderTop: "1px solid",
+                    borderColor: "divider",
+                    justifyContent: "flex-end",
+                    paddingRight: 2,
+                    paddingBottom: 2,
+                    gap: 1,
+                  }}
+                >
+                  <Skeleton variant="rectangular" width={60} height={30} />
+                  <Skeleton variant="rectangular" width={90} height={30} />
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      ) :
+        <>
+          {categoryData && categoryData.length > 0 ? (
+            <Grid container spacing={3} padding={2}>
+              {categoryData?.map((category: any) => (
+                <Grid size={4} key={category.categoryId}>
+                  <Card
+                    elevation={4}
                     sx={{
+                      height: "100%",
                       display: "flex",
-                      flexWrap: "wrap",
-                      gap: 1,
-                      mt: 1,
+                      flexDirection: "column",
+                      transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                      "&:hover": {
+                        transform: "translateY(-6px)",
+                        boxShadow: 8,
+                      },
                     }}
                   >
-                    {category.subCategoryInfos.map((subCategory: any) => (
-                      <Tooltip
-                        title={subCategory.description}
-                        key={subCategory.pkSubCategoryId}
-                      >
-                        <Chip
-                          label={subCategory.label}
-                          variant="outlined"
-                          color="primary"
-                          sx={{ cursor: "pointer", userSelect: "none" }}
-                          size="small"
-                          onClick={() => handleChipClick(subCategory)}
-                        />
-                      </Tooltip>
-                    ))}
-                  </Box>
-                </CardContent>
-              </CardActionArea>
+                    <CardActionArea sx={{ flexGrow: 1, padding: 2 }}>
+                      <CardContent sx={{ paddingBottom: "16px !important" }}>
+                        <Typography
+                          gutterBottom
+                          variant="h6"
+                          component="div"
+                          fontWeight="600"
+                          color="primary.dark"
+                          sx={{ mb: 1 }}
+                        >
+                          {category.label}{" "}
+                          <Typography
+                            component="span"
+                            variant="subtitle2"
+                            color="text.secondary"
+                            sx={{ fontWeight: 500, ml: 1 }}
+                          >
+                            ({category.type.typeName})
+                          </Typography>
+                        </Typography>
 
-              <CardActions
-                sx={{
-                  borderTop: "1px solid",
-                  borderColor: "divider",
-                  justifyContent: "flex-end",
-                  paddingRight: 2,
-                  paddingBottom: 2,
-                  gap: 1,
-                }}
-              >
-                <Button variant="outlined" size="small" color="primary">
-                  Edit
-                </Button>
-                <Button variant="contained" size="small" color="primary">
-                  Sub Category
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ mb: 2, lineHeight: 1.5 }}
+                        >
+                          {category.description}
+                        </Typography>
 
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 1,
+                            mt: 1,
+                          }}
+                        >
+                          {category.subCategoryInfos.map((subCategory: any) => (
+                            <Tooltip
+                              title={subCategory.description}
+                              key={subCategory.pkSubCategoryId}
+                            >
+                              <Chip
+                                label={subCategory.label}
+                                variant="outlined"
+                                color="primary"
+                                sx={{ cursor: "pointer", userSelect: "none" }}
+                                size="small"
+                                onClick={() => handleChipClick(subCategory)}
+                              />
+                            </Tooltip>
+                          ))}
+                        </Box>
+                      </CardContent>
+                    </CardActionArea>
+
+                    <CardActions
+                      sx={{
+                        borderTop: "1px solid",
+                        borderColor: "divider",
+                        justifyContent: "flex-end",
+                        paddingRight: 2,
+                        paddingBottom: 2,
+                        gap: 1,
+                      }}
+                    >
+                      <Button variant="outlined" size="small" color="primary">
+                        Edit
+                      </Button>
+                      <Button variant="contained" size="small" color="primary">
+                        Sub Category
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          ) : (<Box
+            sx={{
+              textAlign: "center",
+              mt: 8,
+              p: 4,
+              backgroundColor: "#f9f9f9",
+              borderRadius: 2,
+              border: "1px dashed #ccc",
+            }}
+          >
+            <Typography variant="h6" color="text.primary" gutterBottom>
+              No Categories Found
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Add a new category to get started.
+            </Typography>
+
+          </Box>
+          )}
+
+        </>
+      }
       <Drawer
         open={openSubCategory}
         onClose={() => toggleSubCategoryDrawer()}

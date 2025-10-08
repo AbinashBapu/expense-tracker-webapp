@@ -106,18 +106,6 @@ export default function PortfolioAnalysisCards() {
   return (
     <Box sx={{ p: 1, backgroundColor: "#ffffff94" }}>
       <Box display="flex" justifyContent="space-between">
-        {/* <Typography
-          variant="subtitle1"
-          sx={{
-            mb: 1.5,
-            textAlign: "center",
-            fontWeight: 600,
-            color: "gray",
-          }}
-        >
-          Portfolio investment by category
-        </Typography> */}
-
         <Typography variant="subtitle1" color="text.primary">
           Portfolio investment by category
           <Box
@@ -147,8 +135,8 @@ export default function PortfolioAnalysisCards() {
         sx={{
           p: 1,
           backgroundColor: "#ffffff94",
-          height: 330, // set a fixed max height or any desired height
-          overflowY: "auto", // enables vertical scrolling when content overflows
+          height: 330, 
+          overflowY: "auto", 
         }}
       >
         <Box
@@ -189,7 +177,7 @@ export default function PortfolioAnalysisCards() {
                 </Card>
               ))
             : portfolioData.map((item: any) => (
-                <Card elevation={4} key={item.id}>
+                <Card elevation={4} key={item.id} sx={{mb:1}}>
                   <CardContent>
                     <Box
                       display="flex"
