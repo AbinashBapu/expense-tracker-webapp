@@ -98,8 +98,8 @@ export function LogTransactionForm({
     {
       categoryId: "",
       subCategoryId: "",
-      incurredById: null,
-      incurredForIds: [],
+      incurredById: parties?parties[0]:null,
+      incurredForIds: parties?[parties[0]]:[],
       transactionType: "Dr",
       amount: "",
       description: "",
@@ -111,7 +111,7 @@ export function LogTransactionForm({
   >([[]]);
 
   const { saveAllTransactions } = useFinance();
-
+console.log("parties ", parties)
   const formik = useFormik<FormValues>({
     initialValues: {
       transactions: cards,
@@ -178,8 +178,8 @@ export function LogTransactionForm({
         {
           categoryId: "",
           subCategoryId: "",
-          incurredById: null,
-          incurredForIds: [],
+          incurredById: parties?parties[0]:null,
+          incurredForIds: parties?[parties[0]]:[],
           transactionType: "Dr",
           amount: "",
           description: "",

@@ -99,7 +99,8 @@ export default function OverviewCard() {
             >
               Overview{" "}
               <Typography variant="caption">
-                (20-05-2025 To 20-05-2026)
+                ({startDate?.format("MMM DD, YYYY")} -{" "}
+                {endDate?.format("MMM DD, YYYY")})
               </Typography>
             </Typography>
 
