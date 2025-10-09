@@ -152,11 +152,40 @@ export default function OverviewCard() {
               )}
               <Typography variant="caption">Income</Typography>
             </Grid>
-            <Grid
+          
+            <Grid size={4} sx={{ textAlign: "center",
+                borderRight: " 2px dotted #cbcdcf", }}>
+              {isSummaryLoading ? (
+                <Skeleton width={100} height={20} />
+              ) : (
+                <Box>
+                  <Typography variant="subtitle1">
+                    {new Intl.NumberFormat("en-IN", {
+                      style: "currency",
+                      currency: "INR",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(summaryData.expense)}
+                  </Typography>
+                  <Typography variant="caption">
+                    (
+                    {new Intl.NumberFormat("en-IN", {
+                      style: "currency",
+                      currency: "INR",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(summaryData.avgExpensePerDay)}{" "}
+                    / day )
+                  </Typography>
+                </Box>
+              )}
+              <Typography variant="caption">Expense</Typography>
+            </Grid>
+
+              <Grid
               size={4}
               style={{
                 textAlign: "center",
-                borderRight: " 2px dotted #cbcdcf",
               }}
             >
               {isSummaryLoading ? (
@@ -184,33 +213,6 @@ export default function OverviewCard() {
                 </Box>
               )}
               <Typography variant="caption">Saving</Typography>
-            </Grid>
-            <Grid size={4} sx={{ textAlign: "center" }}>
-              {isSummaryLoading ? (
-                <Skeleton width={100} height={20} />
-              ) : (
-                <Box>
-                  <Typography variant="subtitle1">
-                    {new Intl.NumberFormat("en-IN", {
-                      style: "currency",
-                      currency: "INR",
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    }).format(summaryData.expense)}
-                  </Typography>
-                  <Typography variant="caption">
-                    (
-                    {new Intl.NumberFormat("en-IN", {
-                      style: "currency",
-                      currency: "INR",
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    }).format(summaryData.avgExpensePerDay)}{" "}
-                    / day )
-                  </Typography>
-                </Box>
-              )}
-              <Typography variant="caption">Expense</Typography>
             </Grid>
           </Grid>
         </CardContent>
