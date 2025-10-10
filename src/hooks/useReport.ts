@@ -60,7 +60,7 @@ const useReport = () => {
       const financeData = await get(
         `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/report/expenseInsights`
       );
-      return financeData.data;
+      return  financeData?.data??[];
     } catch (error) {
       console.error("Error fetching category data:", error);
       return [];
@@ -98,7 +98,7 @@ const useReport = () => {
       const financeData = await get(
         `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/report/dailyFinanceSummary`
       );
-      return financeData.data;
+      return financeData?.data??{};
     } catch (error) {
       console.error("Error fetching category data:", error);
       return [];
@@ -110,7 +110,7 @@ const useReport = () => {
       const financeData = await get(
         `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/report/dailyPortfolioSummary`
       );
-      return financeData.data;
+      return financeData?.data??[];
     } catch (error) {
       console.error("Error fetching category data:", error);
       return [];

@@ -26,11 +26,15 @@ import GrowthTables from "@/components/feature/investmentGrowth/growthTables";
 import AddIcon from "@mui/icons-material/Add";
 import SyncIcon from "@mui/icons-material/Sync";
 import InvestmentGrowthAnalysis from "@/components/feature/investmentGrowth/investmentAnalysisCards";
+import StockChart from "@/components/feature/stockChart";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 export default function InvestGrowthAnalysis() {
   const [showGrowthDiff, setShowGrowthDiff] = useState(false);
   const [openViewDrawer, setOpenViewDrawer] = useState(false);
   const [openSearchDrawer, setOpenSearchDrawer] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [searchValues, setSearchValues] = useState({
     page: 0,
     size: 10,
@@ -92,7 +96,7 @@ export default function InvestGrowthAnalysis() {
 
   console.log("Portfolio Data", portfolioAnalysisData);
 
-  const syncData = ()=>{
+  const syncData = () => {
     refetchPortfolio();
     refetchPortfolioAnalysis();
   }
@@ -124,6 +128,9 @@ export default function InvestGrowthAnalysis() {
       searchValues={searchValues}
     />
   );
+  const toggleVisibility = () => {
+    setVisible((prev) => !prev);
+  };
 
   return (
     <Box>
@@ -141,6 +148,13 @@ export default function InvestGrowthAnalysis() {
             <SyncIcon />
           </IconButton>
         </Tooltip>
+        <Tooltip title={visible ? "Hide Portfolio Chart" : "Show Portfolio Chart"} sx={{ mt: 2 }}>
+          <IconButton onClick={toggleVisibility}>
+            {visible ? <VisibilityOffIcon /> : <VisibilityIcon />}
+          </IconButton>
+        </Tooltip>
+
+
         {/* <Button onClick={()=>refetchPortfolio()} variant="contained" sx={{ mt: 2 }} tooltip="Refetch Portfolio Data"><SyncIcon /></Button> */}
         <Button
           onClick={toggleViewDrawer}
@@ -159,6 +173,14 @@ export default function InvestGrowthAnalysis() {
           Search
         </Button>
       </Box>
+
+
+      <Box sx={{mb:1}}>
+
+        {visible && <StockChart />}
+      </Box>
+
+
 
       <Grid container spacing={1}>
         <Grid size={9}>

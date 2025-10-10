@@ -114,21 +114,16 @@ export default function DonutChart({
             <Grid size={6} key={index} sx={{mb:1}}>
               <Box
                 sx={{
-                  border: '1px solid #ccc',
+                  border: '1px solid #b4b0b0ff',
                   borderRadius: 1,
                   textAlign: 'center',
-                  boxShadow: 1,
-                  bgcolor: 'background.paper',
-                  '&:hover': {
-                    boxShadow: 4,
-                    bgcolor: 'grey.100',
-                  },
+                  p:1
                 }}
               >
                 <Typography
                   variant="caption"
                   component="div"
-                  sx={{ fontWeight: 'bold', mb: 1 }}
+                  sx={{ fontWeight: 'bold' }}
                 >
                   ₹ {item.y.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                 </Typography>
