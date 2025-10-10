@@ -1,32 +1,62 @@
 import {
-  Card,
-  CardActionArea,
-  CardMedia,
-  CardContent,
-  Typography,
+  Paper,
 } from "@mui/material";
 import GrowthCard from "./growthCard";
+import DonutChart from "../donutChart";
 
 const InvestmentGrowthAnalysis = ({
   portfolioAnalysisData,
 }: {
   portfolioAnalysisData: any;
 }) => {
+
+  type TitleValue = {
+    title: string;
+    value: string;
+  };
+
+  type InputItem = {
+    title: string;
+    titleValues: TitleValue[];
+  };
+
+  type OutputValue = {
+    name: string;
+    y: number;
+  };
+  type OutputItem = {
+    title: string;
+    value: OutputValue[];
+  };
+  const datapoint: OutputItem[] = portfolioAnalysisData?.map((item: any) => {
+    const filteredValues: OutputValue[] = item.titleValues
+      .filter((tv: any) => tv.title !== "Accumulated")
+      .map((tv: any) => ({
+        name: tv.title,
+        y: parseFloat(tv.value)
+      }));
+
+    return {
+      title: item.title,
+      value: filteredValues
+    };
+  });
+
   return (
     <>
-      {portfolioAnalysisData && portfolioAnalysisData.length > 0 ? (
-        portfolioAnalysisData.map((item: any, index: number) => {
-          return (
-            <GrowthCard
+      {
+        datapoint && datapoint.length > 0 &&
+        datapoint.map((item: OutputItem,index:number) =>
+          <Paper key={index}>
+            <DonutChart
               title={item.title}
-              titleValues={item.titleValues}
-              key={`${item.title}-${index}`}
+              subtitle=""
+              chartData={item.value}
+              isVisibleStat={true}
             />
-          );
-        })
-      ) : (
-        <Typography variant="body2">No Data Found</Typography>
-      )}
+          </Paper>
+        )
+      }
     </>
   );
 };

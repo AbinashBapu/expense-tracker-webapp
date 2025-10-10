@@ -92,6 +92,12 @@ export default function InvestGrowthAnalysis() {
 
   console.log("Portfolio Data", portfolioAnalysisData);
 
+  const syncData = ()=>{
+    refetchPortfolio();
+    refetchPortfolioAnalysis();
+  }
+
+
   const toggleViewDrawer = () =>
     setOpenViewDrawer((prev) => {
       console.log("Toggling view drawer", prev);
@@ -131,7 +137,7 @@ export default function InvestGrowthAnalysis() {
         }}
       >
         <Tooltip title="Refetch Portfolio Data" sx={{ mt: 2 }}>
-          <IconButton onClick={() => refetchPortfolio()}>
+          <IconButton onClick={() => syncData()}>
             <SyncIcon />
           </IconButton>
         </Tooltip>

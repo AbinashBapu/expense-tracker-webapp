@@ -1,18 +1,20 @@
 import React from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import { Box } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 
 type DonutChartProps = {
   chartData: { name: string; y: number }[];
   title: string;
   subtitle?: string;
+  isVisibleStat?:boolean
 };
 
 export default function DonutChart({
   chartData,
   title,
   subtitle,
+  isVisibleStat=false
 }: DonutChartProps) {
   const total = chartData.reduce((acc, cur) => acc + cur.y, 0);
 
@@ -104,6 +106,42 @@ export default function DonutChart({
   return (
     <Box width="100%" height="100%">
       <HighchartsReact highcharts={Highcharts} options={options} />
+
+
+      {isVisibleStat&&<Box>
+        <Grid container spacing={1}>
+          {chartData.map((item, index) => (
+            <Grid size={6} key={index} sx={{mb:1}}>
+              <Box
+                sx={{
+                  border: '1px solid #ccc',
+                  borderRadius: 1,
+                  textAlign: 'center',
+                  boxShadow: 1,
+                  bgcolor: 'background.paper',
+                  '&:hover': {
+                    boxShadow: 4,
+                    bgcolor: 'grey.100',
+                  },
+                }}
+              >
+                <Typography
+                  variant="caption"
+                  component="div"
+                  sx={{ fontWeight: 'bold', mb: 1 }}
+                >
+                  ₹ {item.y.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {item.name}
+                </Typography>
+              </Box>
+            </Grid>
+          ))}
+
+        </Grid>
+      </Box>}
+
     </Box>
   );
 }
