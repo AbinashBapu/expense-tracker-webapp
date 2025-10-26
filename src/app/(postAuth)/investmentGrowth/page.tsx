@@ -27,8 +27,8 @@ import AddIcon from "@mui/icons-material/Add";
 import SyncIcon from "@mui/icons-material/Sync";
 import InvestmentGrowthAnalysis from "@/components/feature/investmentGrowth/investmentAnalysisCards";
 import StockChart from "@/components/feature/stockChart";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 export default function InvestGrowthAnalysis() {
   const [showGrowthDiff, setShowGrowthDiff] = useState(false);
@@ -43,20 +43,13 @@ export default function InvestGrowthAnalysis() {
     sortBy: "asOfDate",
     asOnDate: null,
   });
+  const [title, setTitle] = useState("Portfolio Amount");
   const { fetchSubCategories } = useCategory();
-  const { fetchInvestmentGrothAnalysisDtails, fetchInvestmentGrowthValues } =
-    useFinance();
-
-  useEffect(() => {
-    if (
-      searchValues.subCategoryId != null &&
-      searchValues.subCategoryId.trim() != ""
-    ) {
-      setShowGrowthDiff(true);
-    } else {
-      setShowGrowthDiff(false);
-    }
-  }, [searchValues]);
+  const {
+    fetchInvestmentGrothAnalysisDtails,
+    fetchInvestmentGrowthValues,
+    growthChartData,
+  } = useFinance();
 
   const {
     data: subCategoryData,
@@ -66,6 +59,23 @@ export default function InvestGrowthAnalysis() {
     queryKey: ["subCategories"],
     queryFn: () => fetchSubCategories(CategoryIdConsts.SavingId),
   });
+
+  useEffect(() => {
+    if (
+      searchValues.subCategoryId != null &&
+      searchValues.subCategoryId.trim() != ""
+    ) {
+      setShowGrowthDiff(true);
+
+      subCategoryData?.forEach((element: any) => {
+        if (element.pkSubCategoryId == searchValues.subCategoryId) {
+          setTitle(element.name + " Portfolio Amount");
+        }
+      });
+    } else {
+      setShowGrowthDiff(false);
+    }
+  }, [searchValues]);
 
   const applySearch = (search: any) => {
     setSearchValues((prv) => ({ ...search, page: 0, size: 10 }));
@@ -85,6 +95,16 @@ export default function InvestGrowthAnalysis() {
   });
 
   const {
+    data: portfolioGrowthChartData,
+    isLoading: isLoadingPortfolioGrowthChartData,
+    error: portfolioGrowthChartError,
+    refetch: refetchPortfolioGrowthChart,
+  } = useQuery({
+    queryKey: ["growthChartData", searchValues],
+    queryFn: () => growthChartData(searchValues),
+  });
+
+  const {
     data: portfolioAnalysisData,
     isLoading: isLoadingPortfolioAnalysisData,
     error: portfolioAnalysisError,
@@ -99,8 +119,7 @@ export default function InvestGrowthAnalysis() {
   const syncData = () => {
     refetchPortfolio();
     refetchPortfolioAnalysis();
-  }
-
+  };
 
   const toggleViewDrawer = () =>
     setOpenViewDrawer((prev) => {
@@ -132,6 +151,7 @@ export default function InvestGrowthAnalysis() {
     setVisible((prev) => !prev);
   };
 
+  console.log("Portfolio Growth Chart Data", portfolioGrowthChartData);
   return (
     <Box>
       <Box
@@ -148,12 +168,16 @@ export default function InvestGrowthAnalysis() {
             <SyncIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title={visible ? "Hide Portfolio Chart" : "Show Portfolio Chart"} sx={{ mt: 2 }}>
-          <IconButton onClick={toggleVisibility}>
-            {visible ? <VisibilityOffIcon /> : <VisibilityIcon />}
-          </IconButton>
-        </Tooltip>
-
+        {showGrowthDiff && (
+          <Tooltip
+            title={visible ? "Hide Portfolio Chart" : "Show Portfolio Chart"}
+            sx={{ mt: 2 }}
+          >
+            <IconButton onClick={toggleVisibility}>
+              {visible ? <VisibilityOffIcon /> : <VisibilityIcon />}
+            </IconButton>
+          </Tooltip>
+        )}
 
         {/* <Button onClick={()=>refetchPortfolio()} variant="contained" sx={{ mt: 2 }} tooltip="Refetch Portfolio Data"><SyncIcon /></Button> */}
         <Button
@@ -173,15 +197,11 @@ export default function InvestGrowthAnalysis() {
           Search
         </Button>
       </Box>
-
-
-      <Box sx={{mb:1}}>
-
-        {visible && <StockChart />}
+      <Box sx={{ mb: 1 }}>
+        {visible && !isLoadingPortfolioGrowthChartData && (
+          <StockChart title={title} data={portfolioGrowthChartData} />
+        )}
       </Box>
-
-
-
       <Grid container spacing={1}>
         <Grid size={9}>
           {isLoadingPortfolioData ? (
@@ -248,7 +268,6 @@ export default function InvestGrowthAnalysis() {
           />
         </Grid>
       </Grid>
-
       <Drawer open={openViewDrawer} onClose={toggleViewDrawer} anchor="right">
         <Box sx={{ width: 400, p: 2 }}>
           <Typography variant="h6" sx={{ mb: 2 }}>
@@ -257,7 +276,6 @@ export default function InvestGrowthAnalysis() {
           {investmentGrowthForm}
         </Box>
       </Drawer>
-
       <Drawer
         open={openSearchDrawer}
         onClose={toggleSearchDrawer}

@@ -42,7 +42,7 @@ export default function PortfolioAnalysisCards() {
   const [openDialog, setOpenDialog] = React.useState(false);
 
   const [asOfDate, setAsOfDate] = React.useState<Dayjs | null>(
-    dayjs().startOf("day")
+    dayjs().endOf("day")
   );
 
   const [applySearch, setApplySearch] = React.useState<InvestmentSearchDto>({
@@ -135,8 +135,8 @@ export default function PortfolioAnalysisCards() {
         sx={{
           p: 1,
           backgroundColor: "#ffffff94",
-          height: 330, 
-          overflowY: "auto", 
+          height: 330,
+          overflowY: "auto",
         }}
       >
         <Box
@@ -177,7 +177,7 @@ export default function PortfolioAnalysisCards() {
                 </Card>
               ))
             : portfolioData.map((item: any) => (
-                <Card elevation={4} key={item.id} sx={{mb:1}}>
+                <Card elevation={4} key={item.id} sx={{ mb: 1 }}>
                   <CardContent>
                     <Box
                       display="flex"

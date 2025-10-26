@@ -9,7 +9,7 @@ const useFinance = () => {
       const financeData = await get(
         `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/party`
       );
-      return financeData?.data??[];
+      return financeData?.data ?? [];
     } catch (error) {
       console.error("Error fetching category data:", error);
       return [];
@@ -65,12 +65,14 @@ const useFinance = () => {
         },
         config
       );
-      return response?.data ?? {
-        content: [],
-        totalElements: 0,
-        totalPages: 0,
-        numberOfElements: 0,
-      };;
+      return (
+        response?.data ?? {
+          content: [],
+          totalElements: 0,
+          totalPages: 0,
+          numberOfElements: 0,
+        }
+      );
     } catch (error) {
       console.error("Error fetching category data:", error);
       return {
@@ -113,12 +115,14 @@ const useFinance = () => {
         `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/portfolio/search`,
         data
       );
-      return response?.data ??  {
-        content: [],
-        totalElements: 0,
-        totalPages: 0,
-        numberOfElements: 0,
-      };;
+      return (
+        response?.data ?? {
+          content: [],
+          totalElements: 0,
+          totalPages: 0,
+          numberOfElements: 0,
+        }
+      );
     } catch (error) {
       console.error("Error fetching category data:", error);
       return {
@@ -129,6 +133,20 @@ const useFinance = () => {
       };
     }
   };
+
+  const growthChartData = async (data: any) => {
+    try {
+      const response = await post(
+        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/portfolio/growthChartData`,
+        data
+      );
+      return response?.data ?? [];
+    } catch (error) {
+      console.error("Error fetching category data:", error);
+      return [];
+    }
+  };
+
   const fetchInvestmentGrothAnalysisDtails = async (data: any) => {
     try {
       const response = await post(
@@ -151,6 +169,7 @@ const useFinance = () => {
     fetchInvestmentGrowthValues,
     saveAllTransactions,
     fetchInvestmentGrothAnalysisDtails,
+    growthChartData,
   };
 };
 
