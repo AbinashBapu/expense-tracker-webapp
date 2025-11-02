@@ -60,7 +60,7 @@ const useReport = () => {
       const financeData = await get(
         `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/report/expenseInsights`
       );
-      return  financeData?.data??[];
+      return financeData?.data ?? [];
     } catch (error) {
       console.error("Error fetching category data:", error);
       return [];
@@ -98,7 +98,7 @@ const useReport = () => {
       const financeData = await get(
         `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/report/dailyFinanceSummary`
       );
-      return financeData?.data??{};
+      return financeData?.data ?? {};
     } catch (error) {
       console.error("Error fetching category data:", error);
       return [];
@@ -110,7 +110,7 @@ const useReport = () => {
       const financeData = await get(
         `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/report/dailyPortfolioSummary`
       );
-      return financeData?.data??[];
+      return financeData?.data ?? [];
     } catch (error) {
       console.error("Error fetching category data:", error);
       return [];
@@ -130,6 +130,19 @@ const useReport = () => {
     }
   };
 
+  const fetchDataBasedOnDist = async (data: any) => {
+    try {
+      const response = await post(
+        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/report/etDistributionData`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching summary data:", error);
+      return [];
+    }
+  };
+
   return {
     fetchFinanceSummary,
     fetchFinanceSummaryForSplineChart,
@@ -140,6 +153,7 @@ const useReport = () => {
     fetchDailyFinanceSummary,
     fetchDailyPortfolioSummary,
     fetchPortfolioSavingByCategory,
+    fetchDataBasedOnDist,
   };
 };
 

@@ -66,16 +66,15 @@ export default function InvestGrowthAnalysis() {
       searchValues.subCategoryId.trim() != ""
     ) {
       setShowGrowthDiff(true);
-
       subCategoryData?.forEach((element: any) => {
         if (element.pkSubCategoryId == searchValues.subCategoryId) {
-          setTitle(element.name + " Portfolio Amount");
+          setTitle(element.label + "- Portfolio Amount");
         }
       });
     } else {
       setShowGrowthDiff(false);
     }
-  }, [searchValues]);
+  }, [searchValues, subCategoryData]);
 
   const applySearch = (search: any) => {
     setSearchValues((prv) => ({ ...search, page: 0, size: 10 }));
