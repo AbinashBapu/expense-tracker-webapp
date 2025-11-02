@@ -31,6 +31,11 @@ export const MENUS = [
     url: "/reports",
   },
   {
+    name: "Summary Calendar View",
+    icon: InsertChartIcon,
+    url: "/financeSummary",
+  },
+  {
     name: "Category",
     icon: CategoryIcon,
     url: "/category",
