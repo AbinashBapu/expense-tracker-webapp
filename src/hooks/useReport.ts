@@ -133,7 +133,7 @@ const useReport = () => {
   const fetchDataBasedOnDist = async (data: any) => {
     try {
       const response = await post(
-        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/report/etDistributionData`,
+        `${process.env.NEXT_PUBLIC_BASEPATH_URL}/${process.env.NEXT_PUBLIC_V1API}/${process.env.NEXT_PUBLIC_FINANCE_SERVICE}/report/summaryCalendarView`,
         data
       );
       return response.data;
