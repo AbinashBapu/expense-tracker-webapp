@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Divider, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup, Divider, FormControl, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 
 import Grid from "@mui/material/Grid";
 import { UUID } from "crypto";
@@ -8,6 +8,7 @@ import MoneyOffIcon from "@mui/icons-material/MoneyOff"; // Expense
 import SavingsIcon from "@mui/icons-material/Savings";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTHS = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
 
 interface CalendarProps {
   id: any;
@@ -50,7 +51,7 @@ export default function CalendarView() {
     calendarDays.push({
       id: crypto.randomUUID(),
       date: day,
-      income: 200000,
+      income: day == 1 ? 164000 : 0,
       expense: 5560,
       savings: 90000,
     });
@@ -71,7 +72,54 @@ export default function CalendarView() {
     <Box>
       <Grid container spacing={2}>
         <Grid size={10}>
-          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+          {/* <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+            <Typography variant="h6">
+              {monthName}-{year}
+            </Typography>
+            <ButtonGroup variant="outlined" aria-label="Basic button group">
+              <Button onClick={prevMonth}>Previous</Button>
+              <Button onClick={nextMonth}>Next</Button>
+            </ButtonGroup>
+          </Box> */}
+          <Box sx={{ display: "flex", mb: 2 }}>
+
+
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Year</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                // value={age}
+                label="Age"
+              // onChange={handleChange}
+              >
+                <MenuItem value={10}>Ten</MenuItem>
+                <MenuItem value={20}>Twenty</MenuItem>
+                <MenuItem value={30}>Thirty</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Month</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                // value={age}
+                label="Age"
+              // onChange={handleChange}
+              >{MONTHS.map((month, index) => (
+                <MenuItem key={index} value={month}>
+                  {month}
+                </MenuItem>
+              ))}
+              </Select>
+            </FormControl>
+
+
+
+
+
+
+
             <Typography variant="h6">
               {monthName}-{year}
             </Typography>
@@ -135,24 +183,24 @@ export default function CalendarView() {
                   </Typography>
                 </Box>
                 {day.date != null ? (
-                  <Box display="flex" justifyContent="space-around" mt={4}>
-                    <Box textAlign="center">
-                      <AttachMoneyIcon sx={{ fontSize: 30, color: "green" }} />
-                      <Typography variant="subtitle1">₹{day.income}</Typography>
-                    </Box>
+                  <Box display="flex" justifyContent="space-around" mt={2}>
+                    {day.income ? <Box textAlign="center" sx={{ display: "flex", flexDirection: "column" }}>
+                      <AttachMoneyIcon sx={{ fontSize: 25, color: "green" }} />
+                      <Typography variant="caption">₹{day.income}</Typography>
+                    </Box> : <></>}
 
                     {/* Expense */}
-                    <Box textAlign="center">
-                      <MoneyOffIcon sx={{ fontSize: 30, color: "red" }} />
-                      <Typography variant="subtitle1">
+                    <Box textAlign="center" sx={{ display: "flex", flexDirection: "column" }}>
+                      <MoneyOffIcon sx={{ fontSize: 25, color: "red" }} />
+                      <Typography variant="caption">
                         ₹{day.expense}
                       </Typography>
                     </Box>
 
                     {/* Saving */}
-                    <Box textAlign="center">
-                      <SavingsIcon sx={{ fontSize: 30, color: "goldenrod" }} />
-                      <Typography variant="subtitle1">
+                    <Box textAlign="center" sx={{ display: "flex", flexDirection: "column" }}>
+                      <SavingsIcon sx={{ fontSize: 25, color: "goldenrod" }} />
+                      <Typography variant="caption">
                         ₹{day.savings}
                       </Typography>
                     </Box>
@@ -168,18 +216,18 @@ export default function CalendarView() {
           <Typography variant="h6">Finance Summary Calendar</Typography>
           <Divider />
           <Box display="flex" flexDirection="row" sx={{ mt: 2 }}>
-            <AttachMoneyIcon sx={{ fontSize: 30, color: "green" }} />:
-            <Typography variant="subtitle1">Stands for incomes</Typography>
+            <AttachMoneyIcon sx={{ fontSize: 25, color: "green" }} />:
+            <Typography variant="subtitle1"> All type of incomes</Typography>
           </Box>
 
           <Box display="flex" flexDirection="row">
-            <MoneyOffIcon sx={{ fontSize: 30, color: "red" }} />:
-            <Typography variant="subtitle1">Stands for expenses</Typography>
+            <MoneyOffIcon sx={{ fontSize: 25, color: "red" }} />:
+            <Typography variant="subtitle1">All type of expenses</Typography>
           </Box>
 
           <Box display="flex" flexDirection="row">
-            <SavingsIcon sx={{ fontSize: 30, color: "goldenrod" }} /> :
-            <Typography variant="subtitle1">Stands for savings</Typography>
+            <SavingsIcon sx={{ fontSize: 25, color: "goldenrod" }} /> :
+            <Typography variant="subtitle1">All type of savings</Typography>
           </Box>
 
           <Box display="flex" flexDirection="column" sx={{ mt: 2 }}>

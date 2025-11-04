@@ -8,6 +8,7 @@ import CreditScoreSharpIcon from "@mui/icons-material/CreditScoreSharp";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import AutoGraphIcon from "@mui/icons-material/AutoGraph";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 export const MENUS = [
   {
@@ -31,8 +32,8 @@ export const MENUS = [
     url: "/reports",
   },
   {
-    name: "Summary Calendar View",
-    icon: InsertChartIcon,
+    name: "Finance Timeline",
+    icon: CalendarMonthIcon,
     url: "/financeSummary",
   },
   {
