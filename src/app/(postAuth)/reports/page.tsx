@@ -2,7 +2,7 @@
 import ExpenseByCategory from "@/components/feature/reports/expenseByCategory";
 import ExpenseByParty from "@/components/feature/reports/expenseByParty";
 import ExpenseCards from "@/components/feature/reports/expenseCards";
-import IncomeExpenseSavingDistributionView from "@/components/feature/reports/incomeExpenseSavingDistributionView";
+// import IncomeExpenseSavingDistributionView from "@/components/feature/reports/incomeExpenseSavingDistributionView";
 import IncomeSavingExpenseChart from "@/components/feature/reports/incomeSavingExpenseChart";
 import PortfolioAnalysisCards from "@/components/feature/reports/portfolioAnalysisCards";
 import PortfolioSavingChart from "@/components/feature/reports/portfolioSavingChart";
@@ -27,7 +27,8 @@ export default function Page() {
 
         <Grid size={6}>
           <Box>
-            <IncomeExpenseSavingDistributionView />
+            {/* <IncomeExpenseSavingDistributionView /> */}
+            <PortfolioSavingChart />
           </Box>
         </Grid>
         <Grid size={6}>
@@ -36,9 +37,7 @@ export default function Page() {
           </Box>
         </Grid>
         <Grid size={12}>
-          <Box>
-            <PortfolioSavingChart />
-          </Box>
+          <Box></Box>
         </Grid>
       </Grid>
     </Box>
