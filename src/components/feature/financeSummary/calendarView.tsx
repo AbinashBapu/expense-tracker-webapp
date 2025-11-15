@@ -2,6 +2,8 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Card,
+  CardContent,
   Divider,
   FormControl,
   InputLabel,
@@ -53,6 +55,7 @@ interface Summary {
   expense: number;
   saving: number;
   total: number;
+  avgExp: number;
 }
 
 export default function CalendarView() {
@@ -275,114 +278,123 @@ export default function CalendarView() {
           </Grid>
         </Grid>
         <Grid size={2}>
-          <Typography variant="h6">Finance Summary Calendar</Typography>
-          <Divider />
-          <Box display="flex" flexDirection="row" sx={{ mt: 2 }}>
-            <AttachMoneyIcon sx={{ fontSize: 25, color: "#077197ff" }} />:
-            <Typography variant="subtitle1"> All type of incomes</Typography>
-          </Box>
+          <Card>
+            {" "}
+            <CardContent>
+              <Typography variant="h6">Finance Summary Calendar</Typography>
+              <Divider />
+              <Box display="flex" flexDirection="row" sx={{ mt: 2 }}>
+                <AttachMoneyIcon sx={{ fontSize: 25, color: "#077197ff" }} />:
+                <Typography variant="subtitle1">
+                  {" "}
+                  All type of incomes
+                </Typography>
+              </Box>
 
-          <Box display="flex" flexDirection="row">
-            <MoneyOffIcon sx={{ fontSize: 25, color: "#851a1a" }} />:
-            <Typography variant="subtitle1">All type of expenses</Typography>
-          </Box>
+              <Box display="flex" flexDirection="row">
+                <MoneyOffIcon sx={{ fontSize: 25, color: "#851a1a" }} />:
+                <Typography variant="subtitle1">
+                  All type of expenses
+                </Typography>
+              </Box>
 
-          <Box display="flex" flexDirection="row">
-            <SavingsIcon sx={{ fontSize: 25, color: "#0000ffbd" }} /> :
-            <Typography variant="subtitle1">All type of savings</Typography>
-          </Box>
+              <Box display="flex" flexDirection="row">
+                <SavingsIcon sx={{ fontSize: 25, color: "#0000ffbd" }} /> :
+                <Typography variant="subtitle1">All type of savings</Typography>
+              </Box>
 
-          <Box display="flex" flexDirection="column" sx={{ mt: 2 }}>
-            <Typography variant="h6" sx={{ mt: 2 }}>
-              Monthly Report
-            </Typography>
-            <Divider sx={{ mb: 2 }} />
+              <Box display="flex" flexDirection="column" sx={{ mt: 2 }}>
+                <Typography variant="h6" sx={{ mt: 2 }}>
+                  Monthly Report
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
 
-            {!isLoadingCalendar &&
-              calendarDaysData.monthlySummary.map((ms: Summary) => (
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  sx={{ mt: 2 }}
-                  key={ms.label}
-                >
-                  {/* <Typography variant="subtitle1">{ms.label}</Typography> */}
-                  <Typography variant="caption">
-                    Income:{" "}
-                    <span style={{ color: "#077197ff", fontWeight: "600" }}>
-                      ₹{Number(ms.income).toFixed(2)}
-                    </span>
-                  </Typography>
-                  <Typography variant="caption">
-                    Saving:
-                    <span style={{ color: "#0000ffbd", fontWeight: "600" }}>
-                      ₹{Number(ms.saving).toFixed(2)}
-                    </span>
-                  </Typography>
-                  <Typography variant="caption">
-                    Expense:
-                    <span style={{ color: "#851a1a", fontWeight: "600" }}>
-                      ₹{Number(ms.expense).toFixed(2)}
-                    </span>
-                  </Typography>
-                  <Typography variant="caption">
-                    Total (Expense + Saving):
-                    <span style={{ color: "#3a6f0bff", fontWeight: "600" }}>
-                      ₹{Number(ms.total).toFixed(2)}
-                    </span>
-                  </Typography>
-                </Box>
-              ))}
-          </Box>
+                {!isLoadingCalendar &&
+                  calendarDaysData.monthlySummary.map((ms: Summary) => (
+                    <Box display="flex" flexDirection="column" key={ms.label}>
+                      {/* <Typography variant="subtitle1">{ms.label}</Typography> */}
+                      <Typography variant="caption">
+                        Income:{" "}
+                        <span style={{ color: "#077197ff", fontWeight: "600" }}>
+                          ₹{Number(ms.income).toFixed(2)}
+                        </span>
+                      </Typography>
+                      <Typography variant="caption">
+                        Saving:
+                        <span style={{ color: "#0000ffbd", fontWeight: "600" }}>
+                          ₹{Number(ms.saving).toFixed(2)}
+                        </span>
+                      </Typography>
+                      <Typography variant="caption">
+                        Expense:
+                        <span style={{ color: "#851a1a", fontWeight: "600" }}>
+                          ₹{Number(ms.expense).toFixed(2)}
+                        </span>{" "}
+                        @{" "}
+                        <span style={{ color: "#851a1a", fontWeight: "600" }}>
+                          ₹{Number(ms.avgExp).toFixed(2)} /day
+                        </span>
+                      </Typography>
+                      <Typography variant="caption">
+                        Total (Expense + Saving):
+                        <span style={{ color: "#3a6f0bff", fontWeight: "600" }}>
+                          ₹{Number(ms.total).toFixed(2)}
+                        </span>
+                      </Typography>
+                    </Box>
+                  ))}
+              </Box>
 
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Weekly Report
-          </Typography>
-          <Divider />
+              <Typography variant="h6" sx={{ mt: 2 }}>
+                Weekly Report
+              </Typography>
+              <Divider />
 
-          {!isLoadingCalendar &&
-            calendarDaysData.weeklySummary
-              .filter(
-                (ws: Summary) =>
-                  ws.income > 0 || ws.expense > 0 || ws.saving > 0
-              )
-              .map((weekSummary: Summary) => (
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  sx={{ mt: 2 }}
-                  key={weekSummary.label}
-                >
-                  <Typography variant="subtitle1">
-                    {weekSummary.label}
-                  </Typography>
-                  <Typography variant="caption">
-                    Income:
-                    <span style={{ color: "#077197ff", fontWeight: "600" }}>
-                      ₹{Number(weekSummary.income).toFixed(2)}
-                    </span>
-                  </Typography>
-                  <Typography variant="caption">
-                    Saving:
-                    <span style={{ color: "#0000ffbd", fontWeight: "600" }}>
-                      {" "}
-                      ₹{Number(weekSummary.saving).toFixed(2)}
-                    </span>
-                  </Typography>
-                  <Typography variant="caption">
-                    Expense:
-                    <span style={{ color: "#851a1a", fontWeight: "600" }}>
-                      ₹{Number(weekSummary.expense).toFixed(2)}
-                    </span>
-                  </Typography>
-                  <Typography variant="caption">
-                    Total (Expense + Saving): ₹
-                    <span style={{ color: "#3a6f0bff", fontWeight: "600" }}>
-                      {Number(weekSummary.total).toFixed(2)}
-                    </span>
-                  </Typography>
-                </Box>
-              ))}
+              {!isLoadingCalendar &&
+                calendarDaysData.weeklySummary
+                  .filter(
+                    (ws: Summary) =>
+                      ws.income > 0 || ws.expense > 0 || ws.saving > 0
+                  )
+                  .map((weekSummary: Summary) => (
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      sx={{ mt: 2 }}
+                      key={weekSummary.label}
+                    >
+                      <Typography variant="subtitle1">
+                        {weekSummary.label}
+                      </Typography>
+                      <Typography variant="caption">
+                        Income:
+                        <span style={{ color: "#077197ff", fontWeight: "600" }}>
+                          ₹{Number(weekSummary.income).toFixed(2)}
+                        </span>
+                      </Typography>
+                      <Typography variant="caption">
+                        Saving:
+                        <span style={{ color: "#0000ffbd", fontWeight: "600" }}>
+                          {" "}
+                          ₹{Number(weekSummary.saving).toFixed(2)}
+                        </span>
+                      </Typography>
+                      <Typography variant="caption">
+                        Expense:
+                        <span style={{ color: "#851a1a", fontWeight: "600" }}>
+                          ₹{Number(weekSummary.expense).toFixed(2)}
+                        </span>
+                      </Typography>
+                      <Typography variant="caption">
+                        Total (Expense + Saving): ₹
+                        <span style={{ color: "#3a6f0bff", fontWeight: "600" }}>
+                          {Number(weekSummary.total).toFixed(2)}
+                        </span>
+                      </Typography>
+                    </Box>
+                  ))}
+            </CardContent>
+          </Card>
         </Grid>
       </Grid>
     </Box>
